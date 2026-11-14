@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.10] - 2026-11-15
+
+### Changed
+
+- 横幅改为**整体居中排版**：方标 + 标题 / 中英副标题 / 关键词作为一组居中，底部小注也居中，解决右侧大片空白
+- 深色 / 浅色两版同步
+
 ## [0.0.9] - 2026-11-15
 
 ### Changed
