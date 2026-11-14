@@ -71,7 +71,7 @@ grep -rn 'System.loadLibrary' smali --include='*.smali' | grep -vE 'google|andro
 | ptrace 检测 | `ptrace`、`TracerPid` | 改判定；或用隐藏型动态加载 |
 | 模拟器检测 | `goldfish`、`generic`、`ro.kernel.qemu` | 判定恒假 |
 | native 完整性 | `.so` 自校验、`libmtprotect` 之类 | r2 定位校验函数改返回；或 Frida native hook |
-| 备份/篡改检测 | `allowBackup`、文件校验和 | 见 value-hacking §7 |
+| 备份/篡改检测 | `allowBackup`、文件校验和 | 见 value-logic-analysis §7 |
 
 > 改完签名后，**签名校验类**几乎一定会触发；这是重打包最常见闪退原因（见 SKILL.md §6）。
 
@@ -197,9 +197,9 @@ bash scripts/build_sign.sh decoded/  # 与 apk-mitm 二选一，交付包一律�
 
 | 选法 | Hook 点 | 能干什么 | 模板位置 |
 |---|---|---|---|
-| **C1 改响应** | `okhttp3.Interceptor#intercept`、`java.net.HttpURLConnection`、`Retrofit` converter | 内存里改响应体/字段（`isVip`/`coin`），不碰 TLS、不影响签名 | `vip-unlock.md` §4.2、`value-hacking.md` §5.3 |
+| **C1 改响应** | `okhttp3.Interceptor#intercept`、`java.net.HttpURLConnection`、`Retrofit` converter | 内存里改响应体/字段（`isVip`/`coin`），不碰 TLS、不影响签名 | `entitlement-analysis.md` §4.2、`value-logic-analysis.md` §5.3 |
 | **C2 解证书固定** | `okhttp3.CertificatePinner#check`、`X509TrustManager#checkServerTrusted`、`TrustManagerImpl#checkTrustedRecursive` | 让 App 接受 mitmproxy 证书（仍需按 6.1 装 CA/代理） | 下方最小模板 |
-| **C3 抓明文 / native** | native `SSL_read`/`SSL_write`、`SSL_verify_cert_chain`、`BoringSSL` | native pinning（Flutter/加固）唯一实用解，直接 dump 明文 | `value-hacking.md` §5.4、`dynamic-hook-help.md` |
+| **C3 抓明文 / native** | native `SSL_read`/`SSL_write`、`SSL_verify_cert_chain`、`BoringSSL` | native pinning（Flutter/加固）唯一实用解，直接 dump 明文 | `value-logic-analysis.md` §5.4、`dynamic-hook-help.md` |
 
 **偷懒路线**：`objection -g <包名> explore` → `android sslpinning disable`（objection 1.12.5 已装，Frida 封装，
 先起 frida-server 再连；能关掉 OkHttp 等常见 pinning，native 的还是要 C3）。
@@ -227,7 +227,7 @@ frida -H 127.0.0.1:27043 -f <包名> -l /tmp/unpin.js --no-pause   # 27043 是�
 ### 6.4 抓到之后
 
 - 先静态定位再抓包确认：`grep -rn 'https\?://' smali | grep -iE 'vip|member|order|reward|coin|user'`（`scan_premium.py` 第 6 节已列接口 URL）。
-- 改响应：`vip-unlock.md` §4.2（等长替换最稳）；请求带 `sign`/`timestamp` 的，别硬改参数，**Hook 签名函数**（`value-hacking.md` §5.4）。
+- 改响应：`entitlement-analysis.md` §4.2（等长替换最稳）；请求带 `sign`/`timestamp` 的，别硬改参数，**Hook 签名函数**（`value-logic-analysis.md` §5.4）。
 - 服务端每次重下发权益 → 本地补丁只影响当次，交付时如实告诉用户做不到永久适配。
 
 ## 七、Frida 环境与常用脚本（动态调试主线）
@@ -269,10 +269,10 @@ bash scripts/frida_server_prep.sh --stop-hint   # 提醒用户关闭
 客户端在 proot、server 在 Android 侧，走 TCP，不需要 USB 线。
 
 ### 7.2 常用脚本模板
-- 枚举疑似会员类 / Hook 判定方法 + 栈：`vip-unlock.md` §5.1–5.2
-- Hook SharedPreferences（看会员/金币键）：`vip-unlock.md` §5.3
-- Hook HTTP 响应改 `isVip`/`coin`：`vip-unlock.md` §4.2、`value-hacking.md` §5.3
-- native 导出函数 Hook / 内存扫描：`value-hacking.md` §5.4
+- 枚举疑似权益类 / Hook 判定方法 + 栈：`entitlement-analysis.md` §5.1–5.2
+- Hook SharedPreferences（看权益/数值键）：`entitlement-analysis.md` §5.3
+- Hook HTTP 响应改 `isVip`/`coin`：`entitlement-analysis.md` §4.2、`value-logic-analysis.md` §5.3
+- native 导出函数 Hook / 内存扫描：`value-logic-analysis.md` §5.4
 
 ### 7.3 反检测要点
 - frida-server 改名 + 非默认端口（`-l 0.0.0.0:8888`），客户端 `-H 127.0.0.1:8888`。

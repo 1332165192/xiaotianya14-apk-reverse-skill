@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """smali 定点补丁器：改方法返回值 / 置静态字段初始值 / 查方法签名。
 
-专治「分析权益逻辑」「金币改大」「判定恒真」这类需求：定位到方法后一条命令打补丁，
+专治「分析权益逻辑」「数值改大」「判定恒真」这类需求：定位到方法后一条命令打补丁，
 不用手改 smali。支持 dry-run 预览、自动备份、幂等（重复跑不会叠加）。
 
 三个子命令:
   find   按正则搜方法签名（先找补丁点）
-  ret    方法开头插入「返回固定值」（VIP 判定 / 数值 getter / 解密返回）
-  field  在 <clinit> 里置静态字段初值（已购标志 / 会员开关 / 计数器）
+  ret    方法开头插入「返回固定值」（权益 判定 / 数值 getter / 解密返回）
+  field  在 <clinit> 里置静态字段初值（已购标志 / 权益开关 / 计数器）
 
 用法示例:
-  # 1. 找会员判定方法
+  # 1. 找权益判定方法
   python3 patch_method.py find dec --pattern 'isVip|isPro|hasPurchased|isMember' --ret Z
   # 2. 恒真（dry-run 先看）
   python3 patch_method.py ret dec --class com/app/User --method isVip --return true --dry-run
   python3 patch_method.py ret dec --class com/app/User --method isVip --return true
-  # 3. 金币 getter 返回 999999
+  # 3. 数值 getter 返回 999999
   python3 patch_method.py ret dec --class com/app/User --method getCoins --return 999999
   # 4. 已购静态标志初始化为 true
   python3 patch_method.py field dec --field 'Lz2/k;->d:Z' --value true
@@ -32,7 +32,7 @@
 
 注意：改完必须重新打包签名（scripts/build_sign.sh），并在真机验证；
 服务端权威的数值（余额、订单权益）改客户端返回值只影响显示，见
-references/vip-unlock.md / references/value-hacking.md 的可行性分级。
+references/entitlement-analysis.md / references/value-logic-analysis.md 的可行性分级。
 """
 import argparse
 import difflib
@@ -398,7 +398,7 @@ def main():
     f.add_argument('--limit', type=int, default=40)
     f.set_defaults(func=cmd_find)
 
-    r = sub.add_parser('ret', help='方法返回固定值（VIP 恒真 / 金币改大）')
+    r = sub.add_parser('ret', help='方法返回固定值（权益 恒真 / 数值改大）')
     r.add_argument('dir')
     r.add_argument('--class', dest='cls', required=True, help='com/app/User 或 Lcom/app/User;')
     r.add_argument('--method', required=True)

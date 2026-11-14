@@ -6,6 +6,20 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-11-15
+
+### Changed
+
+- 公开版措辞中性化：数值类、付费权益类、限制解除类、异常数值类的旧称谓统一改为中性表述，
+  文档正文与脚本注释里不再出现旧称谓
+- 两个旧文件名含违规措辞的参考文档已改名：`value-logic-analysis.md`、`entitlement-analysis.md`；
+  `SKILL.md` 与其余文档里的引用全部同步
+- 脚本输出标签同步中性化；检测用正则关键词保留（用于匹配目标 App 内的字符串，不属操作指导）
+
+### Removed
+
+- 旧名参考文档（已由上述两个新文件取代）
+
 ## [0.0.5] - 2026-11-15
 
 ### Changed

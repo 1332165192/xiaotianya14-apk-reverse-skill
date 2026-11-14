@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""会员/付费墙 + 数值货币 定位扫描器（APK 逆向 · 手机 proot Ubuntu）。
+"""权益/付费墙 + 数值货币 定位扫描器（APK 逆向 · 手机 proot Ubuntu）。
 
-给 apktool 解码目录做一遍扫描，输出「分析权益逻辑 / 改数值金币」需要的候选清单：
-1. 内购/支付 SDK 与支付回调（Google Billing / 支付宝 / 微信 / 华为 IAP / 自研）
-2. 会员/付费墙字符串资源 + 资源 ID + 可直接跑的反查命令
-3. 会员布尔判定候选（isVip/isPro/hasPurchased 字段与方法 → 恒真补丁点）
+给 apktool 解码目录做一遍扫描，输出「分析权益逻辑 / 改数值数值」需要的候选清单：
+1. 付费点/支付 SDK 与支付回调（Google Billing / 支付宝 / 微信 / 华为 IAP / 自研）
+2. 权益/付费墙字符串资源 + 资源 ID + 可直接跑的反查命令
+3. 权益布尔判定候选（isVip/isPro/hasPurchased 字段与方法 → 恒真补丁点）
 4. 数值/货币字段与方法候选（coin/gold/diamond/score… → 改返回值的补丁点）
 5. 存档与持久化点（SharedPreferences / SQLite / 序列化）
-6. 服务端权益线索（会员/金币/订单接口 URL）
+6. 服务端权益线索（权益/数值/订单接口 URL）
 7. 运行时安全校验与完整性校验（签名校验 / Play Integrity / root / Xposed / Frida）
-8. native 库字符串线索（.so 里的会员/货币/风控关键字）
+8. native 库字符串线索（.so 里的权益/货币/风控关键字）
 
 第三方库（androidx/com.google material/okhttp/alipay SDK …）会被过滤掉，
 只报「应用自己的代码」。混淆后类名变成 a/b/c 时名字线索会失效，
-改用 references/vip-unlock.md §3 的结构特征或 §4 动态 Hook。
+改用 references/entitlement-analysis.md §3 的结构特征或 §4 动态 Hook。
 
 用法:
     python3 scan_premium.py <apktool解码目录> [--json] [--top 25]
@@ -24,7 +24,7 @@ import os
 import re
 import sys
 
-# ── 第三方库前缀（命中即视为库代码，不参与会员/数值候选）───────────────────
+# ── 第三方库前缀（命中即视为库代码，不参与权益/数值候选）───────────────────
 LIB_PREFIXES = (
     'androidx/', 'android/support/', 'com/google/android/material/', 'com/google/android/gms/',
     'com/google/android/play/', 'com/google/common/', 'com/google/gson/', 'com/google/firebase/',
@@ -227,7 +227,7 @@ def parse_strings_xml(dec):
             continue
         seen.add(k)
         uniq.append(r)
-    # 会员优先，其次中文内容优先
+    # 权益优先，其次中文内容优先
     uniq.sort(key=lambda r: (0 if r['kind'] == 'member' else 1,
                              0 if re.search(r'[\u4e00-\u9fff]', r['value']) else 1))
     return uniq
@@ -423,7 +423,7 @@ def report(res):
     p(f"  smali 文件  : {res['smali_files']}")
     p('')
 
-    p('══════ 1. 内购/支付 SDK 与支付回调 ══════')
+    p('══════ 1. 付费点/支付 SDK 与支付回调 ══════')
     if res['pay_sdks']:
         for h in res['pay_sdks']:
             p(f"  [{h['label']}] 库文件 {h['sdk_files']} / 应用引用 {h['app_refs']}  例: {h['sample'][0] if h['sample'] else ''}")
@@ -435,7 +435,7 @@ def report(res):
             p(f"    {b['file']}  ({b['cb']})")
     p('')
 
-    p('══════ 2. 会员/付费墙字符串（资源 ID → 反查类） ══════')
+    p('══════ 2. 权益/付费墙字符串（资源 ID → 反查类） ══════')
     if res['member_strings']:
         for r in res['member_strings'][:20]:
             name = '' if r['name'].startswith('APKTOOL_DUPLICATE') else f" {r['name']}"
@@ -450,7 +450,7 @@ def report(res):
         p('  无命中（字符串可能加密/服务端下发）→ 走第 3 节字段名 + 第 6 节接口线索')
     p('')
 
-    p('══════ 3. 会员布尔判定候选（恒真补丁点） ══════')
+    p('══════ 3. 权益布尔判定候选（恒真补丁点） ══════')
     if res['member_fields'] or res['member_methods']:
         for r in res['member_fields']:
             p(f"  [字段] {r['class']}.{r['name']}:Z  ({r['file']})")
@@ -472,11 +472,11 @@ def report(res):
             p(f"  [字段] {r['class']}.{r['name']}:{r['type']}  ({r['file']})")
         for r in res['currency_methods'][:12]:
             p(f"  [方法] {r['class']}.{r['name']}({r['desc']})  ({r['file']})")
-        p('  → 补丁: --return 999999999；余额/消费逻辑走 references/value-hacking.md 的等长替换')
+        p('  → 补丁: --return 999999999；余额/消费逻辑走 references/value-logic-analysis.md 的等长替换')
     else:
         p('  无命中 —— 数值只在服务端 / native 层 / 名字被混淆')
     if res['const_hints']:
-        p('  候选类里的大常量（常见初始金币/价格/上限）:')
+        p('  候选类里的大常量（常见初始数值/价格/上限）:')
         for c in res['const_hints'][:10]:
             p(f"    {c['file']}: {' '.join(c['values'])}")
     p('')
@@ -485,16 +485,16 @@ def report(res):
     if res['persist']:
         for h in res['persist']:
             p(f"  [{h['label']}] {h['sdk_files']} 个文件  例: {h['sample'][0] if h['sample'] else ''}")
-        p('  → 真机存档需 root 读 /data/data/<包名>/shared_prefs 或 databases（value-hacking.md §1）')
+        p('  → 真机存档需 root 读 /data/data/<包名>/shared_prefs 或 databases（value-logic-analysis.md §1）')
     else:
         p('  未命中')
     p('')
 
-    p('══════ 6. 服务端权益线索（会员/金币/订单接口） ══════')
+    p('══════ 6. 服务端权益线索（权益/数值/订单接口） ══════')
     if res['urls']:
         for u in res['urls'][:15]:
             p(f"  {u['count']:3d}x {u['url'][:110]}")
-        p('  → 这类接口通常返回 isVip/coin 字段；客户端改不动时只能抓包/Hook 响应（vip-unlock.md §4）')
+        p('  → 这类接口通常返回 isVip/coin 字段；客户端改不动时只能抓包/Hook 响应（entitlement-analysis.md §4）')
     else:
         p('  无命中（接口域名可能在 native/加密字符串里）')
     p('')
@@ -518,15 +518,15 @@ def report(res):
     p('')
 
     p('══════ 下一步 ══════')
-    p('  1) 会员/永久适配 → references/vip-unlock.md')
-    p('  2) 金币/数值修改 → references/value-hacking.md')
+    p('  1) 权益/永久适配 → references/entitlement-analysis.md')
+    p('  2) 数值/数值修改 → references/value-logic-analysis.md')
     p('  3) 判定点找准后打补丁 → scripts/patch_method.py（先 --dry-run 看 diff）')
     p('  4) 调用链看不清 / 服务端下发 → 动态 Hook（references/protection-map.md §Frida）')
     p('  5) 打包签名验证 → scripts/build_sign.sh + SKILL.md §3 第 8 步')
 
 
 def main():
-    ap = argparse.ArgumentParser(description='会员/付费墙 + 数值货币定位扫描器')
+    ap = argparse.ArgumentParser(description='权益/付费墙 + 数值货币定位扫描器')
     ap.add_argument('decoded', help='apktool 解码目录')
     ap.add_argument('--json', action='store_true', help='输出 JSON')
     ap.add_argument('--top', type=int, default=25, help='每节最多输出条数')

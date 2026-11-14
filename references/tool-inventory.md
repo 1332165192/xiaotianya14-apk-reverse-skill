@@ -60,7 +60,7 @@ pip install unicorn capstone -i https://mirrors.aliyun.com/pypi/simple
 
 ## §4 用不用、怎么选
 
-- 只做 APK 广告组件清理/会员/数值 → 本机已有工具足够，**不用装社区组**；
+- 只做 APK 广告组件清理/权益/数值 → 本机已有工具足够，**不用装社区组**；
 - 要交叉验证 jadx 反编译质量（lambda/泛型/新 class）→ 装 Vineflower + dex2jar；
 - 要处理 `.aab` 而不是 `.apk` → 装 bundletool；
 - 要离线跑 native 函数算法（签名/校验）→ 装 unicorn/capstone，或直接用 Frida 在真机跑；

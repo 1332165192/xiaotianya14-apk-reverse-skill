@@ -1,40 +1,40 @@
-# 会员 / 付费逻辑分析（VIP 适配专章）
+# 权益 / 付费逻辑分析（权益 适配专章）
 
 > 适用范围：用户自己拥有、已购买或已获授权修改的应用（自研 App、自购软件、教学样本）。
 > 不用于分发未授权副本或适配他人线上付费服务。开工前先按 SKILL.md §3 第 1 步确认授权。
 
-先分清一件事：**会员是"客户端说了算"还是"服务端说了算"**。这一条决定你能做到什么程度，
+先分清一件事：**权益是"客户端说了算"还是"服务端说了算"**。这一条决定你能做到什么程度，
 比任何 smali 技巧都重要。
 
 ## §1 可行性分级（先判级，再动手）
 
 | 级别 | 特征 | 改客户端能到什么程度 | 手段 |
 |---|---|---|---|
-| A. 纯本地 | 会员标志是本地字段/SharedPreferences；判断在 `Application`/`User` 类；离线可用 | 完全适配（功能真能用） | 静态补丁（§3）+ `patch_method.py` |
-| B. 本地凭证 + 服务端校验 | 有 Google Billing / 支付宝 / 微信收据，启动或进会员页时上报校验 | 界面显示适配；依赖服务端下发的功能可能仍被拒 | 静态补丁 + 抓包看接口（§4） |
+| A. 纯本地 | 权益标志是本地字段/SharedPreferences；判断在 `Application`/`User` 类；离线可用 | 完全适配（功能真能用） | 静态补丁（§3）+ `patch_method.py` |
+| B. 本地凭证 + 服务端校验 | 有 Google Billing / 支付宝 / 微信收据，启动或进权益页时上报校验 | 界面显示适配；依赖服务端下发的功能可能仍被拒 | 静态补丁 + 抓包看接口（§4） |
 | C. 服务端权威 | 每次请求服务端返回 `isVip`/权益列表；本地只缓存展示 | 只能骗 UI，功能接口仍 403/无权限 | 只能 Hook/改响应（§4），或放弃 |
 | D. 加固 + 完整性 | 有签名校验 / Play Integrity / 加固壳 / native 风控 | 先过校验（`protection-map.md`），再谈功能 | 保护层放行 + 上述 |
 
 判断方法（1 分钟）：
-1. 断网启动 → 会员功能还能用吗？能用 → 偏 A；不能用/报错 → 偏 B/C。
-2. 会员状态存在哪：`grep -rn 'getBoolean\|getInt' | grep -i vip`（SharedPreferences）→ A 的可能性大。
+1. 断网启动 → 权益功能还能用吗？能用 → 偏 A；不能用/报错 → 偏 B/C。
+2. 权益状态存在哪：`grep -rn 'getBoolean\|getInt' | grep -i vip`（SharedPreferences）→ A 的可能性大。
 3. 付费后要联网激活/上报订单 → B/C。
 4. `scan_premium.py` 第 6 节的接口 URL 里出现 `/user/info`、`/vip`、`/order` → C 的概率高。
 
 > 预期管理：C 级别硬改客户端，最多让按钮可点，实际请求还是会失败。**不要跟用户承诺"一定能破"。**
 
-## §2 定位会员逻辑（静态，从便宜到贵）
+## §2 定位权益逻辑（静态，从便宜到贵）
 
 ### 2.1 资源字符串反查（最快，5 分钟）
 ```sh
-# 1) 找会员文案 → 资源 ID
-grep -rnE '会员|VIP|订阅|永久|适配|高级版|广告组件清理|premium|subscribe' res/values*/strings.xml | head -30
+# 1) 找权益文案 → 资源 ID
+grep -rnE '权益|权益|订阅|永久|适配|高级版|广告组件清理|premium|subscribe' res/values*/strings.xml | head -30
 # 2) public.xml 拿 ID
 grep -nE 'name="(vip|member|premium)[^"]*"' res/values/public.xml
 # 3) ID 反查使用类（const 0x7f... 引用）
 grep -rn '0x7f12abcd' smali* | head -20
 ```
-命中的类就是会员页/弹窗的 Activity/Fragment，`grep` 到判定调用点。
+命中的类就是权益页/弹窗的 Activity/Fragment，`grep` 到判定调用点。
 
 ### 2.2 名字线索（用户没混淆时）
 ```sh
@@ -68,7 +68,7 @@ if (freeCount <= 0) { 弹"次数用完" }                        // ← 改 getF
 ```sh
 /root/jadx/bin/jadx -d /tmp/src --show-bad-code <base.apk>   # 或在已有解码目录上搜 smali
 ```
-在 jadx 里搜"会员"文案的资源 ID，F 键跳方法，确认**判定点**和**调用方**，别改错方法。
+在 jadx 里搜"权益"文案的资源 ID，F 键跳方法，确认**判定点**和**调用方**，别改错方法。
 改错方法最常见的后果是闪退（VerifyError 或状态不一致）。
 
 ## §3 静态补丁（A / B 级）
@@ -98,7 +98,7 @@ python3 scripts/patch_method.py ret <解码目录> --class com/app/User --method
 ### 3.2 静态标志初始化为 true（有 <clinit> 或没有都行）
 ```sh
 python3 scripts/patch_method.py field <解码目录> --field 'Lcom/app/User;->isVip:Z' --value true
-# 会员到期时间往后推到 2100 年（J 类型）
+# 权益到期时间往后推到 2100 年（J 类型）
 python3 scripts/patch_method.py field <解码目录> --field 'Lcom/app/User;->vipEndTime:J' --value 4102444800000
 ```
 适用：`isVip()` 直接 `sget-boolean` 读静态字段；或购买状态是静态开关。
@@ -110,7 +110,7 @@ python3 scripts/patch_method.py field <解码目录> --field 'Lcom/app/User;->vi
   # 改: 直接不跳，或者前面插 const/4 v0, -0x1
   ```
 - int 次数：把 `getFreeCount()I` / `getRemainTimes()I` 改成大数（`--return 999999`），
-  或把"减一"改成不减（见 `value-hacking.md` §3）。
+  或把"减一"改成不减（见 `value-logic-analysis.md` §3）。
 
 ### 3.4 购买回调里置位（B 级常见）
 ```sh
@@ -118,9 +118,9 @@ python3 scripts/patch_method.py field <解码目录> --field 'Lcom/app/User;->vi
 grep -rn 'onPurchasesUpdated\|acknowledgePurchase\|PayResult\|WXPayEntry' smali* | head
 ```
 回调成功分支里通常有 `iget-boolean` → 判断 → `iput-boolean`。把判断改成恒真、
-或把 `iput-boolean 0x0` 换成 `0x1`（注意寄存器语义，用 `nop` 小技巧见 value-hacking §3.3）。
+或把 `iput-boolean 0x0` 换成 `0x1`（注意寄存器语义，用 `nop` 小技巧见 value-logic-analysis §3.3）。
 
-### 3.5 隐藏"开通会员"UI（可选，不是必须）
+### 3.5 隐藏"开通权益"UI（可选，不是必须）
 - 购买页/入口文案在 `strings.xml`，但**控制显示的是代码**（`setVisibility(8)` 的条件）。
 - 先让 `isVip()` 恒真，UI 一般自动隐藏；仍残留就找 `Visibility` 判定点改常量。
 - 改布局把按钮 `android:visibility="gone"` 是下策：代码可能 `findViewById` 后 NPE。
@@ -132,7 +132,7 @@ grep -rn 'onPurchasesUpdated\|acknowledgePurchase\|PayResult\|WXPayEntry' smali*
 ### 4.1 先看清接口（低成本）
 1. 装 `mitmproxy`（proot 内 `pip install mitmproxy`），`mitmdump -p 8080`；
 2. 手机 Wi-Fi 代理指向电脑/本机 IP:8080，安装 mitmproxy CA 到系统证书（需 root）；
-3. 打开会员页，看 `/user/info`、`/vip/status` 之类响应里的 `isVip`、`vipLevel`、`coin` 字段。
+3. 打开权益页，看 `/user/info`、`/vip/status` 之类响应里的 `isVip`、`vipLevel`、`coin` 字段。
 4. 如果响应就是 `{"isVip":false}` 这种，且客户端只做展示 → 改响应即可。
 
 ### 4.2 Hook 响应（Frida，需用户 root 启动 frida-server，见 protection-map.md §Frida）
@@ -196,7 +196,7 @@ Java.perform(function () {
 ```
 改 `return true` 就是动态版适配；确认无副作用后再落成静态补丁（用户不一定一直开 root）。
 
-### 5.3 Hook 本地存储（会员状态落点）
+### 5.3 Hook 本地存储（权益状态落点）
 ```js
 Java.perform(function () {
   var Impl = Java.use('android.app.SharedPreferencesImpl');
@@ -211,7 +211,7 @@ Java.perform(function () {
   });
 });
 ```
-直接能看到 App 存了哪些会员/金币键（`vip_expire`、`coin`、`free_times`）。
+直接能看到 App 存了哪些权益/数值键（`vip_expire`、`coin`、`free_times`）。
 
 ### 5.4 Hook native 判定
 ```js
@@ -224,12 +224,12 @@ Interceptor.attach(f, { onLeave: function (ret) { ret.replace(ptr(1)); } });
 ## §6 验证清单（改完必须过一遍）
 
 1. 冷启动不闪退、能进主界面（不是跳购买页）。
-2. 会员入口/高级功能真能用（不是只有按钮高亮）。
+2. 权益入口/高级功能真能用（不是只有按钮高亮）。
 3. 杀进程重启后仍适配（状态被持久化，不是内存态）。
 4. 清 App 数据后仍适配（`pm clear` 或系统设置清缓存 → 需用户操作；说明给用户）。
-5. 断网时会员功能可用性（判断 A/B 级）。
-6. 换账号/退出登录后：会员是否跟账号绑定、会不会被服务端覆盖（C 级会回滚，属预期）。
-7. 数值类：显示值 / 实际消耗 / 重进刷新后是否回滚（见 `value-hacking.md` §6）。
+5. 断网时权益功能可用性（判断 A/B 级）。
+6. 换账号/退出登录后：权益是否跟账号绑定、会不会被服务端覆盖（C 级会回滚，属预期）。
+7. 数值类：显示值 / 实际消耗 / 重进刷新后是否回滚（见 `value-logic-analysis.md` §6）。
 8. 与原版对比核心功能无回归（尤其支付、登录、云同步）。
 
 ## §7 常见坑
@@ -237,11 +237,11 @@ Interceptor.attach(f, { onLeave: function (ret) { ret.replace(ptr(1)); } });
 | 现象 | 原因 | 处理 |
 |---|---|---|
 | 改完启动闪退 | 改错判定点/寄存器不一致（`VerifyError`） | 看 logcat（用户 root 终端 `logcat -d \| grep -E 'AndroidRuntime\|FATAL'`），回滚 `.bak` 重定位 |
-| 界面显示 VIP 但功能不能用 | 服务端权威（C 级） | 抓包/Hook 响应；做不到就如实告诉用户 |
-| 重启/刷新后会员没了 | 服务端下发的状态覆盖本地 | 改"是否发请求"或 Hook 响应；纯客户端无解 |
+| 界面显示 权益 但功能不能用 | 服务端权威（C 级） | 抓包/Hook 响应；做不到就如实告诉用户 |
+| 重启/刷新后权益没了 | 服务端下发的状态覆盖本地 | 改"是否发请求"或 Hook 响应；纯客户端无解 |
 | 一进 App 就被踢/提示异常 | 签名校验/完整性校验 | 先过 `protection-map.md` 的校验层 |
 | 改了但按钮还在 | UI 由别的标志控制 | 找 `setVisibility`/`isVip` 的调用方，可能需要多个点一起改 |
-| 数值改了显示不变 | 数据从服务端/缓存/别的字段取 | 找真正的 getter 与刷新逻辑（见 value-hacking §2/§4） |
+| 数值改了显示不变 | 数据从服务端/缓存/别的字段取 | 找真正的 getter 与刷新逻辑（见 value-logic-analysis §2/§4） |
 | Frida 连不上 | frida 版本与 frida-server 不一致；或没起 server | `frida-ps -H` 报版本时按版本重下 server；先 `frida-ps -U` 确认 |
 | Hook 后卡死 | Hook 了高频方法/构造器，或递归调用 | 加条件过滤、`setImmediate` 延迟、只在目标类上 Hook |
 | 更新后补丁失效 | 应用升级 | 重跑流程；把关键签名记到 `field-journal/` |

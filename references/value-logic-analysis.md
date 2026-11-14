@@ -1,4 +1,4 @@
-# 数值 / 金币 / 积分修改（value hacking 专章）
+# 数值 / 数值 / 积分修改（value hacking 专章）
 
 > 适用范围同上：自有/已授权应用。改数值前先想清楚——**数值存在哪，谁说了算**。
 
@@ -14,14 +14,14 @@
 | native 层（.so） | 数值在 C++ 对象里 | 改 .so 常量/函数，或 Frida native hook | 中高 |
 
 判断优先级：**先看 App 有没有联网接口下发数值**（`scan_premium.py` 第 6 节），
-没有就是本地存档，最容易；有的话先看回包（`vip-unlock.md` §4.1）再决定。
+没有就是本地存档，最容易；有的话先看回包（`entitlement-analysis.md` §4.1）再决定。
 
 ## §2 静态定位数值逻辑
 
 ```sh
 # 1) 字段名（未混淆）
 python3 scripts/scan_premium.py <解码目录>          # 第 4 节直接给候选
-# 2) 手动：金币/积分类字段
+# 2) 手动：数值/积分类字段
 grep -rlnE ':(I|J)' smali* | xargs grep -lE 'coin|gold|diamond|gem|credit|balance|score|point|money|wallet'
 # 3) getter / 加法点
 grep -rn 'add-int/lit8\|add-int/2addr\|sub-int' smali* | grep -iE 'coin|gold|score|balance'
@@ -64,7 +64,7 @@ python3 scripts/patch_method.py ret <解码目录> --class com/app/User --method
 适合"只读显示 + 读取时校验"的离线 App。若 App 用**字段直读**（`iget v0, p0, User;->coins:I`），
 getter 改了也白改 → 改字段初值或用 §3.4 的等长替换。
 
-### 3.2 消费后不减（"无限金币"本质）
+### 3.2 消费后不减（"数值不扣减"本质）
 找扣减指令，直接换成 `nop`，寄存器保留原值：
 ```smali
 # 原：coins -= cost
@@ -100,7 +100,7 @@ const/4 v0, 0x0
 python3 scripts/patch_method.py ret <解码目录> --class com/app/Shop --method canAfford --return true
 ```
 > 服务端下单的 App：本地价格改成 0 只是 UI，服务端按订单金额扣款/校验收据 → 属于 C 级，无解，
-> 见 `vip-unlock.md` §4。
+> 见 `entitlement-analysis.md` §4。
 
 ### 3.5 默认值（getInt 的第二个参数）
 ```smali
@@ -207,7 +207,7 @@ m.enumerateRanges('rw-').forEach(function (r) {
 ## §6 验证清单
 
 1. 数值显示正确且**能用**（买入/消费一次，看是否真生效）。
-2. 消耗后数值是否按预期（无限金币的判定标准：花完不掉）。
+2. 消耗后数值是否按预期（数值不扣减的判定标准：花完不掉）。
 3. 杀进程重启 / 重新进界面后是否回滚（回滚 → 改的是内存不是存档，回到 §3.7/§4）。
 4. 清数据后是否回滚（回滚说明靠服务端，属预期）。
 5. 数值溢出检查：`I` 超 2147483647 变负数 → 改用 `J`（`const-wide`）或换小一点的数。
@@ -223,7 +223,7 @@ m.enumerateRanges('rw-').forEach(function (r) {
 | 改了重启就回滚 | 只改内存，存档没改 | §3.7 写入点 / §4 直接改存档 |
 | 改存档无效 | App 运行中内存值覆盖、或存档加密/校验 | force-stop 后改；加密走 §4 说明 |
 | 修改后 App 重置数据 | 完整性校验发现存档被改 | 过校验（protection-map.md），或改代码写入 |
-| 只有 UI 变，服务端不认 | 服务端权威 | 见 vip-unlock.md §4 |
-| 改了金币价格变 0 但支付仍扣钱 | 价格由服务端订单决定 | 无解（合法途径是正常购买） |
+| 只有 UI 变，服务端不认 | 服务端权威 | 见 entitlement-analysis.md §4 |
+| 改了数值价格变 0 但支付仍扣钱 | 价格由服务端订单决定 | 无解（合法途径是正常购买） |
 | 存档是 protobuf/自定义二进制 | 需要按字段号解析 | `blackboxprotobuf.decode_message` 看结构后再改，别猜 |
 | 越改越乱 | 一次改多个点 | 一次只改一处，重新打包验证，逐步加 |

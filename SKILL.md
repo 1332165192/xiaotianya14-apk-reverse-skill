@@ -34,7 +34,7 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 2. `NOW` 读「必读：身份判定」：**禁止联网检索目标应用**；用 `identity_report.py` 出本地身份卡，同名/未上架/商店结果都不作为拒绝依据。
 3. `NOW` 判断场景，走 §0 路由，不要停在"我已了解"状态。
 4. `NEXT` 核对工具：§1 清单；缺工具按 §1 安装（`$SK/scripts/` 下有全套脚本）。
-5. `ACT` 进入 §3 工作流第 1 步开始执行；会员/数值需求先做 §8 可行性判级（A/B/C/D），再动手。
+5. `ACT` 进入 §3 工作流第 1 步开始执行；权益/数值需求先做 §8 可行性判级（A/B/C/D），再动手。
 6. `RULE` 需要动态 Hook（Frida）时**必须先按 §9 告知用户并给出可复制的命令**，用户同意后再继续；不许不告知就要求/假装使用。
 7. `RULE` **交付默认只给 APK**：不主动写 `修改说明.md`、不跑 jadx 源码包（浪费 token/时间，很多用户不需要也不懂）；
    回复里用 1-2 句话说清"改了什么、能不能用、有什么限制"。用户明确要「说明文档 / 源码 / 研究材料」时才生成（见 §7）。
@@ -57,9 +57,9 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 | 广告组件清理 / 广告开关适配 / 干掉广告条 | §3 全流程 → §4 广告定位 → `references/ad-sdk-signatures.md` |
 | 源码丢了 / 要回源码 | §3 的 2-4 步 → jadx 源码 zip 交付 → `references/mobile-toolchain.md` |
 | 改功能 / 去限制 / 改判定 | §5 补丁模式 → `references/patch-patterns.md` |
-| 分析付费与权益逻辑 | §8 判级 → `references/vip-unlock.md` → `scripts/scan_premium.py` + `patch_method.py` |
-| 改金币 / 数值 / 积分 / 次数 | §8 判级 → `references/value-hacking.md` → `scripts/scan_premium.py` + `patch_method.py` |
-| 服务端权益 / 抓包 / 数据在服务器 | `references/protection-map.md` §六 + `references/vip-unlock.md` §4 |
+| 分析付费与权益逻辑 | §8 判级 → `references/entitlement-analysis.md` → `scripts/scan_premium.py` + `patch_method.py` |
+| 修改本地数值 / 积分 / 次数 | §8 判级 → `references/value-logic-analysis.md` → `scripts/scan_premium.py` + `patch_method.py` |
+| 服务端权益 / 抓包 / 数据在服务器 | `references/protection-map.md` §六 + `references/entitlement-analysis.md` §4 |
 | 输入法/打不出英文/网址被拼成中文 | `references/ime-typing.md` + `scripts/device_input.sh`（能不打字就不打字） |
 | 手机界面操控（点按钮/读界面/装 App/截图） | `references/device-control.md` + `scripts/device_ui.sh`（**adb 优先、视觉兜底**）|
 | 手机端 APK 工具（App Manager/LibChecker/PCAPdroid 等）值不值得装 | `references/android-app-tools.md`（按缺口挑，不堆） |
@@ -88,7 +88,7 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 | `apksigner` / `zipalign` | apt | 对齐、v1/v2/v3 签名、验签 |
 | `aapt` / `aapt2` | apt（ARM64） | badging/清单导出（**aapt2 过旧，见坑区**） |
 | `python3` / `unzip` / `zip` / `keytool` | 自带 | 脚本、拆包、keystore |
-| `frida` / `frida-tools` | **已装** 17.26.2（`frida` 已在 PATH）| 动态 Hook：会员判定/数值/响应（需用户 root 起 frida-server）|
+| `frida` / `frida-tools` | **已装** 17.26.2（`frida` 已在 PATH）| 动态 Hook：权益判定/数值/响应（需用户 root 起 frida-server）|
 | `frida-server` | **已下载** `/root/tools/frida-server-17.26.2-android-arm64` | 设备端；用户 root 终端拷到 `/data/local/tmp` 启动 |
 | `androguard` / `lief` / `blackboxprotobuf` | **已装**（pip）| dex/APK 解析、.so 读写、protobuf 存档解析 |
 | `sqlite3` / `jq` / `xxd` / `xz` | **已装**（apt）| 改存档数据库、JSON、十六进制、解压 |
@@ -133,9 +133,9 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 | `device_ui.sh` | **adb 界面操控**：`foreground` / `launch` / `dump` / `tap` / `swipe` / `key` / `text` / `screen` / `wait` / `apps`（adb 优先的混合操控入口，见 `references/device-control.md`）|
 | `frida_server_prep.sh` | 复制 frida-server 到 /sdcard + 打印用户操作卡（adb 通道不可用时的兜底）；`--auto` 走 adb 自动启动、`--status` 验证、`--stop-hint` 关闭（serial **自动发现**：5555 或无线调试随机端口，可 `--serial`/`ADB_SERIAL` 指定） |
 | `identity_report.py` | 本地身份卡：包名/版本/签名指纹/SDK/ABI/权限/结构，**替代上网搜应用判身份** |
-| `scan_premium.py` | 会员/付费墙 + 数值货币定位扫描：内购 SDK、会员判定类、货币字段、存档点、接口 URL、完整性校验、native 线索 |
+| `scan_premium.py` | 付费权益 + 数值定位扫描：付费点 SDK、权益判定类、货币字段、存档点、接口 URL、完整性校验、native 线索 |
 | `find_api_calls.py` | 扫接口线索：硬编码 URL/ws、Retrofit 注解、OkHttp/Volley/WebSocket、GraphQL、认证参数（Authorization/sign/token）、可疑密钥；`--json`/`--report` |
-| `patch_method.py` | 定点补丁：方法返回固定值（VIP 恒真 / 金币改大）、静态字段初值、方法签名查找；支持 `--dry-run`/`--restore`，自动 `.bak` |
+| `patch_method.py` | 定点补丁：方法返回固定值（权益判定恒真 / 数值改大）、静态字段初值、方法签名查找；支持 `--dry-run`/`--restore`，自动 `.bak` |
 | `so_patch.py` | **原生 .so 补丁**：`info`/`find`（符号·字符串）/ `patch` NOP·恒真·常数返回·hex（按 VA/Offset/符号，自动 .bak）/ `restore` |
 | `build_sign.sh` | 一键打包(--use-aapt2)→zipalign→keystore→apksigner→verify |
 
@@ -162,16 +162,16 @@ aapt dump xmltree base.apk AndroidManifest.xml > /tmp/manifest.txt
 bash $SK/scripts/decode.sh /path/base.apk --out "/sdcard/Download/deapk-work"
 python3 $SK/scripts/manifest_summary.py "解码目录"
 ```
-Triage 看四样：manifest 组件、主包类结构、`lib/` 里 `.so`、资源里的广告/会员字符串（§4）。
+Triage 看四样：manifest 组件、主包类结构、`lib/` 里 `.so`、资源里的广告/权益字符串（§4）。
 
-### 4. 定位目标（广告/会员/数值/校验）
+### 4. 定位目标（广告/权益/数值/校验）
 - 广告：按 §4 与 `references/ad-sdk-signatures.md`，用 `analyze_ads.py` 给候选，再确认调用链。
-- 会员 / 数值：先跑 `scan_premium.py` 出候选（内购 SDK、判定方法、货币字段、存档点、接口、校验），
-  再按 §8 判级走 `vip-unlock.md` / `value-hacking.md`。
+- 权益 / 数值：先跑 `scan_premium.py` 出候选（付费点 SDK、判定方法、货币字段、存档点、接口、校验），
+  再按 §8 判级走 `entitlement-analysis.md` / `value-logic-analysis.md`。
 
 ### 5. 打补丁
-按 §5 与 `references/patch-patterns.md`。优先级：**授权壳/校验放行 > 会员判定/数值 > 删广告加载调用 > 清单清理 > 布局占位清理**。
-会员/数值类优先用 `patch_method.py`（先 `--dry-run`）；每加一批补丁就重新打包验证一次，出问题用 `.bak` 回滚。
+按 §5 与 `references/patch-patterns.md`。优先级：**授权壳/校验放行 > 权益判定/数值 > 删广告加载调用 > 清单清理 > 布局占位清理**。
+权益/数值类优先用 `patch_method.py`（先 `--dry-run`）；每加一批补丁就重新打包验证一次，出问题用 `.bak` 回滚。
 
 ### 6. 合并拆分包（仅 .apks 输入）
 ```sh
@@ -204,7 +204,7 @@ mcp__phone__open(app="com.coloros.filemanager") → 下载 → 点 APK → 继�
 mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 ```
 检查：能启动（不跳商店/不闪退）→ 主界面无广告 → 核心功能可用 → 无"加载广告"残留。
-会员/数值类额外验证：会员功能真能用、重启后保留、数值能花能用、刷新不被服务端覆盖（`vip-unlock.md` §6、`value-hacking.md` §6）。
+权益/数值类额外验证：权益功能真能用、重启后保留、数值能花能用、刷新不被服务端覆盖（`entitlement-analysis.md` §6、`value-logic-analysis.md` §6）。
 应用开 FLAG_SECURE 时截图受限 → handoff 请用户看；签名冲突需先卸载原版（先征得同意）。
 
 ### 9. 交付（默认最小化）
@@ -216,12 +216,12 @@ mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 ## §4 广告定位（专章）
 
 1. **SDK 特征扫描**：`python3 scripts/analyze_ads.py <解码目录>` → 输出命中的 SDK、广告字符串/资源 ID、开关候选类。特征库见 `references/ad-sdk-signatures.md`。
-2. **资源字符串反查（最快）**：`grep -rn '广告\|广告开关适配\|Remove Ads\|ad_loading\|Banner\|reward\|vip\|会员' res/values*/strings.xml`；从 `res/values/public.xml` 拿 ID → `grep -rn '0x7f1xxxx' smali` 反查使用类。
+2. **资源字符串反查（最快）**：`grep -rn '广告\|广告开关适配\|Remove Ads\|ad_loading\|Banner\|reward\|vip\|权益' res/values*/strings.xml`；从 `res/values/public.xml` 拿 ID → `grep -rn '0x7f1xxxx' smali` 反查使用类。
 3. **R8 混淆注意**：应用逻辑在短包名（`a3/*`、`z2/*`）；**广告 SDK 内部类也会被 relocate**（`a5/f4/h4/o6` 等），应用可能直接调内部 API（`com/google/android/gms/internal/ads/li;->a(...)`），只搜 `AdView` 会漏；搜 `gms/ads` 要含 `/internal/`。
 4. **StringFog/native 字符串加密**：`System.loadLibrary("k3sec")` 之类 + `$/$.$()` native 解密 → grep 不到明文，改走资源/资源 ID/结构分析，不要硬啃。
 5. **开关类模型**：静态 `Z` 标志 + `()Z` 判定 + billing 回调 `sput-boolean 1`。典型：`z2/k.d:Z`（已购）、`z2/k.b()Z`（广告开关适配判定）、`App.w:StateFlow<Boolean>`（购买状态）、`t3/a` 内唯一 `li.a(...)`（广告加载）。
 6. **服务端驱动广告（Flutter/native）**：广告配置来自服务端时，客户端补丁思路是"等长字符串替换广告 JSON 键/插槽键"（**保留 API 路径**，否则 404 卡启动）；参考 `protection-map.md` 的 Flutter 小节与 `patch-patterns.md` §九。
-7. **会员/数值定位**：`scan_premium.py` 一次扫全（内购 SDK、`isVip`/`hasPurchased` 判定、货币字段、存档点、接口 URL、完整性校验）；命中不了再看 §8 动态方案。
+7. **权益/数值定位**：`scan_premium.py` 一次扫全（付费点 SDK、`isVip`/`hasPurchased` 判定、货币字段、存档点、接口 URL、完整性校验）；命中不了再看 §8 动态方案。
 
 ## §5 补丁模式速查
 
@@ -235,15 +235,15 @@ mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 | 资源替换 | 改 `res/values*/strings.xml` 文案；改布局 XML 属性 |
 | 已购状态 | 找购买状态字段/StateFlow（`App.w`）→ 初始值 `Boolean.TRUE`；`d` 标志置 1 |
 | 授权壳 | pairip `LicenseContentProvider.onCreate`/`LicenseClient` 5 处放行（`pairip_bypass.py`） |
-| 会员判定恒真 | `()Z` 开头 `const/4 v0, 0x1` + `return v0`：`patch_method.py ret --method isVip --return true` |
-| 静态会员标志 | `<clinit>` 里 `sput-boolean`：`patch_method.py field --field 'Lx/Y;->isVip:Z' --value true` |
-| 会员到期/期限 | long 字段置大（2100 年）或把到期比较改成恒不过期 |
+| 权益判定恒真 | `()Z` 开头 `const/4 v0, 0x1` + `return v0`：`patch_method.py ret --method isVip --return true` |
+| 静态权益标志 | `<clinit>` 里 `sput-boolean`：`patch_method.py field --field 'Lx/Y;->isVip:Z' --value true` |
+| 权益到期/期限 | long 字段置大（2100 年）或把到期比较改成恒不过期 |
 | 剩余次数/额度 | getter 返回大数（`--return 999999`）或把"减一"改不减 |
-| 内购回调置位 | `onPurchasesUpdated`/`PayResult`/`onResp` 成功分支判定改恒真 |
-| 金币/积分显示 | getter 返回固定大数（只影响显示，见 `value-hacking.md` §2）|
+| 付费点回调置位 | `onPurchasesUpdated`/`PayResult`/`onResp` 成功分支判定改恒真 |
+| 数值/积分显示 | getter 返回固定大数（只影响显示，见 `value-logic-analysis.md` §2）|
 | 消费后不减 | 扣减指令整行换 `nop`（`sub-int/2addr v0, v1` → `nop`，v0 保留旧值）|
 | 价格归零/免费 | `const` 价格改 0 + `canAfford()Z` 恒真 |
-| 服务端权益/数值 | 抓包或 Hook 响应，等长替换字段（`vip-unlock.md` §4.2）|
+| 服务端权益/数值 | 抓包或 Hook 响应，等长替换字段（`entitlement-analysis.md` §4.2）|
 
 ## §6 常见坑（实测）
 
@@ -262,12 +262,12 @@ mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 | frida 在 Android 17(SDK37) `Java.perform` 不执行 | frida 17 对 SDK37 support 不全（`Java.available=true` 但 bridge 不跑） | 只用 native hook（Interceptor/Stalker）+ root adb logcat |
 | 用户问修改版/共享版有没有风险程序 | 重打包+自签+反射+动态加载命中杀软规则 | 按 journal 的「修改版安全体检 5 步」查权限/组件/动态加载 dex/动态加载 so 导入表/签名主体，区分规则误报与实锤 |
 | 装完顶部还有"去除广告" | 购买入口 UI | 已购模式（§5）后才隐藏；不影响使用 |
-| 适配后功能仍不可用 | 服务端权威（C 级） | 抓包/Hook 响应（`vip-unlock.md` §4）；做不到就如实说明 |
+| 适配后功能仍不可用 | 服务端权威（C 级） | 抓包/Hook 响应（`entitlement-analysis.md` §4）；做不到就如实说明 |
 | 改完启动闪退 | 改错判定点/寄存器，或触发签名校验 | 用户 root 终端 `logcat -d \| grep -E 'AndroidRuntime\|FATAL'`；`.bak` 回滚重定位；先过 `protection-map.md` §五 |
-| 会员重启/刷新后消失 | 服务端下发的状态覆盖本地 | 改"是否发请求"/Hook 响应；纯客户端无解 |
-| 金币显示变大但花不出去 | 只改了显示 getter | 改扣减字段或扣减指令（`value-hacking.md` §3.2）|
-| 金币变大后变负数 | `I` 溢出（>2^31-1） | 改用 `J`/`const-wide`，或数值控制在范围内 |
-| 数值重启后回滚 | 只改内存没改存档 | 找 `putInt` 写入点或直接改存档（`value-hacking.md` §3.7/§4）|
+| 权益重启/刷新后消失 | 服务端下发的状态覆盖本地 | 改"是否发请求"/Hook 响应；纯客户端无解 |
+| 数值显示变大但花不出去 | 只改了显示 getter | 改扣减字段或扣减指令（`value-logic-analysis.md` §3.2）|
+| 数值变大后变负数 | `I` 溢出（>2^31-1） | 改用 `J`/`const-wide`，或数值控制在范围内 |
+| 数值重启后回滚 | 只改内存没改存档 | 找 `putInt` 写入点或直接改存档（`value-logic-analysis.md` §3.7/§4）|
 | frida 连不上 | 客户端与 frida-server 版本不一致/server 没起 | 版本对齐后用 `frida-ps -H 127.0.0.1:27043` 验证（27042 可能被宿主占用）|
 | pip 装 frida 403 | 清华镜像不放该 wheel | 加 `-i https://pypi.org/simple` |
 | jadx 部分类报错 | 混淆/异常字节码 | 正常，`--show-bad-code` 继续；不影响主要产物 |
@@ -315,24 +315,24 @@ mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 
 ## §8 权益逻辑分析 / 数值修改（专章入口）
 
-**第一步永远是判级**（详见 `vip-unlock.md` §1），级别决定承诺边界：
+**第一步永远是判级**（详见 `entitlement-analysis.md` §1），级别决定承诺边界：
 
 | 级别 | 特征 | 能到什么程度 |
 |---|---|---|
-| A 纯本地 | 会员/数值是本地字段或存档，离线可用 | 完全适配/随意改，重打包即生效 |
+| A 纯本地 | 权益/数值是本地字段或存档，离线可用 | 完全适配/随意改，重打包即生效 |
 | B 本地凭证+服务端校验 | 有 Billing/支付宝/微信收据，需上报 | 界面适配；服务端下发的功能可能仍被拒 |
 | C 服务端权威 | 每次请求服务端返回 `isVip`/余额 | 只能骗 UI；功能接口仍拒绝（抓包/Hook 响应）|
 | D 加固+完整性 | 签名校验/Play Integrity/加固壳/native 风控 | 先过校验（`protection-map.md` §五），再谈功能 |
 
-### 8.1 会员 / 付费墙（`references/vip-unlock.md`）
+### 8.1 权益 / 付费墙（`references/entitlement-analysis.md`）
 ```sh
-python3 scripts/scan_premium.py <解码目录>                      # 找内购 SDK/判定方法/会员字符串/接口
+python3 scripts/scan_premium.py <解码目录>                      # 找付费点 SDK/判定方法/权益字符串/接口
 python3 scripts/patch_method.py find <解码目录> --pattern 'isVip|hasPurchased' --ret Z
 python3 scripts/patch_method.py ret <解码目录> --class com/app/User --method isVip --return true --dry-run
 python3 scripts/patch_method.py field <解码目录> --field 'Lcom/app/User;->vipEndTime:J' --value 4102444800000
 ```
 
-### 8.2 数值 / 金币 / 积分（`references/value-hacking.md`）
+### 8.2 数值 / 数值 / 积分（`references/value-logic-analysis.md`）
 ```sh
 python3 scripts/patch_method.py ret <解码目录> --class com/app/User --method getCoins --return 99999999
 # 消费不减：把 sub-int/2addr v0, v1 整行换成 nop（v0 保留旧值），再重新打包
@@ -353,15 +353,15 @@ python3 scripts/patch_method.py ret <解码目录> --class com/app/User --method
 > 完整操作手册：`references/dynamic-hook-help.md`。
 
 ### 9.1 什么时候需要（AI 主动告知）
-- 会员判定被 R8 混淆成 `a()Z`，静态找不到；
-- 数值/会员在 native `.so` 里；
+- 权益判定被 R8 混淆成 `a()Z`，静态找不到；
+- 数值/权益在 native `.so` 里；
 - 字符串加密（StringFog），要打印解密结果；
 - 服务端下发 `isVip`/余额，要看真实响应；
 - 加固壳运行时校验导致静态改完闪退；
 - 需要确认某方法运行时返回值/调用方。
 
 ### 9.2 什么时候不需要（AI 自己静态做完，别打扰用户）
-普通广告组件清理、明文本地会员判定、明文存档数值、改文案/清单/布局 —— 都不需要 root、不需要 Frida。
+普通广告组件清理、明文本地权益判定、明文存档数值、改文案/清单/布局 —— 都不需要 root、不需要 Frida。
 
 ### 9.3 操作流程（AI 按这个顺序做，先试方案 0）
 
@@ -469,9 +469,9 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `references/online-policy.md` — **必读**：联网边界（何时必须联网装工具、何时禁止联网判身份/找修改）
 - `references/mobile-toolchain.md` — 手机端工具链、安装修复、环境事实（含 frida/androguard/sqlite3 补装、深度逆向与抓包工具表）
 - `references/ad-sdk-signatures.md` — 广告 SDK 特征库与开关定位
-- `references/patch-patterns.md` — smali/清单/布局/资源补丁模式详解（含会员/数值/等长替换）
-- `references/vip-unlock.md` — 付费逻辑分析：可行性分级、定位、补丁、抓包/Hook 响应、验证、坑
-- `references/value-hacking.md` — 数值/金币修改：存档定位、getter/扣减补丁、改存档、Frida 改内存、验证
+- `references/patch-patterns.md` — smali/清单/布局/资源补丁模式详解（含权益/数值/等长替换）
+- `references/entitlement-analysis.md` — 付费逻辑分析：可行性分级、定位、补丁、抓包/Hook 响应、验证、坑
+- `references/value-logic-analysis.md` — 数值/数值修改：存档定位、getter/扣减补丁、改存档、Frida 改内存、验证
 - `references/android-app-tools.md` — 手机端 APK 工具生态：值得装的 3 个、明确不装的、和 CLI 的分工
 - `references/community-landscape.md` — 社区同类逆向 skill 对标（含命名/徽章/目录规范）与采纳/不采纳项
 - `references/security-audit.md` — 安全审计清单（pinning/导出组件/Fragment Injection/WebView/密钥）
@@ -481,5 +481,5 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `references/dynamic-hook-help.md` — **给用户看**：什么时候需要你操作、Termux 怎么起 frida-server、排查、关闭
 - `references/protection-map.md` — 加固壳/签名校验/完整性/运行时安全校验/服务端校验与三条抓包路径/Frida 环境与脚本
 - `references/device-control.md` — **adb 混合操控**：device_ui.sh 全部子命令、文本找不到怎么办、视觉兜底与失败回退
-- `references/device-verify.md` — 真机安装验证与交付实例（adb 优先 + MCP 兜底，含会员/数值验证清单）
+- `references/device-verify.md` — 真机安装验证与交付实例（adb 优先 + MCP 兜底，含权益/数值验证清单）
 - `field-journal/` — 维护日志 + 可复用过程案例（只记踩坑与解决，不放说明书/报告）

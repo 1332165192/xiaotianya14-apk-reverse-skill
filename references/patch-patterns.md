@@ -91,12 +91,12 @@ const/4 v0, 0x0        # 例：方法返回对象/布尔时占位
 3. 清单删 `requiredSplitTypes`/`splitTypes`。
 4. 重新打包 + 签名（见 `build_sign.sh`）。
 
-## 五、授权/内购（pairip 等）
+## 五、授权/付费点（pairip 等）
 
 - pairip：`LicenseContentProvider.onCreate` → `LicenseClient` → 未授权 → 弹窗/跳 Play/30s 杀进程。
 - 补丁：`pairip_bypass.py`（onCreate 返 true + 4 个拦截方法 return-void）。
 - 其他授权形态：签名校验（对比 cert hash）、`CHECK_LICENSE`、自研序列号/激活码 → 找返回值判定点，改成恒真；或直接 no-op 校验调用。
-- 内购判断：billing `Purchase` 回调里 `sput-boolean 1` 的开关 → 置真（等于已购）。
+- 付费点判断：billing `Purchase` 回调里 `sput-boolean 1` 的开关 → 置真（等于已购）。
 
 ## 六、Flutter / React Native
 
@@ -104,28 +104,28 @@ const/4 v0, 0x0        # 例：方法返回对象/布尔时占位
 - **RN**：`assets/index.android.bundle`（JS）；或 `index.android.bundle.hbc`（Hermes 字节码）→ hermes-dec。
 - 混淆/加密的 Flutter 函数无法反编译时，字符串表等长替换是最稳的路径。
 
-## 七、会员 / 付费逻辑分析（速查）
+## 七、权益 / 付费逻辑分析（速查）
 
-详细流程与可行性分级见 `vip-unlock.md`。要点：
+详细流程与可行性分级见 `entitlement-analysis.md`。要点：
 
 | 目标 | 补丁 | 命令 |
 |---|---|---|
 | 判定方法恒真 | 方法开头 `const/4 v0, 0x1` + `return v0` | `patch_method.py ret ... --method isVip --return true` |
 | 静态标志初值 | `<clinit>` 里 `sput-boolean` | `patch_method.py field ... --field 'Lx/Y;->isVip:Z' --value true` |
-| 会员到期时间 | long 字段置大（2100 年） | `... --field 'Lx/Y;->vipEndTime:J' --value 4102444800000` |
+| 权益到期时间 | long 字段置大（2100 年） | `... --field 'Lx/Y;->vipEndTime:J' --value 4102444800000` |
 | 剩余次数 | getter 返回大数 | `... --method getRemainTimes --return 999999` |
 | 购买回调 | 成功分支判定改恒真 | 找 `onPurchasesUpdated`/`PayResult`/`onResp` 里的 `sput-boolean` |
 
-改之前必须分清 **A 本地 / B 本地凭证+服务端校验 / C 服务端权威 / D 加固** 四级（`vip-unlock.md` §1）。
+改之前必须分清 **A 本地 / B 本地凭证+服务端校验 / C 服务端权威 / D 加固** 四级（`entitlement-analysis.md` §1）。
 C 级改客户端只能骗 UI，功能接口仍会拒绝，要抓包/Hook 响应。
 
-## 八、数值 / 金币 / 积分（速查）
+## 八、数值 / 数值 / 积分（速查）
 
-详细见 `value-hacking.md`。要点：
+详细见 `value-logic-analysis.md`。要点：
 
 | 目标 | 补丁 |
 |---|---|
-| 金币 getter 返回大数 | `const v0, 0x5f5e0ff` + `return v0`（`patch_method.py ret --return 99999999`） |
+| 数值 getter 返回大数 | `const v0, 0x5f5e0ff` + `return v0`（`patch_method.py ret --return 99999999`） |
 | 消费后不减 | 扣减指令整行换 `nop`（`sub-int/2addr v0, v1` → `nop`），v0 保留旧值 |
 | 收益/奖励翻倍 | 改 `const/4`→`const/16` 字面量，或改 `add-int/lit8` 的 lit8 |
 | 价格归零 | `const/16 v0, 0x64` → `const/4 v0, 0x0` |
@@ -146,11 +146,11 @@ C 级改客户端只能骗 UI，功能接口仍会拒绝，要抓包/Hook 响应
   mov w0, #0 ; ret            = 00 00 80 52  C0 03 5F D6
   ```
   用 `r2 -w libx.so` → `s main` 找地址 → `wx 20008052c0035fd6` 覆盖 → `wq`。
-- 服务端响应/JSON 的等长替换（补空格对齐）见 `vip-unlock.md` §4.2。
+- 服务端响应/JSON 的等长替换（补空格对齐）见 `entitlement-analysis.md` §4.2。
 
 ## 十、多补丁顺序
 
 1. 先过保护层（pairip/签名校验/完整性）→ 能启动。
-2. 再打功能补丁（会员判定、数值）。
+2. 再打功能补丁（权益判定、数值）。
 3. 最后清广告/UI（广告组件清理流程）。
 4. 每加一批补丁重新打包验证一次，出问题好回滚（`.bak` 或重解码）。

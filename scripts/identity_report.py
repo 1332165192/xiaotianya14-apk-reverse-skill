@@ -296,7 +296,7 @@ def report_text(rep):
     p('══════ 下一步 ══════')
     p('  授权确认后：')
     p('    bash scripts/decode.sh <apk> --out <工作目录>        # 解码')
-    p('    python3 scripts/scan_premium.py <解码目录>           # 会员/数值候选')
+    p('    python3 scripts/scan_premium.py <解码目录>           # 权益/数值候选')
     p('    python3 scripts/analyze_ads.py <解码目录>            # 广告候选')
 
 

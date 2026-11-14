@@ -30,7 +30,7 @@ grep -rlE 'com/(google/android/gms/ads|bytedance/sdk/openadsdk|qq/e|kwad|baidu/m
 ## 二、资源字符串反查（不依赖代码可读性）
 
 常见明文文案/键名（`res/values*/strings.xml`）：
-`广告`, `广告开关适配`, `广告组件清理`, `Remove Ads`, `广告组件清理版`, `会员`, `VIP`, `premium`,
+`广告`, `广告开关适配`, `广告组件清理`, `Remove Ads`, `广告组件清理版`, `权益`, `权益`, `premium`,
 `ad_loading`, `Banner`, `reward`, `interstitial`, `splash`, `ad_free`, `ad_remove`, `watch_ad`, `no_ad`
 
 流程：

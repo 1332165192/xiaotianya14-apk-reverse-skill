@@ -10,7 +10,7 @@
 | App | 包名 / 来源 | 开源 | 补什么缺口 | 什么时候用 |
 |---|---|---|---|---|
 | **App Manager** | `io.github.muntashirakon.AppManager`（F-Droid / GitHub） | ✅ GPLv3 | 应用分析：组件/权限/追踪器/导出 APK/冻结；比一堆 `dumpsys` 命令直观 | 摸一个陌生 App 的结构、看有没有广告/统计 SDK、导出原包对比 |
-| **LibChecker** | `com.absinthe.libchecker`（GitHub / F-Droid） | ✅ | 一条列表看清目标用了哪些第三方 SDK（广告/内购/统计/加固） | 开局 Triage，比 `analyze_ads.py` 更快给人看结论 |
+| **LibChecker** | `com.absinthe.libchecker`（GitHub / F-Droid） | ✅ | 一条列表看清目标用了哪些第三方 SDK（广告/付费点/统计/加固） | 开局 Triage，比 `analyze_ads.py` 更快给人看结论 |
 | **PCAPdroid** | `com.emanuelef.remote_capture`（F-Droid / GitHub） | ✅ | 免 root 抓全机流量，**专治"忽略系统代理"的 App**（Flutter/自研网络栈，mitmproxy 抓不到） | mitmproxy 抓不到、要看 App 到底连了哪些域名时 |
 | **Termux** | `com.termux`（F-Droid） | ✅ | 手机上直接跑 shell：无 adb 时起 tcpdump、跑 frida-server、adb 兜底 | **已装**；adb 通道关掉时的手动兜底 |
 | **MT管理器** | `bin.mt.plus` | ❌ 闭源（免费版可用） | 临时快修：dex/资源二进制直接改、签名/重签、批量文件操作、hex 编辑 | **已装**；只当"快修/查看"工具，主流程仍走 CLI，避免不可复现 |
@@ -80,7 +80,7 @@ adb -s "$SERIAL" install -r -d AppManager.apk
 | Hook/改内存/抓 HTTPS | `frida` + `mitmproxy`（adb 起） | PCAPdroid 抓忽略代理的流量 |
 | SDK/广告/加固识别 | `analyze_ads.py` + `apkid` | LibChecker 快速列表 |
 | 看组件/导出/对比 | `dumpsys` + `identity_report.py` | App Manager 图形化 |
-| 数值/会员修改 | `patch_method.py` / Frida / 改存档 | **不用 App**（不可复现） |
+| 数值/权益修改 | `patch_method.py` / Frida / 改存档 | **不用 App**（不可复现） |
 
 ## §5 交付里怎么说
 
