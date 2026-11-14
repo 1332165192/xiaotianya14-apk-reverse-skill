@@ -76,7 +76,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.4.0 | 29 + 12 Frida | 18 | GitHub Actions | MIT |
+| v0.5.0 | 30 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -179,6 +179,9 @@ apk-reverse/
 - [`references/on-device-tooling.md`](references/on-device-tooling.md) — 手机 GUI 工具链：MT 管理器 / NP 管理器 / LSPosed / Termux 与脚本分工
 - [`references/lsposed-modules.md`](references/lsposed-modules.md) — 重打包被拒时的 LSPosed 模块备选
 - [`references/decompilers.md`](references/decompilers.md) — 反编译器选型：jadx / Fernflower / ddc（含手机安装）
+- [`references/triage-playbook.md`](references/triage-playbook.md) — 15 分钟分诊清单
+- [`docs/EVIDENCE.md`](docs/EVIDENCE.md) — 证据分级与台账纪律（`scripts/ledger.py`）
+- [`docs/APP-INTEGRATION.md`](docs/APP-INTEGRATION.md) — 在手机 App 里使用本技能
 - 完整索引见 [`SKILL.md`](SKILL.md) 末尾
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>

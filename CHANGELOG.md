@@ -6,7 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.4.0] - 2026-11-15
+## [0.5.0] - 2026-11-15
+
+### Changed
+
+- （填写本次改动）
+
+
+## [0.5.0] - 2026-11-15
 
 ### Added
 
@@ -16,6 +23,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
   ddc（Rust，MIT）ARM64 静态版可在手机直接安装，版本与 SHA256 钉死
 - `scripts/check_commands.py`：校验文档里引用的脚本/文档路径真实存在，CI 已接入
 - 路由回归用例扩充到 15 条
+### Added
+
+- `references/triage-playbook.md`：15 分钟分诊清单（结构/加固/广告/权益/接口/校验/服务端权威）
+- `docs/EVIDENCE.md` + `scripts/ledger.py`：证据分级（observed/measured/inferred）与轻量台账
+- `docs/APP-INTEGRATION.md`：在手机 App 内使用本技能（远程主机、可选机械门）
+- `docs/MCP-INTEGRATION.md` 补社区 MCP 清单；报告模板增加证据级别
+- 路由回归用例扩充到 19 条
 
 ## [0.3.1] - 2026-11-15
 

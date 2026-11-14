@@ -122,6 +122,29 @@
         "references/decompilers.md",
         "scripts/install_ddc.sh"
       ]
+    },
+    {
+      "task": "拿到新 APK 先分诊",
+      "route": "references/triage-playbook.md",
+      "expect": [
+        "references/triage-playbook.md",
+        "scripts/manifest_summary.py"
+      ]
+    },
+    {
+      "task": "证据落账 / 结论分级",
+      "route": "docs/EVIDENCE.md + scripts/ledger.py",
+      "expect": [
+        "docs/EVIDENCE.md",
+        "scripts/ledger.py"
+      ]
+    },
+    {
+      "task": "在手机 App 里跑整个流程",
+      "route": "docs/APP-INTEGRATION.md",
+      "expect": [
+        "docs/APP-INTEGRATION.md"
+      ]
     }
   ]
 }

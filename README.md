@@ -78,7 +78,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.4.0 | 29 + 12 Frida | 18 | GitHub Actions | MIT |
+| v0.5.0 | 30 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -183,6 +183,9 @@ apk-reverse/
 - [`references/on-device-tooling.md`](references/on-device-tooling.md) — on-device GUI toolchain: MT Manager / NP Manager / LSPosed / Termux vs scripts
 - [`references/lsposed-modules.md`](references/lsposed-modules.md) — LSPosed module fallback when repacking is refused
 - [`references/decompilers.md`](references/decompilers.md) — decompiler choice: jadx / Fernflower / ddc (with on-phone install)
+- [`references/triage-playbook.md`](references/triage-playbook.md) — 15-minute triage checklist
+- [`docs/EVIDENCE.md`](docs/EVIDENCE.md) — evidence levels and ledger discipline (`scripts/ledger.py`)
+- [`docs/APP-INTEGRATION.md`](docs/APP-INTEGRATION.md) — using this skill inside the phone app
 - See the index at the end of [`SKILL.md`](SKILL.md)
 
 <p align="right">(<a href="#about">back to top</a>)</p>
