@@ -76,7 +76,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.3.1 | 28 + 12 Frida | 18 | GitHub Actions | MIT |
+| v0.4.0 | 29 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -176,6 +176,9 @@ apk-reverse/
 - [`docs/ENVIRONMENTS.md`](docs/ENVIRONMENTS.md) — 本机 proot / Termux / 桌面 Agent 三种环境对比与定位
 - [`references/kotlin-r8-recovery.md`](references/kotlin-r8-recovery.md) — R8/ProGuard 混淆与 Kotlin 名称恢复
 - [`references/api-extraction.md`](references/api-extraction.md) — 接口 / 鉴权头 / 第三方域名提取
+- [`references/on-device-tooling.md`](references/on-device-tooling.md) — 手机 GUI 工具链：MT 管理器 / NP 管理器 / LSPosed / Termux 与脚本分工
+- [`references/lsposed-modules.md`](references/lsposed-modules.md) — 重打包被拒时的 LSPosed 模块备选
+- [`references/decompilers.md`](references/decompilers.md) — 反编译器选型：jadx / Fernflower / ddc（含手机安装）
 - 完整索引见 [`SKILL.md`](SKILL.md) 末尾
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>

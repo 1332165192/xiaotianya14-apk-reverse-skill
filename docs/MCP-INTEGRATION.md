@@ -8,6 +8,7 @@
 | 工具 | 用途 | 手机本机可行性 |
 |---|---|---|
 | JADX（MCP 或 CLI） | 反编译后按类/方法检索、交叉引用 | 高（`scripts/decode.sh` 已含 jadx） |
+| **ddc**（MCP/HTTP/CLI） | DEX → Java 高质量反编译，可作 MCP 工具服务 | **高**（ARM64 静态版，`scripts/install_ddc.sh`） |
 | Burp / mitmproxy MCP | 抓包与请求重放 | 中（先看 `references/protection-map.md` 证书固定） |
 | Ghidra MCP | native 符号/结构恢复 | 低（内存占用大，建议远程主机） |
 | IDA MCP | native 深度分析 | 低（同上） |

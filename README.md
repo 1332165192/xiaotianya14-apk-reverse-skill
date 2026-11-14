@@ -78,7 +78,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.3.1 | 28 + 12 Frida | 18 | GitHub Actions | MIT |
+| v0.4.0 | 29 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -180,6 +180,9 @@ apk-reverse/
 - [`docs/ENVIRONMENTS.md`](docs/ENVIRONMENTS.md) — phone proot vs Termux vs desktop agent, and where this skill fits
 - [`references/kotlin-r8-recovery.md`](references/kotlin-r8-recovery.md) — R8/ProGuard obfuscation and Kotlin name recovery
 - [`references/api-extraction.md`](references/api-extraction.md) — API / auth headers / third-party host extraction
+- [`references/on-device-tooling.md`](references/on-device-tooling.md) — on-device GUI toolchain: MT Manager / NP Manager / LSPosed / Termux vs scripts
+- [`references/lsposed-modules.md`](references/lsposed-modules.md) — LSPosed module fallback when repacking is refused
+- [`references/decompilers.md`](references/decompilers.md) — decompiler choice: jadx / Fernflower / ddc (with on-phone install)
 - See the index at the end of [`SKILL.md`](SKILL.md)
 
 <p align="right">(<a href="#about">back to top</a>)</p>

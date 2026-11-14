@@ -20,3 +20,5 @@ jobs:
         run: python3 scripts/check_repo.py --public
       - name: 路由用例检查
         run: python3 scripts/check_routing.py
+      - name: 文档命令检查
+        run: python3 scripts/check_commands.py

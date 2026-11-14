@@ -100,6 +100,28 @@
       "expect": [
         "scripts/frida/hook_encryption_algo.js"
       ]
+    },
+    {
+      "task": "手机上用图形界面改包重签",
+      "route": "references/on-device-tooling.md",
+      "expect": [
+        "references/on-device-tooling.md"
+      ]
+    },
+    {
+      "task": "重打包必崩，改走 LSPosed 模块",
+      "route": "references/lsposed-modules.md",
+      "expect": [
+        "references/lsposed-modules.md"
+      ]
+    },
+    {
+      "task": "选反编译器 / 要能编译的源码",
+      "route": "references/decompilers.md + scripts/install_ddc.sh",
+      "expect": [
+        "references/decompilers.md",
+        "scripts/install_ddc.sh"
+      ]
     }
   ]
 }

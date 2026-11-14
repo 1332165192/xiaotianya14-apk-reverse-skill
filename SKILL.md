@@ -469,6 +469,10 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `references/online-policy.md` — **必读**：联网边界（何时必须联网装工具、何时禁止联网判身份/找修改）
 - `references/mobile-toolchain.md` — 手机端工具链、安装修复、环境事实（含 frida/androguard/sqlite3 补装、深度逆向与抓包工具表）
 - `references/ad-sdk-signatures.md` — 广告 SDK 特征库与开关定位
+- `references/on-device-tooling.md` — 手机 GUI 工具链：MT 管理器 / NP 管理器 / LSPosed / Termux 与脚本的分工
+- `references/lsposed-modules.md` — 重打包被拒时的备选：LSPosed 模块（不改包改行为）
+- `references/decompilers.md` — 反编译器选型：jadx / Fernflower(Vineflower) / ddc（含手机安装）
+- `scripts/install_ddc.sh` — 安装 ddc（DEX→Java，Rust，含 SHA256 校验）
 - `references/kotlin-r8-recovery.md` — R8/ProGuard 混淆与 Kotlin 名称恢复（mapping、@Metadata、反查）
 - `references/api-extraction.md` — 接口/鉴权头/第三方域名提取与调用链梳理
 - `references/patch-patterns.md` — smali/清单/布局/资源补丁模式详解（含权益/数值/等长替换）

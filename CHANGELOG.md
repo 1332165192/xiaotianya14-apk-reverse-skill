@@ -6,6 +6,17 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-15
+
+### Added
+
+- `references/on-device-tooling.md`：手机 GUI 工具链（MT 管理器 / NP 管理器 / LSPosed / Termux）与脚本的分工
+- `references/lsposed-modules.md`：重打包被拒时的 LSPosed 模块备选路径
+- `references/decompilers.md` + `scripts/install_ddc.sh`：反编译器选型（jadx / Fernflower / ddc），
+  ddc（Rust，MIT）ARM64 静态版可在手机直接安装，版本与 SHA256 钉死
+- `scripts/check_commands.py`：校验文档里引用的脚本/文档路径真实存在，CI 已接入
+- 路由回归用例扩充到 15 条
+
 ## [0.3.1] - 2026-11-15
 
 ### Fixed
