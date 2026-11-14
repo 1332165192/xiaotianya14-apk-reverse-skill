@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="assets/banner-dark.png" alt="apk-reverse" width="100%" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.png">
+    <img src="assets/banner-dark.png" alt="apk-reverse" width="100%">
+  </picture>
 </p>
 
 <h1 align="center">apk-reverse · 手机版逆向skill</h1>
@@ -108,6 +112,12 @@ sha256sum -c SHA256SUMS
 # or
 bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 ```
+
+## Logo
+
+<p align="center">
+  <img src="assets/icon-512.png" width="120" alt="apk-reverse logo">
+</p>
 
 ## Contributors
 
