@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-<h1 align="center">apk-reverse · 手机版逆向skill</h1>
+<h1 align="center"><img src="assets/icon-512.png" alt="apk-reverse" width="46" /> apk-reverse · 手机版逆向skill</h1>
 <h3 align="center">Android APK 逆向研究技能包</h3>
 
 <p align="center">
