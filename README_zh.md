@@ -76,7 +76,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.3.0 | 28 + 12 Frida | 18 | GitHub Actions | MIT |
+| v0.3.1 | 28 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">

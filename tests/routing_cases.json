@@ -13,16 +13,22 @@
       "route": "scripts/scan_premium.py -> references/entitlement-analysis.md -> scripts/patch_method.py",
       "expect": [
         "scripts/scan_premium.py",
-        "references/entitlement-analysis.md",
         "scripts/patch_method.py"
+      ],
+      "expect_any": [
+        "references/entitlement-analysis.md",
+        "references/vip-unlock.md"
       ]
     },
     {
       "task": "改数值（金币/体力）",
       "route": "scripts/scan_premium.py -> references/value-logic-analysis.md",
       "expect": [
-        "scripts/scan_premium.py",
-        "references/value-logic-analysis.md"
+        "scripts/scan_premium.py"
+      ],
+      "expect_any": [
+        "references/value-logic-analysis.md",
+        "references/value-hacking.md"
       ]
     },
     {

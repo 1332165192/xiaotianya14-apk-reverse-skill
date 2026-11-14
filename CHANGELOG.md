@@ -6,6 +6,12 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-15
+
+### Fixed
+
+- 路由回归用例兼容内部版的旧文件名（`vip-unlock.md` / `value-hacking.md` 与改名后的新文件都能通过），三份包自测全部通过
+
 ## [0.3.0] - 2026-11-15
 
 ### Added
