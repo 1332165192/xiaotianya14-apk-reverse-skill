@@ -76,7 +76,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.1.3 | 28 | 18 | GitHub Actions | MIT |
+| v0.2.0 | 28 + 6 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -168,6 +168,11 @@ apk-reverse/
 - [`references/protection-map.md`](references/protection-map.md) — 加固 / 完整性 / 抓包
 - [`references/device-verify.md`](references/device-verify.md)、[`references/device-control.md`](references/device-control.md) — 真机验证与操控
 - [`references/security-audit.md`](references/security-audit.md) — 导出组件、WebView、密钥
+- [`docs/STAGES.md`](docs/STAGES.md) — 六阶段总控：每阶段入口 / 产物 / 过门条件
+- [`docs/REPORT-TEMPLATE.md`](docs/REPORT-TEMPLATE.md) — 分析报告模板（结论先行 + 证据链）
+- [`docs/MCP-INTEGRATION.md`](docs/MCP-INTEGRATION.md) — JADX / Ghidra / IDA / Burp MCP 接入说明
+- [`scripts/frida/README.md`](scripts/frida/README.md) — Frida 脚本库（SSL unpinning / 反调试 / 退出拦截 / root 伪装 / Frida 隐藏 / 返回值替换）
+- [`tests/routing_cases.json`](tests/routing_cases.json) — 路由回归用例（CI 用 `scripts/check_routing.py` 校验）
 - 完整索引见 [`SKILL.md`](SKILL.md) 末尾
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>

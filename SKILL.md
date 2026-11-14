@@ -482,4 +482,9 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `references/protection-map.md` — 加固壳/签名校验/完整性/运行时安全校验/服务端校验与三条抓包路径/Frida 环境与脚本
 - `references/device-control.md` — **adb 混合操控**：device_ui.sh 全部子命令、文本找不到怎么办、视觉兜底与失败回退
 - `references/device-verify.md` — 真机安装验证与交付实例（adb 优先 + MCP 兜底，含权益/数值验证清单）
+- `docs/STAGES.md` — 六阶段总控：每阶段入口/产物/过门条件（先看这个再动手）
+- `docs/REPORT-TEMPLATE.md` — 分析报告模板（结论先行 + 证据链 + 改动清单 + 验证结果）
+- `docs/MCP-INTEGRATION.md` — JADX / Ghidra / IDA / Burp MCP 接入与手机端可行性
+- `scripts/frida/README.md` — Frida 脚本库（SSL unpinning / 反调试 / 退出拦截 / root 伪装 / Frida 隐藏 / 函数返回值替换）
+- `tests/routing_cases.json` — 路由回归用例（`python3 scripts/check_routing.py` 校验，CI 会跑）
 - `field-journal/` — 维护日志 + 可复用过程案例（只记踩坑与解决，不放说明书/报告）

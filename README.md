@@ -78,7 +78,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.1.3 | 28 | 18 | GitHub Actions | MIT |
+| v0.2.0 | 28 + 6 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -172,6 +172,11 @@ apk-reverse/
 - [`references/protection-map.md`](references/protection-map.md) — packers, integrity checks, traffic capture
 - [`references/device-verify.md`](references/device-verify.md), [`references/device-control.md`](references/device-control.md) — on-device verification
 - [`references/security-audit.md`](references/security-audit.md) — exported components, WebView, secrets
+- [`docs/STAGES.md`](docs/STAGES.md) — six-stage workflow: entry, artifacts, gate for each stage
+- [`docs/REPORT-TEMPLATE.md`](docs/REPORT-TEMPLATE.md) — analysis report template (conclusion first, evidence chain)
+- [`docs/MCP-INTEGRATION.md`](docs/MCP-INTEGRATION.md) — JADX / Ghidra / IDA / Burp MCP integration notes
+- [`scripts/frida/README.md`](scripts/frida/README.md) — Frida script library (SSL unpinning, anti-debug, exit blocker, root bypass, Frida hider, return-value patcher)
+- [`tests/routing_cases.json`](tests/routing_cases.json) — routing regression cases (CI checks with `scripts/check_routing.py`)
 - See the index at the end of [`SKILL.md`](SKILL.md)
 
 <p align="right">(<a href="#about">back to top</a>)</p>

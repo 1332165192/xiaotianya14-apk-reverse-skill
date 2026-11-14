@@ -6,6 +6,20 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-15
+
+### Added
+
+- `scripts/frida/`：Frida 脚本库（SSL unpinning / 反调试绕过 / 退出拦截 / root 伪装 / Frida 隐藏 / 函数返回值替换）+ `run_frida.sh` 启动器
+- `docs/STAGES.md`：六阶段总控（侦察 → 协议/数据 → 逻辑定位 → 补丁 → 验证 → 交付），每阶段有入口、产物和过门条件
+- `docs/REPORT-TEMPLATE.md`：分析报告模板（结论先行、证据链、改动清单、验证结果）
+- `docs/MCP-INTEGRATION.md`：JADX / Ghidra / IDA / Burp MCP 接入说明与手机端可行性
+- `tests/routing_cases.json` + `scripts/check_routing.py`：路由回归用例，CI 自动校验
+
+### Changed
+
+- CI 增加路由用例检查；SKILL.md 与中英 README 的索引同步补充
+
 ## [0.1.3] - 2026-11-15
 
 ### Changed

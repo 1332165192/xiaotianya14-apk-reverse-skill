@@ -1,0 +1,40 @@
+{
+  "cases": [
+    {
+      "task": "给一个 APK 去广告",
+      "route": "SKILL.md#4 定位目标 -> scripts/analyze_ads.py + references/ad-sdk-signatures.md",
+      "expect": ["scripts/analyze_ads.py", "references/ad-sdk-signatures.md"]
+    },
+    {
+      "task": "改本地会员/权益判定",
+      "route": "scripts/scan_premium.py -> references/entitlement-analysis.md -> scripts/patch_method.py",
+      "expect": ["scripts/scan_premium.py", "references/entitlement-analysis.md", "scripts/patch_method.py"]
+    },
+    {
+      "task": "改数值（金币/体力）",
+      "route": "scripts/scan_premium.py -> references/value-logic-analysis.md",
+      "expect": ["scripts/scan_premium.py", "references/value-logic-analysis.md"]
+    },
+    {
+      "task": "重打包后闪退排查",
+      "route": "references/protection-map.md -> references/device-verify.md",
+      "expect": ["references/protection-map.md", "references/device-verify.md"]
+    },
+    {
+      "task": "抓 HTTPS 接口（有证书固定）",
+      "route": "references/protection-map.md#六 + scripts/frida/ssl_unpinning.js",
+      "expect": ["references/protection-map.md", "scripts/frida/ssl_unpinning.js"]
+    },
+    {
+      "task": "游戏功能修改并要能开关",
+      "route": "内部版：references/game-mod-toggle.md + scripts/mod_toggle.py",
+      "expect_any": ["scripts/mod_toggle.py", "references/game-mod-toggle.md"],
+      "internal_only": true
+    },
+    {
+      "task": "发版到 GitHub",
+      "route": "scripts/make_release.sh -> scripts/publish_github.sh",
+      "expect": ["scripts/make_release.sh", "scripts/publish_github.sh"]
+    }
+  ]
+}
