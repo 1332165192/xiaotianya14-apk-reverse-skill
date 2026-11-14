@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.7] - 2026-11-15
+
+### Changed
+
+- README 顶部布局仿同类仓库：**圆形头像居中在上、标题单独一行在下**，不再和横幅/图标叠在一起
+- 移除与顶部头像重复的底部图标区；横幅素材保留在 `assets/` 备用
+
 ## [0.0.6] - 2026-11-15
 
 ### Changed

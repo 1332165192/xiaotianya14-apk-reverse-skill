@@ -1,9 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.png">
-    <img src="assets/banner-dark.png" alt="apk-reverse" width="100%">
-  </picture>
+  <img src="assets/avatar.png" alt="apk-reverse" width="140" />
 </p>
 
 <h1 align="center">apk-reverse · 手机版逆向skill</h1>
@@ -70,7 +66,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.0.6 | 28 | 18 | GitHub Actions | MIT |
+| v0.0.7 | 28 | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
