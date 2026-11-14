@@ -1,0 +1,11 @@
+# 下载文件 SHA256 固定表（install_tools.sh 自动校验）
+# 格式：<缓存文件名>  <sha256>；未列出的文件会打印实际哈希并 WARN（不阻止安装）
+# 新增/升级工具后：核对来源 → 计算 sha256 → 更新本表。
+
+frida-server-17.26.2-android-arm64.xz  84519c157b76b9050cfcf197b530288040f8dca34d66341f5d5a688f792a3af9
+cfr-0.152.jar                          f686e8f3ded377d7bc87d216a90e9e9512df4156e75b06c655a16648ae8765b2
+smali-3.0.9-fat.jar                    cf62fc25646a7ecdbb09f1c6b763ebc7e9df609292d96b3bbe03fba3a42cd9e4
+baksmali-3.0.9-fat.jar                 af4a818f6e9bfcaa31b2de2ddd99117d99725d76d666e9257e633d305d2bd4d4
+vineflower-1.11.1.jar                  a615d07ddbbcd489369674f40e42df639c32be95410890b38f173d5c1e2ea39c
+dex-tools-v2.4.zip                     ee7c45eb3c1d2474a6145d8d447e651a736a22d9664b6d3d3be5a5a817dda23a
+bundletool-all-1.18.3.jar              a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29

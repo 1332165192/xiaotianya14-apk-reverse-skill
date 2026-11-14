@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.bak
+*.dex
+*.apk
+*.apks
+work/
+deapk-work/
+toolcache/
