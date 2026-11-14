@@ -39,7 +39,7 @@ SDK_SIGNATURES = [
 ]
 
 AD_STRING_RE = re.compile(
-    r'(广告|免广告|去广告|会员|永久|Remove Ads|remove_ad|ad_remove|ad_free|ad_loading|'
+    r'(广告|免广告|去广告|跳过广告|skip_ad|会员|永久|Remove Ads|remove_ad|ad_remove|ad_free|ad_loading|'
     r'Banner|banner|reward|interstitial|splash|watch_ad|no_ad|premium|vip|pro_)',
     re.I)
 

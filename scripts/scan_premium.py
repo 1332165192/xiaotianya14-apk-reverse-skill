@@ -62,9 +62,9 @@ FIELD_RE = re.compile(r'^\.field\s')
 STRCONST_RE = re.compile(r'const-string(?:/jumbo)?\s+v\d+,\s*"([^"]*)"')
 CONST_LIT_RE = re.compile(r'^\s*const(?:/4|/16|/high16|-wide(?:/32|/high16)?)?\s+v\d+,\s*(0x[0-9a-fA-F]+|-?\d+)')
 URL_RE = re.compile(r'https?://[^\s"<>]+')
-MEMBER_STR_RE = re.compile(r'(会员|付费|订阅|续费|永久|尊贵|高级版|解锁|购买|内购|去广告|免广告|'
+MEMBER_STR_RE = re.compile(r'(会员|付费|订阅|续费|永久|尊贵|高级版|解锁|购买|内购|去广告|免广告|破解|免登录|去限制|无限|无限子弹|无限生命|无敌|免伤|秒杀|一击必杀|透视|自瞄|自动瞄准|自动锁头|无后坐力|穿墙|加速|倍攻|伤害倍数|内挂|MOD菜单|功能菜单|辅助菜单|'
                            r'vip|member|premium|subscrib|purchase|unlock|paid|trial|upgrade)', re.I)
-CURRENCY_STR_RE = re.compile(r'(金币|钻石|积分|余额|点券|元宝|体力|能量|次数|额度|奖励|签到|'
+CURRENCY_STR_RE = re.compile(r'(金币|钻石|积分|余额|点券|元宝|体力|能量|次数|额度|奖励|签到|无限|'
                              r'coin|gold|diamond|gem|credit|balance|point|ticket|energy|reward|quota)', re.I)
 
 PAY_SDKS = [
@@ -435,7 +435,7 @@ def report(res):
             p(f"    {b['file']}  ({b['cb']})")
     p('')
 
-    p('══════ 2. 权益/付费墙字符串（资源 ID → 反查类） ══════')
+    p('══════ 2. 权益 / 功能字符串（资源 ID → 反查类） ══════')
     if res['member_strings']:
         for r in res['member_strings'][:20]:
             name = '' if r['name'].startswith('APKTOOL_DUPLICATE') else f" {r['name']}"

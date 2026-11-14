@@ -6,6 +6,16 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-15
+
+### Changed
+
+- 扫描词表扩展（公开版 / 内部版 / 内部分发版同步，重复词只保留一份）：
+  `scan_premium.py` 增加 `破解`、`免登录`、`去限制`、`无限`，以及内部资料里的游戏功能词
+  （无限子弹 / 无敌 / 免伤 / 秒杀 / 透视 / 自瞄 / 自动锁头 / 无后坐力 / 穿墙 / 加速 / 倍攻 / 内挂 / MOD 菜单等）；
+  数值词表增加 `无限`
+  `analyze_ads.py` 增加 `跳过广告`、`skip_ad`
+
 ## [0.1.1] - 2026-11-15
 
 ### Fixed

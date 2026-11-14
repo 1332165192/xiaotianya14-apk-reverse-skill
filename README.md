@@ -78,7 +78,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.1.1 | 28 | 18 | GitHub Actions | MIT |
+| v0.1.2 | 28 | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
