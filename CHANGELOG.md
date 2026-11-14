@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-11-15
+
+### Changed
+
+- 发布包与仓库页面保持一致：README 明暗主题横幅、标题左侧图标、Logo 区、贡献者头像墙、`assets/` 素材全部打进发行包
+- CHANGELOG 结构整理（0.0.3 条目并入正式版本）
+
 ## [0.0.3] - 2026-11-15
 
 ### Added
