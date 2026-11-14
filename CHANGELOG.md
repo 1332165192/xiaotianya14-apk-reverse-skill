@@ -6,6 +6,12 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.8] - 2026-11-15
+
+### Changed
+
+- README 保留顶部圆形头像的同时，**横幅恢复到徽章下方**（明暗主题自适应），两者不再互相挤压
+
 ## [0.0.7] - 2026-11-15
 
 ### Changed
