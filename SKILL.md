@@ -469,6 +469,8 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `references/online-policy.md` — **必读**：联网边界（何时必须联网装工具、何时禁止联网判身份/找修改）
 - `references/mobile-toolchain.md` — 手机端工具链、安装修复、环境事实（含 frida/androguard/sqlite3 补装、深度逆向与抓包工具表）
 - `references/ad-sdk-signatures.md` — 广告 SDK 特征库与开关定位
+- `references/kotlin-r8-recovery.md` — R8/ProGuard 混淆与 Kotlin 名称恢复（mapping、@Metadata、反查）
+- `references/api-extraction.md` — 接口/鉴权头/第三方域名提取与调用链梳理
 - `references/patch-patterns.md` — smali/清单/布局/资源补丁模式详解（含权益/数值/等长替换）
 - `references/entitlement-analysis.md` — 付费逻辑分析：可行性分级、定位、补丁、抓包/Hook 响应、验证、坑
 - `references/value-logic-analysis.md` — 数值/数值修改：存档定位、getter/扣减补丁、改存档、Frida 改内存、验证
@@ -485,6 +487,7 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `docs/STAGES.md` — 六阶段总控：每阶段入口/产物/过门条件（先看这个再动手）
 - `docs/REPORT-TEMPLATE.md` — 分析报告模板（结论先行 + 证据链 + 改动清单 + 验证结果）
 - `docs/MCP-INTEGRATION.md` — JADX / Ghidra / IDA / Burp MCP 接入与手机端可行性
+- `docs/ENVIRONMENTS.md` — 三种运行环境（本机 proot / Termux / 桌面 Agent）对比与本技能定位
 - `scripts/frida/README.md` — Frida 脚本库（SSL unpinning / 反调试 / 退出拦截 / root 伪装 / Frida 隐藏 / 函数返回值替换）
 - `tests/routing_cases.json` — 路由回归用例（`python3 scripts/check_routing.py` 校验，CI 会跑）
 - `field-journal/` — 维护日志 + 可复用过程案例（只记踩坑与解决，不放说明书/报告）

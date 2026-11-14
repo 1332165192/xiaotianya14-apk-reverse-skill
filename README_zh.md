@@ -76,7 +76,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.2.0 | 28 + 6 Frida | 18 | GitHub Actions | MIT |
+| v0.3.0 | 28 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -173,6 +173,9 @@ apk-reverse/
 - [`docs/MCP-INTEGRATION.md`](docs/MCP-INTEGRATION.md) — JADX / Ghidra / IDA / Burp MCP 接入说明
 - [`scripts/frida/README.md`](scripts/frida/README.md) — Frida 脚本库（SSL unpinning / 反调试 / 退出拦截 / root 伪装 / Frida 隐藏 / 返回值替换）
 - [`tests/routing_cases.json`](tests/routing_cases.json) — 路由回归用例（CI 用 `scripts/check_routing.py` 校验）
+- [`docs/ENVIRONMENTS.md`](docs/ENVIRONMENTS.md) — 本机 proot / Termux / 桌面 Agent 三种环境对比与定位
+- [`references/kotlin-r8-recovery.md`](references/kotlin-r8-recovery.md) — R8/ProGuard 混淆与 Kotlin 名称恢复
+- [`references/api-extraction.md`](references/api-extraction.md) — 接口 / 鉴权头 / 第三方域名提取
 - 完整索引见 [`SKILL.md`](SKILL.md) 末尾
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>

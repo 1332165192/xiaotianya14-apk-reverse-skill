@@ -10,6 +10,12 @@
 | `root_bypass.js` | 常见 root 检测（su 路径、Magisk、测试 key）返回伪装结果 |
 | `frida_hider.js` | 隐藏 Frida 端口/线程/内存特征（配合改名换端口）|
 | `function_patcher.js` | 按类名+方法名替换返回值（改判定/数值的快速验证）|
+| `dump_dex.js` | 内存里扫描 dex magic 并 dump 出 dex 文件 |
+| `dump_so.js` | dump 已加载的 `.so`（按模块导出）|
+| `jni_method_trace.js` | 追踪 `RegisterNatives`，看 native 注册的方法 |
+| `hook_encryption_algo.js` | 观察 Cipher / MessageDigest / Base64 的输入输出 |
+| `keystore_dump.js` | 观察 SharedPreferences / KeyStore 读取（密钥、令牌落点）|
+| `ssl_log.js` | 记录 TLS 读写的明文（注意数据量与敏感性）|
 
 ## 用法
 

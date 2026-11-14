@@ -1,0 +1,38 @@
+# 常见第三方 SDK 域名（提取接口时先排除；按需增补）
+# 广告
+googleads.g.doubleclick.net
+pagead2.googlesyndication.com
+googleadservices.com
+applovin.com
+unityads.unity3d.com
+adcolony.com
+chartboost.com
+ironsrc.com
+mopub.com
+pangle.io
+# 统计/归因
+app-measurement.com
+firebaseinstallations.googleapis.com
+crashlytics.com
+adjust.com
+appsflyer.com
+branch.io
+umeng.com
+talkingdata.com
+bugly.qq.com
+sentry.io
+# 推送
+jpush.cn
+getui.com
+xiaomi.com/mipush
+huawei.com/push
+# 支付
+alipay.com
+paypal.com
+stripe.com
+# 云/通用
+googleapis.com
+gstatic.com
+amazonaws.com
+cloudfront.net
+akamaihd.net

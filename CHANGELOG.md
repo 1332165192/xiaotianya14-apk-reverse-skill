@@ -6,6 +6,18 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-15
+
+### Added
+
+- Frida 脚本库扩充：内存 dex dump、已加载 so dump、JNI RegisterNatives 追踪、
+  加密调用观察（Cipher/MessageDigest/Base64）、SharedPreferences/KeyStore 读取、TLS 明文记录
+  （实现思路参考 Apache-2.0 项目 CreditTone/android-reverse-engineering-skill，已重写）
+- `references/kotlin-r8-recovery.md`：R8/ProGuard 混淆识别与 Kotlin 名称恢复（mapping / @Metadata / 字符串反查 / 调用链）
+- `references/api-extraction.md` + `references/third-party-hosts.txt`：接口、鉴权头、第三方域名过滤
+- `docs/ENVIRONMENTS.md`：本机 proot / Termux / 桌面 Agent 三种环境对比与本技能定位
+- 路由回归用例扩充到 12 条
+
 ## [0.2.0] - 2026-11-15
 
 ### Added

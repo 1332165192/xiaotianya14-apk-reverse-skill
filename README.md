@@ -78,7 +78,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.2.0 | 28 + 6 Frida | 18 | GitHub Actions | MIT |
+| v0.3.0 | 28 + 12 Frida | 18 | GitHub Actions | MIT |
 
 <p align="center">
   <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
@@ -177,6 +177,9 @@ apk-reverse/
 - [`docs/MCP-INTEGRATION.md`](docs/MCP-INTEGRATION.md) — JADX / Ghidra / IDA / Burp MCP integration notes
 - [`scripts/frida/README.md`](scripts/frida/README.md) — Frida script library (SSL unpinning, anti-debug, exit blocker, root bypass, Frida hider, return-value patcher)
 - [`tests/routing_cases.json`](tests/routing_cases.json) — routing regression cases (CI checks with `scripts/check_routing.py`)
+- [`docs/ENVIRONMENTS.md`](docs/ENVIRONMENTS.md) — phone proot vs Termux vs desktop agent, and where this skill fits
+- [`references/kotlin-r8-recovery.md`](references/kotlin-r8-recovery.md) — R8/ProGuard obfuscation and Kotlin name recovery
+- [`references/api-extraction.md`](references/api-extraction.md) — API / auth headers / third-party host extraction
 - See the index at the end of [`SKILL.md`](SKILL.md)
 
 <p align="right">(<a href="#about">back to top</a>)</p>
