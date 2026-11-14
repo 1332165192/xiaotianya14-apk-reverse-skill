@@ -6,8 +6,10 @@
   </picture>
 </p>
 
-<h1 align="center"><img src="assets/icon-512.png" alt="apk-reverse" width="46" /> apk-reverse · 手机版逆向skill</h1>
+<h1 align="center">apk-reverse · 手机版逆向skill</h1>
 <h3 align="center">Android APK Reverse Engineering Skill</h3>
+
+<p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">Unpack it, understand it, patch it, prove it works.</em></p>
 
 <p align="center">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://img.shields.io/github/v/release/xiaotianya14/apk-reverse-skill?label=release&logo=github&style=flat" alt="release"></a>
@@ -19,27 +21,82 @@
 </p>
 
 <p align="center">
-  <strong>English</strong> | <a href="README_zh.md">中文</a>
+  <a href="#about">About</a> ·
+  <a href="#capabilities">Capabilities</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#usage">Usage</a> ·
+  <a href="#layout">Layout</a> ·
+  <a href="#docs">Docs</a> ·
+  <a href="#verify">Verify</a> ·
+  <a href="#contributing">Contributing</a> ·
+  <a href="#license">License</a>
 </p>
 
-> **Disclaimer**: this project is for learning/research on applications you **own or are
-> authorized to test**. You are responsible for data loss, device damage and legal risk.
-> Do not use it against other people's devices, unauthorized apps, or in violation of
-> platform terms. No warranty; the authors accept no liability.
+<p align="center">
+  🌐 <strong>English</strong> · <a href="README_zh.md">中文</a>
+</p>
 
-A practical Android APK reverse-engineering skill for phone-based work: unpack, decompile,
-analyze code and resources, patch, repack, sign and verify on device. Commands are tested in
-proot Ubuntu on ARM64; a regular Linux machine works too.
+<br/>
+
+<a id="about"></a>
+
+## About
+
+> **If you are an AI agent**, open [`SKILL.md`](SKILL.md) and follow its routing, consent and
+> patch rules before touching any target.
+
+A practical Android APK reverse-engineering skill for phone-based work. It turns “I have an APK”
+into a repeatable loop instead of guessed commands:
+
+```text
+APK
+  → toolcheck / install_tools        (is the toolchain ready?)
+  → decode + manifest_summary        (unpack, decompile, map components)
+  → scan_premium / find_api_calls    (find the logic and the ads)
+  → patch smali / manifest / .so     (make the smallest change)
+  → build_sign                       (repack, align, sign)
+  → device verify                    (install, launch, check behaviour)
+  → field-journal                    (write down cause → fix)
+```
+
+**Why this exists**
+
+- APK tasks need a different playbook from generic coding tasks
+- jadx / apktool / Frida / IDA are easy to install but easy to misuse
+- Phone-only workflows (proot Ubuntu on ARM64) have their own pitfalls
+- The same “why did it crash after repacking?” problems get solved twice
+
+### At a glance
+
+| Version | Scripts | Reference docs | CI | License |
+|---:|---:|---:|---|---|
+| v0.0.5 | 28 | 18 | GitHub Actions | MIT |
+
+<p align="center">
+  <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
+    <img src="https://api.star-history.com/svg?repos=xiaotianya14/apk-reverse-skill&type=Date" alt="Star history" width="600">
+  </a>
+</p>
+
+<p align="right">(<a href="#about">back to top</a>)</p>
+
+<a id="capabilities"></a>
 
 ## Capabilities
 
-- Decompilation: jadx sources, apktool resources/smali, smali3, CFR
-- Component and ad analysis: SDK signatures, manifest/layout/resource inspection
-- Logic analysis: paid/entitlement checks, numeric logic, storage (SharedPreferences/SQLite)
-- Patching: smali patches, static fields, native `.so` instruction patches
-- Protection analysis: packers, signature checks, integrity checks
-- Dynamic/network analysis: Frida, objection, mitmproxy, certificate-pinning adaptation
-- Delivery: repack, align, sign, install and verify on device
+| Area | What it does |
+|---|---|
+| Decompilation | jadx sources, apktool resources/smali, smali3, CFR |
+| Components & ads | SDK signatures, manifest / layout / resource inspection |
+| Logic analysis | paid & entitlement checks, numeric logic, storage (SharedPreferences / SQLite) |
+| Patching | smali patches, static fields, native `.so` instruction patches |
+| Protection | packers, signature checks, integrity checks |
+| Dynamic & network | Frida, objection, mitmproxy, certificate-pinning adaptation |
+| Delivery | repack, align, sign, install and verify on device |
+
+<p align="right">(<a href="#about">back to top</a>)</p>
+
+<a id="quick-start"></a>
 
 ## Quick start
 
@@ -56,15 +113,27 @@ python3 $SK/scripts/find_api_calls.py ./work      # API and credential hints
 bash $SK/scripts/build_sign.sh ./work out.apk     # repack + sign
 ```
 
-Tool downloads are verified against `scripts/download-sha256.txt` (SHA256); a mismatch
-aborts the install, an unpinned version prints its hash with a warning.
+Tool downloads are verified against `scripts/download-sha256.txt` (SHA256); a mismatch aborts
+the install, and an unpinned version prints its hash with a warning.
 
-Release: `bash scripts/make_release.sh --name apk-reverse --public` builds the zip, writes
-`.sha256`, and re-checks the extracted copy.
-Verify a downloaded release: `bash scripts/verify_release.sh <zip>` (uses `.sha256` or `SHA256SUMS`).
+<p align="right">(<a href="#about">back to top</a>)</p>
 
-Publish to GitHub: `bash scripts/publish_github.sh --repo https://github.com/<you>/apk-reverse.git --tag v0.0.2 --release`.
-Token comes from `$GITHUB_TOKEN` or `~/.config/dsh-go/github-token`; it never enters the repo.
+<a id="usage"></a>
+
+## Usage
+
+- The workflow rules and patch patterns live in [`SKILL.md`](SKILL.md); reference docs under
+  [`references/`](references/) explain each step in depth.
+- Everything runs in proot Ubuntu on ARM64; a regular Linux machine works too.
+- Build a release: `bash scripts/make_release.sh --name apk-reverse --public` → zip + `.sha256`,
+  then the extracted copy is re-checked.
+- Verify a release: `bash scripts/verify_release.sh <zip>` (reads `.sha256` or `SHA256SUMS`).
+- Publish to GitHub: `bash scripts/publish_github.sh --tag v<version> --release`; the token comes
+  from `$GITHUB_TOKEN` or `~/.config/dsh-go/github-token` and never enters the repo.
+
+<p align="right">(<a href="#about">back to top</a>)</p>
+
+<a id="layout"></a>
 
 ## Repository layout
 
@@ -74,6 +143,7 @@ apk-reverse/
 ├── references/       # topic docs
 ├── scripts/          # executable tools
 ├── field-journal/    # reusable problem → cause → fix notes
+├── assets/           # banner, icon and social preview images
 ├── AGENTS.md         # agent activation and consent boundaries
 ├── SECURITY.md       # trust model and reporting
 ├── CONTRIBUTING.md
@@ -82,30 +152,27 @@ apk-reverse/
 └── LICENSE           # MIT
 ```
 
+<p align="right">(<a href="#about">back to top</a>)</p>
+
+<a id="docs"></a>
+
 ## Documentation
 
-- `references/identity-check.md` — local identity card, no online lookups
-- `references/mobile-toolchain.md` — toolchain and installation
-- `references/patch-patterns.md` — smali/manifest/layout patching
-- `references/protection-map.md` — packers, integrity checks, traffic capture
-- `references/device-verify.md`, `references/device-control.md` — on-device verification
-- `references/security-audit.md` — exported components, WebView, secrets
-- See the index at the end of `SKILL.md`
+- [`references/identity-check.md`](references/identity-check.md) — local identity card, no online lookups
+- [`references/mobile-toolchain.md`](references/mobile-toolchain.md) — toolchain and installation
+- [`references/patch-patterns.md`](references/patch-patterns.md) — smali / manifest / layout patching
+- [`references/protection-map.md`](references/protection-map.md) — packers, integrity checks, traffic capture
+- [`references/device-verify.md`](references/device-verify.md), [`references/device-control.md`](references/device-control.md) — on-device verification
+- [`references/security-audit.md`](references/security-audit.md) — exported components, WebView, secrets
+- See the index at the end of [`SKILL.md`](SKILL.md)
 
+<p align="right">(<a href="#about">back to top</a>)</p>
 
-## 发行包校验
-
-对外分发 zip 时配套 `SHA256SUMS`（或 `<包>.sha256`），接收方执行：
-
-```sh
-sha256sum -c SHA256SUMS
-# 或
-bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
-```
+<a id="verify"></a>
 
 ## Release integrity
 
-Distribute the zip with a `SHA256SUMS` file (or `<zip>.sha256`); recipients verify with:
+Every release ships a `SHA256SUMS` file (and `<zip>.sha256`); recipients verify with:
 
 ```sh
 sha256sum -c SHA256SUMS
@@ -113,18 +180,56 @@ sha256sum -c SHA256SUMS
 bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 ```
 
-## Logo
+<p align="right">(<a href="#about">back to top</a>)</p>
 
-<p align="center">
-  <img src="assets/icon-512.png" width="120" alt="apk-reverse logo">
-</p>
+<a id="contributing"></a>
 
-## Contributors
+## Contributing
+
+Contributions are welcome — issues, better patch patterns, new reference docs, field-journal notes.
+
+1. Fork the repository
+2. `git checkout -b feature/your-idea`
+3. Commit your change (`git commit -m 'Add your idea'`)
+4. `git push origin feature/your-idea`
+5. Open a pull request
+
+Please keep changes inside the consent and authorization boundaries described in
+[`AGENTS.md`](AGENTS.md) and [`SECURITY.md`](SECURITY.md).
+
+### Contributors
 
 <a href="https://github.com/xiaotianya14/apk-reverse-skill/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=xiaotianya14/apk-reverse-skill" alt="contributors" />
 </a>
 
+<p align="right">(<a href="#about">back to top</a>)</p>
+
+<a id="built-with"></a>
+
+## Built with
+
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=python,bash,java,nodejs,docker,git,linux&theme=light" /><br/>
+  <code>jadx</code> · <code>apktool</code> · <code>Frida</code> · <code>IDA Pro</code> · <code>Ghidra</code>
+</p>
+
+<a id="acknowledgments"></a>
+
+## Acknowledgments
+
+Thanks to the open-source tool authors behind jadx, apktool, Frida, radare2, Ghidra and every
+tool this skill relies on. This project is a workflow layer on top of their work.
+
+<a id="license"></a>
+
 ## License
 
-MIT — see [LICENSE](LICENSE). Read the disclaimer above before use.
+MIT — see [`LICENSE`](LICENSE). Read the disclaimer below before use.
+
+> **Disclaimer**: this project is for learning/research on applications you **own or are
+> authorized to test**. You are responsible for data loss, device damage and legal risk.
+> Do not use it against other people's devices, unauthorized apps, or in violation of
+> platform terms. No warranty; the authors accept no liability.
+
+<p align="right">(<a href="#about">back to top</a>)</p>

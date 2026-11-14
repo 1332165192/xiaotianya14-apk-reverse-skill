@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-11-15
+
+### Changed
+
+- README 排版仿照同类技能库：顶部横幅与标语、锚点导航、`一眼看完` 状态表、流程图、
+  能力表、Star 历史、技术栈图标、每节「返回顶部」、致谢与免责声明
+- 中英文 README 同步重排，锚点一一对应
+
 ## [0.0.4] - 2026-11-15
 
 ### Changed
