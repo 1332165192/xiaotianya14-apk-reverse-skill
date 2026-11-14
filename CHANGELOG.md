@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.9] - 2026-11-15
+
+### Changed
+
+- 横幅重做：去掉右侧重复的图形标记和斜纹底，改为干净的左对齐排版（圆形方标 + 标题 + 中英副标题 + 关键词一行）
+- 深色 / 浅色两版同步更新，浅色主题下自动切换
+
 ## [0.0.8] - 2026-11-15
 
 ### Changed
