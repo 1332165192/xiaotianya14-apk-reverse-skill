@@ -6,14 +6,15 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-11-15
+
 ### Added
 
+- `assets/banner-dark.png`、`assets/icon-512.png`：README 顶部横幅与方形图标
+- README 中英文顶部重排：居中横幅 + 徽章行（release / stars / forks / issues / license / Android）+ 语言切换
+- README 底部「贡献者 / Contributors」头像墙（contrib.rocks）
 - `scripts/verify_release.sh`：校验发行 zip 的 SHA256（配 `SHA256SUMS` 或 `<包>.sha256`）
-
-### Added
-
-- `scripts/install_tools.sh` 下载校验：已知版本按 `scripts/download-sha256.txt` 固定 SHA256，
-  不一致自动删除并中止；未钉版本打印实际哈希并 WARN
+- `scripts/install_tools.sh` 下载校验：已知版本按 `scripts/download-sha256.txt` 固定 SHA256，不一致自动删除并中止；未钉版本打印实际哈希并 WARN
 - `scripts/make_release.sh`：发布打包（自检 → 打包 → 完整性 → SHA256 → 解压复检）
 
 ## [0.0.2] - 2026-11-14
