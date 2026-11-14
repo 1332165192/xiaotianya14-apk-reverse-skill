@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-15
+
+### Fixed
+
+- 恢复 `scan_premium.py` / `analyze_ads.py` 里的检测关键词（`解锁`、`免广告`、`去广告`）。
+  这些只是用来匹配目标 App 内字符串的搜索词，措辞中性化时被误替换，导致公开版扫描可能漏报
+
 ## [0.1.0] - 2026-11-15
 
 ### Changed

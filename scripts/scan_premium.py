@@ -62,7 +62,7 @@ FIELD_RE = re.compile(r'^\.field\s')
 STRCONST_RE = re.compile(r'const-string(?:/jumbo)?\s+v\d+,\s*"([^"]*)"')
 CONST_LIT_RE = re.compile(r'^\s*const(?:/4|/16|/high16|-wide(?:/32|/high16)?)?\s+v\d+,\s*(0x[0-9a-fA-F]+|-?\d+)')
 URL_RE = re.compile(r'https?://[^\s"<>]+')
-MEMBER_STR_RE = re.compile(r'(会员|付费|订阅|续费|永久|尊贵|高级版|适配|购买|内购|广告组件清理|广告开关适配|'
+MEMBER_STR_RE = re.compile(r'(会员|付费|订阅|续费|永久|尊贵|高级版|解锁|购买|内购|去广告|免广告|'
                            r'vip|member|premium|subscrib|purchase|unlock|paid|trial|upgrade)', re.I)
 CURRENCY_STR_RE = re.compile(r'(金币|钻石|积分|余额|点券|元宝|体力|能量|次数|额度|奖励|签到|'
                              r'coin|gold|diamond|gem|credit|balance|point|ticket|energy|reward|quota)', re.I)
