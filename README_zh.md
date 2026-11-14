@@ -1,10 +1,22 @@
-# apk-reverse · Android APK 逆向研究
+<p align="center">
+  <img src="assets/banner-dark.png" alt="apk-reverse" width="100%" />
+</p>
 
-[![version](https://img.shields.io/badge/version-v0.0.2-2ea44f)](CHANGELOG.md)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![android](https://img.shields.io/badge/Android-APK%20%2F%20AAB-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
+<h1 align="center">apk-reverse · 手机版逆向skill</h1>
+<h3 align="center">Android APK 逆向研究技能包</h3>
 
-[English](README.md) | **中文**
+<p align="center">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://img.shields.io/github/v/release/xiaotianya14/apk-reverse-skill?label=release&logo=github&style=flat" alt="release"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers"><img src="https://img.shields.io/github/stars/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="stars"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/forks"><img src="https://img.shields.io/github/forks/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="forks"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/issues"><img src="https://img.shields.io/github/issues/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="issues"></a>
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="license">
+  <img src="https://img.shields.io/badge/Android-APK%20%2F%20AAB-3DDC84?logo=android&logoColor=white" alt="android">
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> | <strong>中文</strong>
+</p>
 
 > **免责声明**：本项目仅用于学习研究与**自己拥有或已获授权**应用的逆向分析；
 > 使用者自行承担数据丢失、设备与法律风险；不得用于攻击他人设备、未授权修改他人应用或违反平台条款。
@@ -83,6 +95,12 @@ sha256sum -c SHA256SUMS
 # 或
 bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 ```
+
+## 贡献者
+
+<a href="https://github.com/xiaotianya14/apk-reverse-skill/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xiaotianya14/apk-reverse-skill" alt="contributors" />
+</a>
 
 ## 许可
 

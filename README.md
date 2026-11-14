@@ -1,10 +1,22 @@
-# apk-reverse · Android APK Reverse Engineering
+<p align="center">
+  <img src="assets/banner-dark.png" alt="apk-reverse" width="100%" />
+</p>
 
-[![version](https://img.shields.io/badge/version-v0.0.2-2ea44f)](CHANGELOG.md)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![android](https://img.shields.io/badge/Android-APK%20%2F%20AAB-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
+<h1 align="center">apk-reverse · 手机版逆向skill</h1>
+<h3 align="center">Android APK Reverse Engineering Skill</h3>
 
-**English** | [中文](README_zh.md)
+<p align="center">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://img.shields.io/github/v/release/xiaotianya14/apk-reverse-skill?label=release&logo=github&style=flat" alt="release"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers"><img src="https://img.shields.io/github/stars/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="stars"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/forks"><img src="https://img.shields.io/github/forks/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="forks"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/issues"><img src="https://img.shields.io/github/issues/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="issues"></a>
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="license">
+  <img src="https://img.shields.io/badge/Android-APK%20%2F%20AAB-3DDC84?logo=android&logoColor=white" alt="android">
+</p>
+
+<p align="center">
+  <strong>English</strong> | <a href="README_zh.md">中文</a>
+</p>
 
 > **Disclaimer**: this project is for learning/research on applications you **own or are
 > authorized to test**. You are responsible for data loss, device damage and legal risk.
@@ -96,6 +108,12 @@ sha256sum -c SHA256SUMS
 # or
 bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 ```
+
+## Contributors
+
+<a href="https://github.com/xiaotianya14/apk-reverse-skill/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=xiaotianya14/apk-reverse-skill" alt="contributors" />
+</a>
 
 ## License
 
