@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.12] - 2026-11-16
+
+### Added
+
+- `NOTICE`：授权边界说明（代码/文档 MIT；头像/横幅/图标/分享图等视觉素材**不授权**，不可商用/再分发；私有资料不公开；第三方按各自条款）
+- README / README_zh 增加「许可证与素材」段
+- CONTRIBUTING 增加「素材与授权」规则（不搬运他人作品、未验证能力不得写成已支持、一 PR 一事）
+
 ## [0.5.11] - 2026-11-15
 
 ### Fixed

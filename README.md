@@ -76,7 +76,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.5.11 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.12 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -258,3 +258,12 @@ MIT — see [`LICENSE`](LICENSE). Read the disclaimer below before use.
 > platform terms. No warranty; the authors accept no liability.
 
 <p align="right">(<a href="#about">back to top</a>)</p>
+
+## License & assets
+
+- **Code & docs**: MIT (see [`LICENSE`](LICENSE)).
+- **Visual assets are NOT MIT-licensed**: avatars, banners, icon, social image and badge styles in `assets/`
+  remain © xiaotianya14, all rights reserved — no commercial use, no redistribution, no relicensing.
+- **Private packages** (game-mod material, working notes) are not published and not licensed.
+- Third-party tools, SDKs and trademarks remain under their own terms. See [`NOTICE`](NOTICE) for details.
+

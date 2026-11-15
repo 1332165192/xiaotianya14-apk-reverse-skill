@@ -1,0 +1,38 @@
+NOTICE
+======
+
+Copyright (c) 2026 xiaotianya14. All rights reserved except as expressly granted below.
+
+## 1. 代码与文档：MIT
+
+除下文“不授权范围”列出的材料外，本仓库的**脚本代码（`scripts/`）、文档（`SKILL.md`、`references/`、`docs/`）**按 MIT License 授权（见 `LICENSE`）。
+
+复制、修改、分发或再发布代码/文档时，必须保留版权声明与 MIT 许可声明。
+
+## 2. 视觉素材：不授权（保留所有权利）
+
+以下文件**不属于 MIT 授权范围**，版权归作者所有，仅用于本仓库展示：
+
+- `assets/avatar-*.svg`（圆形头像）
+- `assets/banner-*-v3.webp`（横幅，明暗两版）
+- `assets/icon-512.png`（应用图标）
+- `assets/social-1280x640.png`（社交分享图）
+- `assets/badges/*`（仓库徽章样式）
+
+**这些素材不授权商业使用、不授权再分发、不授权修改后以你的名义发布**；引用或转载本仓库时，不得单独取用上述素材。
+These visual assets are NOT covered by the MIT License: no commercial use, no redistribution, no relicensing or modification-and-republication. They may only appear as part of an unmodified reference to this repository.
+
+## 3. 不公开的私有材料
+
+本地私有包的内容（游戏功能修改、过程记录、脱敏信息、演示 smali 等）**仅本地使用，不对外发布、不授权**；
+本仓库公开分支不包含这些材料。
+
+## 4. 第三方
+
+第三方工具、SDK、商标、方法灵感（如社区同类 skill 的流程设计）归各自权利人，本项目不代其授权；
+引用时只描述思路，不搬运其源码与素材。使用第三方工具须遵守其许可证。
+
+## 5. 免责
+
+本仓库仅用于**自己拥有或已获授权**应用的安全研究。使用者自行确认授权与当地法律要求；
+因误用造成的任何损失或责任由使用者自行承担。
