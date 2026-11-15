@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.8] - 2026-11-15
+
+### Changed
+
+- 删除旧的 PNG 横幅/头像（`banner-*.png`、`avatar-*.png`），仓库只保留新版 SVG，避免误用旧图
+- README 继续使用 `assets/banner-*.svg` / `assets/avatar-*.svg`（明暗两版）
+
 ## [0.5.7] - 2026-11-15
 
 ### Changed
