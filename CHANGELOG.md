@@ -6,6 +6,12 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-11-15
+
+### Fixed
+
+- 修正 README 统计口径：脚本 31 → 32（含 privacy_scan.py）、参考文档 18 → 24
+
 ## [0.5.2] - 2026-11-15
 
 ### Added
