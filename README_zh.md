@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.5.4 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.5 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -180,6 +180,7 @@ apk-reverse/
 - [`references/triage-playbook.md`](references/triage-playbook.md) — 15 分钟分诊清单
 - [`docs/EVIDENCE.md`](docs/EVIDENCE.md) — 证据分级与台账纪律（`scripts/ledger.py`）
 - [`docs/APP-INTEGRATION.md`](docs/APP-INTEGRATION.md) — 在手机 App 里使用本技能
+- [`references/native-fuzzing.md`](references/native-fuzzing.md) — 原生层模糊测试（AFL++/ASan）可行性
 - 完整索引见 [`SKILL.md`](SKILL.md) 末尾
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>

@@ -479,6 +479,7 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `references/entitlement-analysis.md` — 付费逻辑分析：可行性分级、定位、补丁、抓包/Hook 响应、验证、坑
 - `references/value-logic-analysis.md` — 数值/数值修改：存档定位、getter/扣减补丁、改存档、Frida 改内存、验证
 - `references/android-app-tools.md` — 手机端 APK 工具生态：值得装的 3 个、明确不装的、和 CLI 的分工
+- `references/native-fuzzing.md` — 原生层模糊测试（AFL++/ASan）何时值得做、手机端可行性
 - `references/community-landscape.md` — 社区同类逆向 skill 对标（含命名/徽章/目录规范）与采纳/不采纳项
 - `references/security-audit.md` — 安全审计清单（pinning/导出组件/Fragment Injection/WebView/密钥）
 - `references/adb-security.md` — adb root 通道：为什么会被关、何时开/关、恢复步骤、风险程序顾虑、降级说明

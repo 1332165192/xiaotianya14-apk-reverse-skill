@@ -76,7 +76,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.5.4 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.5 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -184,6 +184,7 @@ apk-reverse/
 - [`references/triage-playbook.md`](references/triage-playbook.md) — 15-minute triage checklist
 - [`docs/EVIDENCE.md`](docs/EVIDENCE.md) — evidence levels and ledger discipline (`scripts/ledger.py`)
 - [`docs/APP-INTEGRATION.md`](docs/APP-INTEGRATION.md) — using this skill inside the phone app
+- [`references/native-fuzzing.md`](references/native-fuzzing.md) — native fuzzing (AFL++/ASan) feasibility
 - See the index at the end of [`SKILL.md`](SKILL.md)
 
 <p align="right">(<a href="#about">back to top</a>)</p>

@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.5] - 2026-11-15
+
+### Added
+
+- `references/native-fuzzing.md`：原生层模糊测试（AFL++/ASan）适用场景与手机端可行性（吸收社区项目思路，不内置重型 fuzz）
+- `references/community-landscape.md`：补充 2026-11-15 复核的同类项目（zzusec / Fausto / incogbyte / blackbox-re-agent / alvinhayy / awesome 清单），标注星数与吸收情况
+- `docs/MCP-INTEGRATION.md`：补充复核过的移动安全 MCP 项目
+
 ## [0.5.4] - 2026-11-15
 
 ### Changed

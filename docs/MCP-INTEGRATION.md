@@ -32,3 +32,14 @@
 | `ddc mcp stdio` | DEX 查询 | 本机可直接跑（`scripts/install_ddc.sh`）|
 
 > 接入前先确认许可证与维护状态；任何 MCP 都只是“取信息”，决策仍按 `SKILL.md` 流程。
+
+### 2026-11-15 复核的可用 MCP（均第三方，按需自取）
+
+| 项目 | 方向 | 手机端可行性 |
+|---|---|---|
+| `Serhatcck/mobile-security-mcp` ★8 | 给 Agent 注入 apktool/jadx/Frida 工具函数 | 中：需在 proot 里跑 Node/Python 服务，工具本机已有；先读源码 |
+| `enessubass/mobiloop-mcp` ★12 | 移动端自动化循环 | 低：偏桌面/设备农场 |
+| `Wael-Rd/ultimate-mobile-mcp` ★6 | 移动端工具封装 | 中：同上，按需评估 |
+| `zhuyansen/awesome-ai-reverse-engineering` ★109 | 116 个仓库聚合索引 | 参考用，不需要运行 |
+
+> 原则：MCP 只负责“取信息/调工具”，决策仍按 `SKILL.md`；手机算力有限，重工具（Ghidra/IDA）建议远程主机。

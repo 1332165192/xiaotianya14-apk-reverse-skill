@@ -86,3 +86,18 @@
 - 社区链接与描述仅作方法参考，**不代表背书**；第三方脚本先读再用，风险自担。
 
 > 关联：`tool-inventory.md`（社区工具清单/按需安装）、`security-audit.md`（审计清单）、`SKILL.md` §0 路由。
+
+## 2026-11-15 复核：新出现的同类项目（含星数，实际以 GitHub 为准）
+
+| 仓库 | ★ | 形态 | 我们吸收/不吸收 |
+|---|---:|---|---|
+| [zzusec/apk-reverse](https://github.com/zzusec/apk-reverse) | 251 | 强制检查点/Gates + 已知失败模式清单 + 工具验证文档 | **吸收思路**：我们已有 check_repo/路由/隐私门禁；「症状→停手加载文档」写进 `references/protection-map.md` 与 `docs/EVIDENCE.md` |
+| [Fausto-404/ai-mobile-reverse-skills](https://github.com/Fausto-404/ai-mobile-reverse-skills) | 177 | 6 阶段总控 + agent 分工 + 阶段契约 | **已吸收**：`docs/STAGES.md` 六阶段与本技能流程对齐 |
+| [incogbyte/android-reverse-engineering-claude-skill](https://github.com/incogbyte/android-reverse-engineering-claude-skill) | 134 | 自适应 Frida 脚本生成、RASP/Root/SSL Pinning 绕过、接口提取 | **吸收思路**：`scripts/frida/` 脚本库 + `references/protection-map.md` 的绕过清单；不搬运其自动化攻击成品 |
+| [maosasagawa/blackbox-re-agent](https://github.com/maosasagawa/blackbox-re-agent) | 34 | 纯对话式黑盒分析（自然语言提问 → 驱动 jadx/angr 出证据） | **吸收思路**：`docs/EVIDENCE.md` 的证据分级与「先证据后结论」；工具链太重，手机端不照搬 |
+| [alvinhayy/Mobile-ReverseSkill](https://github.com/alvinhayy/Mobile-ReverseSkill) | 11 | 设备端 AFL++ 原生模糊测试、ASan 内存错误检测、静态分析 | **选择性吸收**：新增 `references/native-fuzzing.md`（手机端可行性、何时值得做）；fuzz 本身耗资源，默认不用 |
+| [MDSIXONE/opencode-config](https://github.com/MDSIXONE/opencode-config) 中的 apk-reverse | 0 | CLI 全流程 + rebuild-sign-install 流水线 + Frida 绕过 cookbook | **已覆盖**：`scripts/build_sign.sh`、`scripts/frida/` 脚本库；不引入其配置仓库 |
+| [zhuyansen/awesome-ai-reverse-engineering](https://github.com/zhuyansen/awesome-ai-reverse-engineering) | 109 | 116 个仓库聚合清单（MCP / 移动端 / Skill 分类） | **参考**：作为选型索引；不整包搬运 |
+| `newliver666/apk-reverse` | — | 社区传闻「594 项测试」 | **不存在**（GitHub API 两次 Not Found），不要引用其测试数据 |
+
+> 第三方评测站（如 Tessl）的分数与安全警告无法从本地核实，**不作为采用依据**；一律先读源码、本机验证。
