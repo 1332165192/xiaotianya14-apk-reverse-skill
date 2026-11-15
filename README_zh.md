@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/avatar-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/avatar-light.svg">
-    <img src="assets/avatar-dark.svg" alt="apk-reverse" width="140" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/avatar-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/avatar-light.svg">
+    <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/avatar-dark.svg" alt="apk-reverse" width="140" />
   </picture>
 </p>
 
@@ -12,10 +12,10 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">拆开它、看懂它、改对它、再证明它能跑。</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="assets/badges/version.svg" alt="version"></a>
-  <a href="LICENSE"><img src="assets/badges/license.svg" alt="license"></a>
-  <img src="assets/badges/android.svg" alt="android">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="assets/badges/ci.svg" alt="CI"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version.svg" alt="version"></a>
+  <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
+  <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
 </p>
 
 <p align="center">
@@ -36,9 +36,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-    <img src="assets/banner-dark.svg" alt="apk-reverse banner" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-light.svg">
+    <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-dark.svg" alt="apk-reverse banner" width="100%">
   </picture>
 </p>
 
@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.5.8 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.9 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·

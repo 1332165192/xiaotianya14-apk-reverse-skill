@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.9] - 2026-11-15
+
+### Changed
+
+- README 图片（头像/横幅/徽章）改走 jsDelivr CDN（`cdn.jsdelivr.net/gh/...`），
+  国内加载明显加快；仓库内 SVG 仍是源文件
+- 参考同类项目做法（图片走 CDN，不直接依赖 GitHub raw）
+
 ## [0.5.8] - 2026-11-15
 
 ### Changed
