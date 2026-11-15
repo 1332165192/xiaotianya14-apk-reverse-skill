@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.10] - 2026-11-15
+
+### Fixed
+
+- 横幅 SVG 换成新版（居中排版，与新版 PNG 设计一致）；旧版左对齐 SVG 删除
+- 文件名改为 `banner-*-v2.svg`，避免 CDN/浏览器缓存旧图
+
 ## [0.5.9] - 2026-11-15
 
 ### Changed

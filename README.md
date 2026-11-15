@@ -36,9 +36,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-light.svg">
-    <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-dark.svg" alt="apk-reverse banner" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-dark-v2.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-light-v2.svg">
+    <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/banner-dark-v2.svg" alt="apk-reverse banner" width="100%">
   </picture>
 </p>
 
@@ -76,7 +76,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.5.9 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.10 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
