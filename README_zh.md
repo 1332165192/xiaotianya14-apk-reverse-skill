@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/avatar-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/avatar-light.png">
-    <img src="assets/avatar-dark.png" alt="apk-reverse" width="140" />
+    <source media="(prefers-color-scheme: dark)" srcset="assets/avatar-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/avatar-light.svg">
+    <img src="assets/avatar-dark.svg" alt="apk-reverse" width="140" />
   </picture>
 </p>
 
@@ -12,12 +12,10 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">拆开它、看懂它、改对它、再证明它能跑。</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://img.shields.io/github/v/release/xiaotianya14/apk-reverse-skill?label=release&logo=github&style=flat" alt="release"></a>
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers"><img src="https://img.shields.io/github/stars/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="stars"></a>
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/forks"><img src="https://img.shields.io/github/forks/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="forks"></a>
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/issues"><img src="https://img.shields.io/github/issues/xiaotianya14/apk-reverse-skill?style=flat&logo=github" alt="issues"></a>
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="license">
-  <img src="https://img.shields.io/badge/Android-APK%20%2F%20AAB-3DDC84?logo=android&logoColor=white" alt="android">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="assets/badges/version.svg" alt="version"></a>
+  <a href="LICENSE"><img src="assets/badges/license.svg" alt="license"></a>
+  <img src="assets/badges/android.svg" alt="android">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="assets/badges/ci.svg" alt="CI"></a>
 </p>
 
 <p align="center">
@@ -38,9 +36,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.png">
-    <img src="assets/banner-dark.png" alt="apk-reverse banner" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
+    <img src="assets/banner-dark.svg" alt="apk-reverse banner" width="100%">
   </picture>
 </p>
 
@@ -76,12 +74,12 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.5.3 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.4 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
-  <a href="https://star-history.com/#xiaotianya14/apk-reverse-skill&Date">
-    <img src="https://api.star-history.com/svg?repos=xiaotianya14/apk-reverse-skill&type=Date" alt="Star history" width="600">
-  </a>
+  ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
+  🍴 <a href="https://github.com/xiaotianya14/apk-reverse-skill/forks">Fork</a> ·
+  🐛 <a href="https://github.com/xiaotianya14/apk-reverse-skill/issues">Report an issue</a>
 </p>
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>
@@ -216,9 +214,7 @@ bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 
 ### 贡献者
 
-<a href="https://github.com/xiaotianya14/apk-reverse-skill/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=xiaotianya14/apk-reverse-skill" alt="contributors" />
-</a>
+<a href="https://github.com/xiaotianya14/apk-reverse-skill/graphs/contributors">Contributors</a> — PRs welcome.
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>
 
@@ -227,7 +223,6 @@ bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 ## 技术栈
 
 <p align="left">
-  <img src="https://skillicons.dev/icons?i=python,bash,java,nodejs,docker,git,linux&theme=light" /><br/>
   <code>jadx</code> · <code>apktool</code> · <code>Frida</code> · <code>IDA Pro</code> · <code>Ghidra</code>
 </p>
 

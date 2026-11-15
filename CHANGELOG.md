@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-11-15
+
+### Changed
+
+- README 图片加载优化：移除 shields.io 动态徽章、star-history、contrib.rocks、skillicons 等外链图，
+  全部改为本地静态 SVG（头像/横幅/徽章），首屏不再依赖第三方服务，国内加载明显变快
+- 图片总量从约 500KB 降到约 10KB（SVG）
+
 ## [0.5.3] - 2026-11-15
 
 ### Fixed
