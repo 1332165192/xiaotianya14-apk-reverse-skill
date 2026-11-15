@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-15
+
+### Added
+
+- `scripts/privacy_scan.py --fix`：自动替换 .md/.txt 里的个人信息（设备型号、本机路径、令牌、邮箱、手机号、内部标记），
+  发布流程里先扫 → 命中自动清理 → 再扫，仍有剩余则停止发布
+
 ## [0.5.1] - 2026-11-15
 
 ### Added
