@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.13] - 2026-11-16
+
+### Added
+
+- 可作为 DeepSeek Harness 技能插件安装：`dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill`
+- 新增 `lib/index.js`、`cordis.patch.yml`、`package.json`（`dsh.bundle`），把本技能注册为 DeepSeek Harness skill provider
+
 ## [0.5.12] - 2026-11-16
 
 ### Added
