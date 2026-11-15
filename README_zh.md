@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.5.5 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.6 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -200,6 +200,13 @@ bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 <p align="right">(<a href="#关于">返回顶部</a>)</p>
 
 <a id="贡献"></a>
+
+
+## 联系方式
+
+- 邮箱：<xiaotianya14@gmail.com>
+- QQ 群：**258605008**
+- 问题反馈：[GitHub Issues](https://github.com/xiaotianya14/apk-reverse-skill/issues)
 
 ## 贡献
 

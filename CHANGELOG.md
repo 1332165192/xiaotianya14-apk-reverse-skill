@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.6] - 2026-11-15
+
+### Added
+
+- README / README_zh 新增「联系方式」：邮箱、官方 QQ 群 258605008、GitHub Issues 反馈入口
+- 隐私扫描放行以上公开联系方式（仅这些，其他个人信息仍会被拦）
+
 ## [0.5.5] - 2026-11-15
 
 ### Added

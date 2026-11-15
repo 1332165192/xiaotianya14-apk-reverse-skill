@@ -38,6 +38,9 @@ FIX_EXT = {'.md', '.txt'}
 SKIP_DIRS = {'.git', '__pycache__', 'assets', 'node_modules'}
 SKIP_FILES = {'scripts/privacy_scan.py'}
 EMAIL_ALLOW = ('@example.com', '@example.org', '@example.net')
+# 项目公开联系方式（用户明确要求公开）
+CONTACT_ALLOW_EMAILS = {'xiaotianya14@gmail.com'}
+CONTACT_ALLOW_NUMBERS = {'258605008'}
 
 
 def iter_files(root):
@@ -53,7 +56,7 @@ def iter_files(root):
 
 def is_placeholder_email(val):
     low = val.lower()
-    return low.endswith(EMAIL_ALLOW) or low in ('a@b.com', 'user@example.com', 'hello@example.com')
+    return low.endswith(EMAIL_ALLOW) or low in ('a@b.com', 'user@example.com', 'hello@example.com') or low in CONTACT_ALLOW_EMAILS
 
 
 def scan(root, fix=False):
