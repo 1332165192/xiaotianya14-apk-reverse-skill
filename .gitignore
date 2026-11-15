@@ -7,3 +7,7 @@ __pycache__/
 work/
 deapk-work/
 toolcache/
+
+# 清理工具会重建的旧横幅 PNG / 回收站残留
+assets/banner-*.png
+assets/.trashed-*

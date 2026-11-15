@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.11] - 2026-11-15
+
+### Fixed
+
+- 横幅改用新版设计图（WebP，明暗两版），与用户确认的样式一致；文件名 `-v3` 防缓存
+- 删除之前的 SVG 横幅
+
 ## [0.5.10] - 2026-11-15
 
 ### Fixed
