@@ -76,7 +76,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.5.6 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.7 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -131,7 +131,7 @@ the install, and an unpinned version prints its hash with a warning.
 - The workflow rules and patch patterns live in [`SKILL.md`](SKILL.md); reference docs under
   [`references/`](references/) explain each step in depth.
 - Everything runs in proot Ubuntu on ARM64; a regular Linux machine works too.
-- Build a release: `bash scripts/make_release.sh --name apk-reverse --public` → zip + `.sha256`,
+- Build a release: `bash scripts/make_release.sh --name apk-reverse --public` → zip（+ 本地 `.sha256`，发布附件只传 `SHA256SUMS`）,
   then the extracted copy is re-checked.
 - Verify a release: `bash scripts/verify_release.sh <zip>` (reads `.sha256` or `SHA256SUMS`).
 - Publish to GitHub: `bash scripts/publish_github.sh --tag v<version> --release`; the token comes
@@ -193,7 +193,7 @@ apk-reverse/
 
 ## Release integrity
 
-Every release ships a `SHA256SUMS` file (and `<zip>.sha256`); recipients verify with:
+Every release ships a `SHA256SUMS` file; recipients verify with:
 
 ```sh
 sha256sum -c SHA256SUMS

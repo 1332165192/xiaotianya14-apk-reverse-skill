@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.7] - 2026-11-15
+
+### Changed
+
+- 发布附件合并：Release 只传「zip + SHA256SUMS」两个文件（不再单独传 `<zip>.sha256`）
+- 本地仍生成 `.sha256` 方便校验；README/指南说明同步
+
 ## [0.5.6] - 2026-11-15
 
 ### Added

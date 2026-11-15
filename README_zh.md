@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.5.6 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.5.7 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -128,7 +128,7 @@ bash $SK/scripts/build_sign.sh ./work out.apk        # 重打包 + 签名
 
 - 流程规则与补丁模式都在 [`SKILL.md`](SKILL.md)，每一步的细节在 [`references/`](references/)。
 - 全部命令在 proot Ubuntu（ARM64）实测可用，普通 Linux 也能跑。
-- 打发行包：`bash scripts/make_release.sh --name apk-reverse --public` → zip + `.sha256`，并解压复检。
+- 打发行包：`bash scripts/make_release.sh --name apk-reverse --public` → zip（+ 本地 `.sha256`；发布附件只传 `SHA256SUMS`），并解压复检。
 - 校验发行包：`bash scripts/verify_release.sh <zip>`（读 `.sha256` 或 `SHA256SUMS`）。
 - 发布到 GitHub：`bash scripts/publish_github.sh --tag v<版本> --release`；令牌从 `$GITHUB_TOKEN`
   或 `~/.config/dsh-go/github-token` 读，不写入仓库。
@@ -189,7 +189,7 @@ apk-reverse/
 
 ## 校验
 
-对外分发 zip 时配套 `SHA256SUMS`（或 `<包>.sha256`），接收方执行：
+对外分发 zip 时配套 `SHA256SUMS`（一个文件即可），接收方执行：
 
 ```sh
 sha256sum -c SHA256SUMS
