@@ -70,14 +70,14 @@
 
 | 项 | 当前值 | 备注 |
 |---|---|---|
-| 项目目录 | `/root/.dsh/skills/apk-reverse` | 原名 `reverse-skill`，改名见 `CHANGELOG.md` |
-| 技能名（frontmatter `name`） | `apk-reverse` | 与目录一致，便于 `/root/.dsh/skills/<name>` 定位 |
+| 项目目录 | `~/skills/apk-reverse` | 原名 `reverse-skill`，改名见 `CHANGELOG.md` |
+| 技能名（frontmatter `name`） | `apk-reverse` | 与目录一致，便于 `~/skills/<name>` 定位 |
 | 显示名 | 逆向技能 | 给用户看的中文名，写在 `SKILL.md` 标题与 README |
 | 触发描述 | `description` + `whenToUse` | 含"给这个 APK 广告组件清理/权益/改数值/逆向/重打包"等口语句式 |
 | 版本 | README 徽章 `version-v12` | 与技能内容同步；暂无 `CHANGELOG.md`，变更用 `CHANGELOG.md` 记录 |
 | License | MIT | 见 `LICENSE` |
 | 文档索引 | `SKILL.md` §参考文档索引 | 新增文档必须挂到索引，避免孤儿文件 |
-| 打包交付 | `cd /root/.dsh/skills && zip -qr /sdcard/Download/逆向技能-手机版.zip apk-reverse` | 见 `SKILL.md` §11 |
+| 打包交付 | `cd ~/skills && zip -qr /sdcard/Download/逆向技能-手机版.zip apk-reverse` | 见 `SKILL.md` §11 |
 
 ## 六、免责声明
 

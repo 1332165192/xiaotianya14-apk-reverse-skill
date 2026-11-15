@@ -18,13 +18,13 @@
 bash scripts/adb_device.sh check    # 退出码 0 = adb/设备/root/frida-server/tcpdump 全就绪
 ```
 
-实测输出（2026-11-12，Android 17 / PLC110 / arm64-v8a）：
+实测输出（2026-11-12，Android 17 / 示例机型 / arm64-v8a）：
 
 ```text
 [OK] adb: Android Debug Bridge version 1.0.41
 [OK] 设备在线: 127.0.0.1:42777   # 自动发现；无线调试端口随机（实测 42777，5555 仅 tcpip 模式）
 [OK] root: id -u=0 (context=u:r:ksu:s0)
-[OK] Android 17 / PLC110 / abi=arm64-v8a
+[OK] Android 17 / 示例机型 / abi=arm64-v8a
 [OK] 设备 frida-server: /data/local/tmp/frida-server (--version=17.26.2)
 [OK] 设备 tcpdump: /system/bin/tcpdump (tcpdump version 4.99.6)
 结论: 真机 root 通道可用——frida/tcpdump 均可由 AI 直接驱动，无需用户手动 Termux。

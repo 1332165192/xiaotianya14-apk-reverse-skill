@@ -28,7 +28,7 @@ mkdir -p "$OUT"
 check() {
     local dir="$1"
     case "$MODE" in
-        public) python3 "$dir/scripts/check_repo.py" --public ;;
+        public) python3 "$dir/scripts/check_repo.py" --public && python3 "$dir/scripts/privacy_scan.py" ;;
         internal) python3 "$dir/scripts/check_repo.py" --internal ;;
         *) python3 "$dir/scripts/check_repo.py" ;;
     esac

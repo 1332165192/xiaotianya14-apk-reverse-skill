@@ -6,6 +6,17 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-15
+
+### Added
+
+- `scripts/privacy_scan.py`：发布前隐私扫描（真实设备型号、本机路径、账号/令牌、邮箱/手机号、内部标记），
+  `make_release.sh --public`、CI、发布技能都会跑；命中即拒绝发布
+
+### Changed
+
+- 公开版文档脱敏：去掉真实设备型号、本机 home 路径，示例邮件改为占位地址
+
 ## [0.5.0] - 2026-11-15
 
 ### Changed

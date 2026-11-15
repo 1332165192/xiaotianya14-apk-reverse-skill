@@ -12,7 +12,7 @@
 ## 一、先决条件（先解码，再审计）
 
 ```sh
-SK=/root/.dsh/skills/apk-reverse
+SK=~/skills/apk-reverse
 bash $SK/scripts/decode.sh app.apk --out ./work     # 产物：./work/<任务名>/apktool 与 ./work/<任务名>/jadx/sources
 python3 $SK/scripts/manifest_summary.py ./work/<任务名>/apktool
 python3 $SK/scripts/scan_premium.py  ./work/<任务名>/apktool   # §7 运行时安全校验/完整性、§8 native 线索
@@ -47,7 +47,7 @@ python3 $SK/scripts/find_api_calls.py ./work/<任务名>/jadx/sources --secrets 
 ## 三、命令速查（复制用）
 
 ```sh
-SK=/root/.dsh/skills/apk-reverse
+SK=~/skills/apk-reverse
 A=./work/<任务名>/apktool
 J=./work/<任务名>/jadx/sources
 

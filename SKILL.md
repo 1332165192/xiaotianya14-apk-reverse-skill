@@ -436,7 +436,7 @@ chmod 755 /data/local/tmp/frida-server && /data/local/tmp/frida-server &
    提醒用户**自己**去 设置 → 开发者选项 手动关；AI 不自动关、不改 settings、不跑 `adb usb`（自动关已移除，按安全考虑）。
 
 原则：只加"已验证、可复用"；删"过期、误导、未验证"；不确定的标 TODO，不硬写。
-改完重新打包：`cd /root/.dsh/skills && zip -qr /sdcard/Download/逆向技能-手机版.zip apk-reverse`。
+改完重新打包：`cd ~/skills && zip -qr /sdcard/Download/逆向技能-手机版.zip apk-reverse`。
 
 ## §12 真机 adb 通道：开工检查、收工只检查+提醒手动关（安全）
 
