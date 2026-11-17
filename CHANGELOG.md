@@ -6,6 +6,23 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.14] - 2026-11-17
+
+### Added
+
+- **支持 DSH Go 手机端**：SKILL.md 增加安装/使用说明（商城搜索、插件命令、手动包三种装法；重启内核生效；可直接用 DSH Go 内置手机操控工具做真机验证）
+- README_zh / README 增加「安装到 DSH Go / DeepSeek Harness」小节（含技能名 `apk-reverse`、触发词、电脑端同样可用）
+- package.json：description 补充 DSH Go，keywords 增加 `dsh-go`、`dsh-skill`、`mobile`
+- 仓库 topics 补齐 `dsh-plugin`、`dsh-go`、`dsh-skill`，用于 dshfind 等自动索引
+
+### Marketplaces
+
+- awesome-dsh-plugin：已有收录条目（DSH Go 默认商城），等待每日 10:23 索引刷新
+- dsh.so：自动爬取，无需提交
+- dshfind.com：按 GitHub topic `dsh-plugin` 自动聚合，收录有 1–2 天延迟
+- npm：本地无 token，暂未发布 npm 包
+
+
 ## [0.5.13] - 2026-11-16
 
 ### Added

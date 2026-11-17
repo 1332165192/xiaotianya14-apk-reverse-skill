@@ -1,3 +1,19 @@
+<a id="install-dshgo"></a>
+
+## Install in DSH Go / DeepSeek Harness
+
+| Way | Action |
+|---|---|
+| **DSH Go marketplace** (recommended) | App → Plugins → search `apk-reverse` → install; restart the core |
+| **Plugin command** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
+| **Manual** | Download the release zip, unzip, `dsh plugin --profile web add <dir>` |
+
+- Skill name: `apk-reverse`. Trigger it by asking to reverse/decode an APK, remove ads, or inspect entitlement logic.
+- On a phone you do **not** need adb: DSH Go ships phone-control tools (`screen`, `tap`, `type`, `open`, `key`, `handoff`) for on-device verification.
+- Desktop (Linux/WSL) works with the same commands and toolchain.
+
+<p align="right">(<a href="#about">Back to top</a>)</p>
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/avatar-dark.svg">

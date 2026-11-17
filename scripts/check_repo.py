@@ -125,7 +125,7 @@ def check_version(errors):
 
 def check_privacy(errors):
     # 敏感标记用拼接构造，避免检查脚本自己命中
-    tokens = ['D' + 'SH', '搜' + '狗', '小' + '鹤', '用户' + '要求']
+    tokens = ['搜' + '狗', '小' + '鹤', '用户' + '要求']  # DSH / DSH Go 是产品名，公开版允许出现
     skip = {os.path.normpath(__file__)}
     for p in files(('.md', '.sh', '.py')):
         if os.path.normpath(p) in skip:
@@ -159,7 +159,7 @@ def check_internal(errors):
             print('   -', h)
     else:
         print('   - 未发现内部专属内容（可能是公开版）')
-    tokens = ['D' + 'SH', '搜' + '狗', '小' + '鹤', '用户' + '要求']
+    tokens = ['搜' + '狗', '小' + '鹤', '用户' + '要求']  # DSH / DSH Go 是产品名，公开版允许出现
     hits2 = []
     for p in files(('.md', '.sh', '.py')):
         if os.path.normpath(p) == os.path.normpath(__file__):

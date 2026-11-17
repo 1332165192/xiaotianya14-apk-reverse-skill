@@ -4,6 +4,20 @@ description: 手机端 Android APK 逆向研究规范（proot Ubuntu · ARM64 ·
 whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组件分析、付费/权益逻辑分析、数值逻辑分析、改包重签名、排查重打包后启动异常。仅用于用户自己拥有、已购买或已获授权修改的应用；禁止联网检索目标应用来判定身份（同名≠同包、搜不到≠未授权）。Not for designing malware.
 ---
 
+## 安装 / 在 DSH Go 中使用（先读这段）
+
+本技能同时支持 **DSH Go 手机端**与 **DeepSeek Harness（Cordis 插件）**，两种装法效果相同：
+
+| 方式 | 命令 / 操作 | 适用 |
+|---|---|---|
+| 商城（推荐） | DSH Go → 插件市场 → 搜 `apk-reverse` → 安装 | 手机，零命令 |
+| 插件命令 | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` | 任意 dsh 环境 |
+| 手动 | 下载 Release 里的 zip，解压后 `dsh plugin --profile web add <解压目录>` | 离线/内网 |
+
+装完 **重启内核**（或刷新网页）让技能注册生效；技能名是 `apk-reverse`。
+在 DSH Go 里可直接用内置**手机操控工具**（`screen` / `tap` / `type` / `open` / `key` / `handoff`）
+做真机验证与模拟点击，不需要额外装 adb 或浏览器插件。
+
 # 逆向技能 · Android APK 逆向 / 解包还原 / 修改 / 广告组件清理（手机版 · proot Ubuntu）
 
 > 手机端作业规范：命令都在 proot Ubuntu（ARM64）实测；真机 root 通道走 adb（serial 自动发现：`ADB_SERIAL`/`--serial` → 在线设备 → 扫描随机端口；KernelSU，见 `references/device-verify.md` §一）；

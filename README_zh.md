@@ -100,6 +100,22 @@ APK
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>
 
+<a id="install-dshgo"></a>
+
+## 安装到 DSH Go / DeepSeek Harness
+
+| 方式 | 操作 |
+|---|---|
+| **DSH Go 商城**（推荐） | App → 插件市场 → 搜 `apk-reverse` → 安装；重启内核生效 |
+| **插件命令** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
+| **手动包** | 下载 Release 的 zip → 解压 → `dsh plugin --profile web add <目录>` |
+
+- 技能名：`apk-reverse`；装好后在对话里说「逆向这个 APK / 去广告 / 看付费逻辑」即可触发。
+- 手机端不需要 adb：DSH Go 自带手机操控工具（`screen`/`tap`/`type`/`open`/`key`/`handoff`）可做真机验证。
+- 电脑端（Linux/WSL）同样可装，命令与工具链一致。
+
+<p align="right">(<a href="#关于">返回顶部</a>)</p>
+
 <a id="快速开始"></a>
 
 ## 快速开始
