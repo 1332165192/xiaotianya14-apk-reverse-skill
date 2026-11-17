@@ -6,6 +6,10 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.6] - 2026-11-17
+### Changed
+- 版本号与内部版/分发版统一为 0.6.6；本包功能与文档内容未变
+
 ## [0.6.5] - 2026-11-17
 
 ### Fixed

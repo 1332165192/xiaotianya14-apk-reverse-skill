@@ -9,8 +9,28 @@ ADB_SERIAL_CACHE_TTL="${ADB_SERIAL_CACHE_TTL:-600}"
 # 已知不是 adb 的本机服务端口（宿主 web/inspector/内部端口等）
 ADB_SKIP_PORTS="3080 5037 8326 9230 10150 10152 10156 10157 10162 12121 64660 46888"
 
+# 通用判断：真正的模拟器（按系统属性，不按设备名/个人机型/序列号）
+# 兼容「真机以 emulator-* 之类名字桥接暴露」的宿主环境；仍拒绝 goldfish/ranchu 等真模拟器。
+_adb_is_true_emulator() {  # _adb_is_true_emulator <adb> <serial>
+    local adb="$1" s="$2" v
+    [ -n "$s" ] || return 0
+    v=$("$adb" -s "$s" shell getprop ro.kernel.qemu 2>/dev/null | tr -d '\r\n')
+    [ "$v" = "1" ] && return 0
+    v=$("$adb" -s "$s" shell getprop ro.boot.qemu 2>/dev/null | tr -d '\r\n')
+    [ "$v" = "1" ] && return 0
+    v=$("$adb" -s "$s" shell getprop ro.hardware 2>/dev/null | tr -d '\r\n')
+    case "$v" in goldfish|ranchu) return 0 ;; esac
+    v=$("$adb" -s "$s" shell getprop ro.product.model 2>/dev/null | tr -d '\r\n')
+    case "$v" in sdk_*|"Android SDK"*) return 0 ;; esac
+    return 1
+}
+
+# 列出在线设备，过滤掉真正的模拟器（名字叫 emulator-* 但属性是真机的桥接设备保留）
 _adb_list_online() {  # _adb_list_online <adb>
-    "$1" devices 2>/dev/null | awk 'NR>1 && $2=="device" && $1 !~ /^emulator-/ {print $1}'
+    local adb="$1" s
+    "$adb" devices 2>/dev/null | awk 'NR>1 && $2=="device" {print $1}' | while IFS= read -r s; do
+        _adb_is_true_emulator "$adb" "$s" || printf '%s\n' "$s"
+    done
 }
 
 _adb_try_connect_port() {  # _adb_try_connect_port <adb> <port> → 成功打印 serial

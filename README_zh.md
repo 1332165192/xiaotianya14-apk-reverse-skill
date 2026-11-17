@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">拆开它、看懂它、改对它、再证明它能跑。</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.6.5.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.6.6.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.6.5 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.6.6 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -259,21 +259,17 @@ bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 
 <a id="许可"></a>
 
-## 许可
+## 许可与使用范围
 
-MIT，见 [`LICENSE`](LICENSE)。使用前请阅读下面的免责声明。
+**代码与文档**：`scripts/`、`docs/`、`SKILL.md`、`references/` 等自制内容按 MIT 授权（见 [`LICENSE`](LICENSE)）。复制、修改、再分布式须保留版权与许可声明。
 
-> **免责声明**：本项目仅用于学习研究与**自己拥有或已获授权**应用的逆向分析；
-> 使用者自行承担数据丢失、设备与法律风险；不得用于攻击他人设备、未授权修改他人应用或违反平台条款。
-> 不提供任何担保，作者不对使用后果负责。
+**视觉素材不授权**：`assets/` 里的头像、横幅、图标、分享图和徽章样式版权归作者所有，保留所有权利——不可商用、不可再分发、不可换名发布；引用本仓库时不得单独取用。
 
-<p align="right">(<a href="#关于">返回顶部</a>)</p>
+**私有材料不公开**：游戏修改资料、过程记录、内部材料等私有包不公开、不授权。
 
-## 许可证与素材
+**第三方工具**：第三方工具、SDK、商标（jadx、apktool、Frida 等）按各自条款，本项目不代其授权，也不随包分发；方法参考的上游项目已在 [`NOTICE`](NOTICE) 署名。
 
-- **代码与文档**：MIT（见 [`LICENSE`](LICENSE)）。
-- **视觉素材不在 MIT 授权范围**：`assets/` 里的头像、横幅、图标、分享图和徽章样式版权归作者所有，
-  保留所有权利——**不可商用、不可再分发、不可换名发布**。
-- **私有包**（游戏修改资料、过程记录等）不公开、不授权。
-- 第三方工具、SDK、商标按其各自条款，详见 [`NOTICE`](NOTICE)。
+**使用范围与免责**：本项目仅用于学习研究，以及**自己拥有或已获授权**应用的逆向分析；使用者自行承担数据丢失、设备与法律风险；不得用于攻击他人设备、未授权修改他人应用或违反平台条款。不提供任何担保，作者不对使用后果负责。
+
+**权益联系**：如认为本项目内容侵犯了你的权益，请通过 [GitHub Issues](https://github.com/xiaotianya14/apk-reverse-skill/issues) 或邮箱 xiaotianya14@gmail.com 联系作者；核实后会删除或调整相关内容。
 

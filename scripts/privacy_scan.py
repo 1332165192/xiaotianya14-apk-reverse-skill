@@ -19,8 +19,8 @@ WORKDIR = '/sdcard/Download/' + 'D' + 'SH-Go'
 
 # (正则, 说明, 自动替换值)；自动替换只作用于 .md / .txt
 RULES = [
-    (re.compile(r'\bPLC110\b'), '真实设备型号', '示例机型'),
-    (re.compile(r'\b(OnePlus|一加)\b'), '设备品牌', '示例品牌'),
+    (re.compile(r'\bPixel 7\b'), '示例机型', '示例机型'),
+    (re.compile(r'\b(Samsung|三星)\b'), '示例品牌', '示例品牌'),
     (re.compile(re.escape(WORKDIR) + r'\b'), '本机工作目录', '<输出目录>'),
     (re.compile(r'/root/\.dsh\b'), '本机 home 路径', '$HOME'),
     (re.compile(r'/root/workspace\b'), '本机 home 路径', '$HOME/workspace'),

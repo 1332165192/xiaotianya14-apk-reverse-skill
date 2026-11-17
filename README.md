@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">Unpack it, understand it, patch it, prove it works.</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.6.5.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.6.6.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -107,7 +107,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.6.5 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.6.6 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -279,22 +279,17 @@ tool this skill relies on. This project is a workflow layer on top of their work
 
 <a id="license"></a>
 
-## License
+## License & usage scope
 
-MIT — see [`LICENSE`](LICENSE). Read the disclaimer below before use.
+**Code & docs**: original content in `scripts/`, `docs/`, `SKILL.md` and `references/` is MIT-licensed (see [`LICENSE`](LICENSE)). Copies and redistributions must retain the copyright and license notice.
 
-> **Disclaimer**: this project is for learning/research on applications you **own or are
-> authorized to test**. You are responsible for data loss, device damage and legal risk.
-> Do not use it against other people's devices, unauthorized apps, or in violation of
-> platform terms. No warranty; the authors accept no liability.
+**Visual assets are NOT licensed**: avatars, banners, icon, social image and badge styles in `assets/` remain © xiaotianya14, all rights reserved — no commercial use, no redistribution, no relicensing. Do not extract them separately when referencing this repository.
 
-<p align="right">(<a href="#about">back to top</a>)</p>
+**Private materials**: game-mod notes, working records and internal materials are not published and not licensed.
 
-## License & assets
+**Third-party tools**: jadx, apktool, Frida and other tools, SDKs and trademarks remain under their own terms. This project does not license them on behalf of their owners and does not bundle them. Method inspiration from upstream projects is credited in [`NOTICE`](NOTICE).
 
-- **Code & docs**: MIT (see [`LICENSE`](LICENSE)).
-- **Visual assets are NOT MIT-licensed**: avatars, banners, icon, social image and badge styles in `assets/`
-  remain © xiaotianya14, all rights reserved — no commercial use, no redistribution, no relicensing.
-- **Private packages** (game-mod material, working notes) are not published and not licensed.
-- Third-party tools, SDKs and trademarks remain under their own terms. See [`NOTICE`](NOTICE) for details.
+**Usage & disclaimer**: for learning/research on applications you **own or are authorized to test** only. You are responsible for data loss, device damage and legal risk. Do not use it against other people's devices, unauthorized apps, or in violation of platform terms. No warranty; the authors accept no liability.
+
+**Rights contact**: if you believe this project infringes your rights, please open a [GitHub Issue](https://github.com/xiaotianya14/apk-reverse-skill/issues) or email xiaotianya14@gmail.com; we will remove or adjust the relevant content after verification.
 

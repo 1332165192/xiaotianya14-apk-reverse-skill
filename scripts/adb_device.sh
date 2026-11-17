@@ -25,7 +25,7 @@
 #
 # 安全约定:
 #   - serial 自动发现：ADB_SERIAL/--serial > 5555（旧 tcpip 端口，在线才用）> adb devices 首个真机；
-#     多设备时用 --serial 显式指定；绝不使用 emulator-5554（脚本显式拒绝 emulator-*）
+#     多设备时用 --serial 显式指定；真模拟器（goldfish/ranchu/qemu）拒绝，真机桥接名不受影响
 #   - frida 默认端口 27043；27042 是 宿主自带实例，脚本拒绝使用，也绝不终止它
 #   - uninstall / clear 必须 --yes，且拒绝 com.android.* / com.google.android.* 等系统/厂商包
 #   - 每步失败都打印原始输出（stderr），不静默吞错
@@ -89,13 +89,37 @@ if [ -z "${SERIAL:-}" ]; then SERIAL="$(resolve_serial)"; fi
 
 
 [ -n "$SERIAL" ] || die "serial 不能为空"
-case "$SERIAL" in
-    emulator-*|*emulator*)
-        die "拒绝操作 emulator-* 设备（$SERIAL）：本脚本只服务真机（自动发现 & 跳过 emulator-*）" ;;
-esac
+if _adb_is_true_emulator "$ADB_BIN" "$SERIAL"; then
+    die "拒绝操作真模拟器（$SERIAL）：检测到 qemu/goldfish/ranchu 属性；真机桥接名不受影响"
+fi
 
 # ── 通用 helper ───────────────────────────────────────────────────────────
-adb_() { "$ADB_BIN" -s "$SERIAL" "$@"; }
+ADB_ROOT_MODE="${ADB_ROOT_MODE:-}"   # 空=未探测；su=KernelSU/超级用户；adbd=adbd 本身为 root；none=无 root
+
+adb_raw() { "$ADB_BIN" -s "$SERIAL" "$@"; }
+
+# 探测 root 通道：优先 su -c（KernelSU/超级用户），再回退 adbd 已是 root 的环境
+# 不使用任何个人机型/序列号/账号信息，仅用通用系统状态判断。
+detect_root_mode() {
+    local out uid
+    out=$(adb_raw shell su -c id 2>&1)
+    case "$out" in *"uid=0"*) ADB_ROOT_MODE=su; return 0 ;; esac
+    uid=$(adb_raw shell id -u 2>&1 | tr -d '\r\n')
+    if [ "$uid" = "0" ]; then ADB_ROOT_MODE=adbd; return 0; fi
+    ADB_ROOT_MODE=none
+    return 1
+}
+
+# shell 子命令在 su 模式下自动用 su -c 执行；其它子命令（push/pull/install/get-state…）保持原样
+adb_() {
+    local sub="${1:-}"
+    shift || true
+    if [ "$sub" = "shell" ] && [ "${ADB_ROOT_MODE:-}" = "su" ]; then
+        adb_raw shell su -c "$*"
+    else
+        adb_raw "$sub" "$@"
+    fi
+}
 
 need_adb() {
     command -v "$ADB_BIN" >/dev/null 2>&1 \
@@ -115,12 +139,17 @@ ensure_device() {
 
 ensure_root() {
     ensure_device
-    local uid out
-    out=$(adb_ shell id -u 2>&1)
-    uid=$(printf '%s' "$out" | tr -d '\r\n')
-    [ "$uid" = "0" ] \
-        || die "设备 $SERIAL 不是 root（id -u='$uid'，原始输出: $out）
-→ 修法: adb root；或在 KernelSU/超级用户里给 adbd / shell 授权后重试"
+    if [ -z "${ADB_ROOT_MODE:-}" ]; then detect_root_mode || true; fi
+    if [ "${ADB_ROOT_MODE:-none}" != "none" ]; then
+        return 0
+    fi
+    local uid ksu_hint=""
+    uid=$(adb_raw shell id -u 2>&1 | tr -d '\r\n')
+    if adb_raw shell pm list packages 2>/dev/null | tr -d '\r' | grep -q 'me.weishu.kernelsu'; then
+        ksu_hint="（检测到 KernelSU 管理端：请在 KernelSU → 超级用户里给「Shell / ADB」授权）"
+    fi
+    die "设备 $SERIAL 当前没有 root（id -u='$uid'）$ksu_hint
+→ 修法: 在 KernelSU/超级用户里授权「Shell / ADB」后重试；或确认设备已开 root 通道"
 }
 
 # run_adb <描述> <args...>：失败时打印原始输出后退出
@@ -197,15 +226,20 @@ cmd_check() {
         fi
     fi
     if [ "$fail" -eq 0 ]; then
-        local uid
-        uid=$(adb_ shell id -u 2>&1 | tr -d '\r\n')
-        if [ "$uid" = "0" ]; then
+        if detect_root_mode; then
             local ctx
-            ctx=$(adb_ shell 'id | grep -o "context=[^ ]*"' 2>/dev/null | tr -d '\r')
-            green "  [OK]   root: id -u=0 ${ctx:+($ctx)}"
+            ctx=$(adb_raw shell 'id | grep -o "context=[^ ]*"' 2>/dev/null | tr -d '\r')
+            green "  [OK]   root: 通道=$ADB_ROOT_MODE ${ctx:+($ctx)}"
             green "  [OK]   Android $(adb_ shell getprop ro.build.version.release 2>/dev/null | tr -d '\r') / $(adb_ shell getprop ro.product.model 2>/dev/null | tr -d '\r') / abi=$(adb_ shell getprop ro.product.cpu.abi 2>/dev/null | tr -d '\r')"
         else
-            red "  [失败] root: id -u='$uid'（不是 root）→ adb root，或 KernelSU 里授权 adbd/shell"; fail=$((fail+1))
+            local uid ksu_hint=""
+            uid=$(adb_raw shell id -u 2>&1 | tr -d '\r\n')
+            if adb_raw shell pm list packages 2>/dev/null | tr -d '\r' | grep -q 'me.weishu.kernelsu'; then
+                ksu_hint="（KernelSU 已安装，但 Shell/ADB 未获授权）"
+            fi
+            red "  [失败] root: id -u='$uid'，未取得 root $ksu_hint"
+            red "         → 在 KernelSU/超级用户里给「Shell / ADB」授权后重试"
+            fail=$((fail+1))
         fi
     fi
     if [ "$fail" -eq 0 ]; then
