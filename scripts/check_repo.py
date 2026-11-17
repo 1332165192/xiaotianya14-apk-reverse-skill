@@ -124,14 +124,31 @@ def check_version(errors):
 
 
 def check_privacy(errors):
-    # 敏感标记用拼接构造，避免检查脚本自己命中
-    tokens = ['搜' + '狗', '小' + '鹤', '用户' + '要求']  # DSH / DSH Go 是产品名，公开版允许出现
+    """公开版隐私扫描：命中词表即报错。
+
+    词表来源（优先级）：
+    1) scripts/.privacy_words.local（本地私有，已在 .gitignore，不入库）
+    2) repo 根 `.privacy_words`（维护者本地文件，同样忽略）
+    3) 内置兜底：只放通用词，敏感词请放本地文件，避免公开仓库暴露名单。
+    """
+    words = []
+    for cand in (os.path.join(os.path.dirname(__file__), '.privacy_words.local'),
+                 os.path.join(ROOT, '.privacy_words')):
+        if os.path.isfile(cand):
+            for line in read(cand).splitlines():
+                w = line.strip()
+                if w and not w.startswith('#'):
+                    words.append(w)
+    if not words:
+        # 兜底：拼接构造，避免本文件自身命中；不在此列敏感词
+        words = ['摘' + '要', '内' + '部版']
+
     skip = {os.path.normpath(__file__)}
     for p in files(('.md', '.sh', '.py')):
         if os.path.normpath(p) in skip:
             continue
         txt = read(p)
-        for t in tokens:
+        for t in words:
             if t in txt:
                 errors.append(f'{rel(p)}: 公开版不应出现隐私/内部标记 "{t}"')
 

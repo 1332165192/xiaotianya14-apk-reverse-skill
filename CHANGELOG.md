@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.15] - 2026-11-17
+
+### Changed
+
+- 发布自检的隐私词表改为**外置**：敏感词放本地 `scripts/.privacy_words.local`（已 gitignore，不入库），公开仓库只保留通用兜底词
+- 版本号统一为精确版本 `0.5.15`（商城/索引按精确版本核对）
+
+
 ## [0.5.14] - 2026-11-17
 
 ### Added
