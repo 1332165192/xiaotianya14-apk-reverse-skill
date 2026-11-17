@@ -4,6 +4,27 @@ All notable changes to **apk-reverse** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.6.9] - 2026-11-18
+
+### Added
+- 新增自研工具：unpack_archive.py、hook_gen.py、find_framework_apis.py、call_graph.py、dex_dump.py/.js、il2cpp_meta.py
+- 新增 references/signature-recovery.md（签名/加密参数逆向流程）
+- NOTICE 补充 CreditTone（Apache-2.0）署名、社区参考项目名单与常见外部工具清单（不打包）
+- 样本测试：游戏 global-metadata.dat 可解析（version 31）；DEX dump 在 360 加固「全球网测」实测导出 75 个有效 DEX（含 1 个与 APK classes.dex 字节一致）；hook_gen 自动注入已真机验证
+
+### Changed
+- 版本号 0.6.9
+
+## [0.6.8] - 2026-11-18
+
+### Changed
+- 版本号与同项目其他渠道统一为 0.6.8；本包内容与 0.6.7 相同（仅版本标识）
+
+## [0.6.7] - 2026-11-18
+
+### Changed
+- NOTICE 增补第三方 MIT 项目版权与完整许可文本、发布候选/权属核查声明、第三方许可证红线（无功能变更）
+
 ## [Unreleased]
 
 ## [0.6.6] - 2026-11-17

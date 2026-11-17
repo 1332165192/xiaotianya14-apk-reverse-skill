@@ -515,3 +515,14 @@ bash scripts/device_adb_guard.sh policy      # 何时开、何时由用户手动
 - `scripts/frida/README.md` — Frida 脚本库（SSL unpinning / 反调试 / 退出拦截 / root 伪装 / Frida 隐藏 / 函数返回值替换）
 - `tests/routing_cases.json` — 路由回归用例（`python3 scripts/check_routing.py` 校验，CI 会跑）
 - `field-journal/` — 维护日志 + 可复用过程案例（只记踩坑与解决，不放说明书/报告）
+
+
+## 0.6.9 新增工具（自研）
+
+- `scripts/unpack_archive.py <xapk|apks|jar|aar>`：解包更多安装包格式（XAPK/APKS 列 APK、JAR 交 jadx、AAR 取 classes.jar）。
+- `scripts/hook_gen.py --class <类> --method <方法> [--overload ...] [--return ...]`：生成 Frida Java hook 脚本；加 `--run/--inject --package <包名>`（或 `--pid`）会自动注入并打印命中，`--spawn`/`--duration` 可选。
+- `scripts/find_framework_apis.py <目录> --all`：扫描 Ktor / Apollo GraphQL / Koin 线索。
+- `scripts/call_graph.py <jadx目录> --entry 'Activity|Service'`：静态调用链追踪（近似，需动态复核）。
+- `scripts/dex_dump.py --package <包名> [--pid N]` + `scripts/dex_dump.js`：内存 DEX 扫描/导出（已在 360 加固样本实测：75 个有效 DEX；默认扫 `r--,rw-,r-x,rwx`，`--protections`/`--rounds`/`--max-bytes` 可调；需 root + frida-server）。
+- `scripts/il2cpp_meta.py <global-metadata.dat>`：Unity IL2CPP 元数据 header/字符串线索（手机端最小解析）。
+- `references/signature-recovery.md`：签名 / 加密参数逆向流程。
