@@ -43,7 +43,9 @@ VER=$(cat "$ROOT/VERSION" 2>/dev/null | tr -d '[:space:]')
 if [ -n "$VER" ]; then
     sed -i -E "s#@v[0-9]+\.[0-9]+\.[0-9]+/assets/badges/version\.svg#@v$VER/assets/badges/version.svg#g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
     sed -i -E "s#>v[0-9]+\.[0-9]+\.[0-9]+<#>v$VER<#" "$ROOT/assets/badges/version.svg" 2>/dev/null || true
-    echo "徽章版本已同步: v$VER"
+    # At a glance 表格里的版本号也自动同步（| vX.Y.Z | 形式）
+    sed -i -E "s/\| v[0-9]+\.[0-9]+\.[0-9]+ \|/| v$VER |/g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
+    echo "徽章与表格版本已同步: v$VER"
 fi
 
 echo "== 2/4 打包 =="

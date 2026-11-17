@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.6.2 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.6.3 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -110,7 +110,7 @@ APK
 | **插件命令** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
 | **手动包** | 下载 Release 的 zip → 解压 → `dsh plugin --profile web add <目录>` |
 
-- 技能名：`apk-reverse`；装好后在对话里说「逆向这个 APK / 去广告 / 看付费逻辑」即可触发。
+- 技能名：`apk-reverse`；装好后在对话里说「逆向这个 APK / 分析广告组件 / 看付费逻辑」即可触发。
 - 手机端不需要 adb：DSH Go 自带手机操控工具（`screen`/`tap`/`type`/`open`/`key`/`handoff`）可做真机验证。
 - 电脑端（Linux/WSL）同样可装，命令与工具链一致。
 - **手动包要解压**：`dsh plugin add` 只接受「本地目录 / npm 包名 / github:owner/repo」，不收 zip；所以离线包要先解压成文件夹，再 `dsh plugin --profile web add <那个文件夹>`。商城安装与插件命令都不用解压。
