@@ -140,8 +140,10 @@ def check_privacy(errors):
                 if w and not w.startswith('#'):
                     words.append(w)
     if not words:
-        # 兜底：拼接构造，避免本文件自身命中；不在此列敏感词
-        words = ['摘' + '要', '内' + '部版']
+        # 没有本地私有词表（如 GitHub Actions 的干净克隆）时，无法得知维护者的
+        # 敏感词；用通用词兜底只会误报，因此跳过词表检查并提示。
+        print('  (未发现本地私有词表 scripts/.privacy_words.local，跳过词表检查)')
+        return
 
     skip = {os.path.normpath(__file__)}
     for p in files(('.md', '.sh', '.py')):

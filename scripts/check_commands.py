@@ -11,6 +11,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAT = re.compile(r'(?<![A-Za-z0-9_])(?:scripts|references|docs|tests)/[A-Za-z0-9_./+-]+')
 SKIP_CHARS = set('<>*{}#$|')
+# 只存在于本地、已被 .gitignore 排除的文件：干净克隆里本来就没有，不算文档错误
+LOCAL_ONLY = {'scripts/.privacy_words.local', '.privacy_words'}
 
 
 def md_files():
@@ -34,6 +36,8 @@ def main():
                 continue
             # 跳过 URL 里的路径片段（如 github.com/.../scripts/x）
             if m.start() > 0 and text[m.start() - 1] == '/':
+                continue
+            if tok in LOCAL_ONLY:
                 continue
             if not os.path.exists(os.path.join(ROOT, tok)):
                 missing.setdefault(tok, set()).add(os.path.relpath(path, ROOT))
