@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-11-17
+
+### Fixed
+
+- 还原 `LICENSE` 为规范 MIT 全文（去掉上一版开头的 `SPDX-License-Identifier` 行）：GitHub 许可证识别器会把带该行的文件判为 `NOASSERTION`，导致 dsh.so 等商城读不到 SPDX，出现「无法确定 SPDX 标识」警告
+- 还原后 GitHub API `license.spdx_id` 为 `MIT`，商城可直接识别
+
+
 ## [0.6.0] - 2026-11-17
 
 ### Fixed
