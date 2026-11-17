@@ -6,6 +6,20 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-11-18
+
+### Changed
+
+- README 主页安装说明改为**中英双语**（中文块直接放进 `README.md`，此前中文只在 `README_zh.md`，GitHub 默认只显示 README.md）
+- 版本徽章由静态 SVG 改为**动态徽章**（shields.io 读取最新 Release），发版后自动更新，不用再手改
+- 发行说明不再写「精确版本」字样；安装段只列**已上架**的渠道（当前 awesome-dsh-plugin），未上架商城不写
+- 安装说明补充「手动包要解压」：`dsh plugin add` 只接受目录/npm/github，不收 zip；商城与插件命令无需解压
+
+### Fixed
+
+- CI：干净克隆里没有本地私有词表时，`check_repo.py --public` 会把文档中文词误判为隐私标记而失败；现在无本地词表时跳过词表扫描（本地/发布仍完整扫描），`check_commands.py` 同时放行本地私有文件
+
+
 ## [0.6.2] - 2026-11-17
 
 ### Fixed

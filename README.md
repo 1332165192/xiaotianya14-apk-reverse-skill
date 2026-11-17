@@ -11,6 +11,21 @@
 - Skill name: `apk-reverse`. Trigger it by asking to reverse/decode an APK, remove ads, or inspect entitlement logic.
 - On a phone you do **not** need adb: DSH Go ships phone-control tools (`screen`, `tap`, `type`, `open`, `key`, `handoff`) for on-device verification.
 - Desktop (Linux/WSL) works with the same commands and toolchain.
+- **Manual package needs unzipping**: `dsh plugin add` accepts a local directory, an npm package, or `github:owner/repo` — not a zip. Unzip the release package first, then run `dsh plugin --profile web add <unzipped-dir>`. Marketplace and plugin-command installs need no unzip.
+
+### 中文说明（安装到 DSH Go）
+
+| 方式 | 操作 |
+|---|---|
+| **DSH Go 商城**（推荐） | App → 插件市场 → 搜 `apk-reverse` → 安装；重启内核生效 |
+| **插件命令** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
+| **手动包** | 下载 Release 的 zip → 解压 → `dsh plugin --profile web add <目录>` |
+
+- 技能名：`apk-reverse`；装好后在对话里说「逆向这个 APK / 去广告 / 看付费逻辑」即可触发。
+- 手机端不需要 adb：DSH Go 自带手机操控工具（`screen`/`tap`/`type`/`open`/`key`/`handoff`）可做真机验证。
+- 电脑端（Linux/WSL）同样可装，命令与工具链一致。
+- **手动包要解压**：`dsh plugin add` 只接受「本地目录 / npm 包名 / github:owner/repo」，不收 zip；所以离线包要先解压成文件夹，再 `dsh plugin --profile web add <那个文件夹>`。商城安装与插件命令都不用解压。
+- 商城收录情况：当前已在 **awesome-dsh-plugin** 上架；其他商城尚在审核/抓取中，搜不到时请用上面的「插件命令」或「手动包」。
 
 <p align="right">(<a href="#about">Back to top</a>)</p>
 
@@ -28,7 +43,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">Unpack it, understand it, patch it, prove it works.</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://img.shields.io/github/v/release/xiaotianya14/apk-reverse-skill?label=version&color=2ea44f" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
