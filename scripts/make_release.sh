@@ -45,6 +45,8 @@ sync_version_badge() {
         sed -E "s#>v[0-9]+\.[0-9]+\.[0-9]+<#>v$VER<#" "$ROOT/assets/badges/version.svg"             > "$ROOT/assets/badges/version-$VER.svg"
     fi
     sed -i -E "s#>v[0-9]+\.[0-9]+\.[0-9]+<#>v$VER<#" "$ROOT/assets/badges/version.svg" 2>/dev/null || true
+    # 清掉其它旧版本徽章文件（按版本号命名的都只保留当前版本）
+    find "$ROOT/assets/badges" -maxdepth 1 -name 'version-[0-9]*.svg' ! -name "version-$VER.svg" -delete 2>/dev/null || true
     # README 引用换成当前版本号的文件名
     sed -i -E "s#assets/badges/version-[0-9]+\.[0-9]+\.[0-9]+\.svg#assets/badges/version-$VER.svg#g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
     # At a glance 表格版本号

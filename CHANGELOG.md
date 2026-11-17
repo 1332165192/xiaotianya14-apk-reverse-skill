@@ -6,6 +6,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.5] - 2026-11-17
+
+### Fixed
+
+- `manifest_summary.py` 支持 `-h` / `--help`（之前会把它当成路径报错）
+- `build_sign.sh` 缺少参数时的用法提示不再出现乱前缀，直接给出正确用法
+- 发版时自动清理旧版本徽章图片，仓库不再堆积历史版本文件
+
 ## [0.6.4] - 2026-11-17
 
 - 发布包里不再附带历史遗留的 npm 打包文件（`dsh-skill-apk-reverse-0.5.13.tgz`），解压后不会再看到旧版本号

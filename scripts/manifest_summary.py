@@ -17,6 +17,9 @@ def main():
     if len(sys.argv) < 2:
         print(__doc__)
         return 2
+    if sys.argv[1] in ('-h', '--help'):
+        print(__doc__)
+        return 0
     p = sys.argv[1]
     if os.path.isdir(p):
         p = os.path.join(p, 'AndroidManifest.xml')

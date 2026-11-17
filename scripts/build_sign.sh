@@ -3,7 +3,11 @@
 # 用法: build_sign.sh <apktool解码目录> [输出apk] [keystore] [密码]
 set -euo pipefail
 
-DEC="${1:?用法: build_sign.sh <解码目录> [输出apk] [keystore] [密码]}"
+if [ $# -lt 1 ]; then
+    echo "用法: build_sign.sh <解码目录> [输出apk] [keystore] [密码]" >&2
+    exit 2
+fi
+DEC="$1"
 OUT="${2:-$(dirname "$DEC")/mod_signed.apk}"
 KS="${3:-$HOME/mod.ks}"
 PASS="${4:-modmod1}"
