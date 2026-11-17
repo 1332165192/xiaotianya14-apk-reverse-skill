@@ -6,6 +6,17 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-17
+
+### Fixed
+
+- `LICENSE` 顶部加入 `SPDX-License-Identifier: MIT`，便于 dsh.so / dsh-go-market 等商城自动识别许可证（此前显示「无法确定 SPDX 标识」）
+
+### Notes
+
+- 本版仍为精确版本号 `0.6.0`；此后每次发布都是一个新的精确版本（如 0.6.1），市场条目只需同步这一个版本号
+
+
 ## [0.5.15] - 2026-11-17
 
 ### Changed
