@@ -38,6 +38,14 @@ check() {
 echo "== 1/4 自检（$MODE）=="
 check "$ROOT" || { echo "自检失败，停止发布"; exit 1; }
 
+# 同步版本徽章（README 用 jsdelivr 的版本 tag URL，避免 CDN 旧缓存；发版时自动改成当前版本）
+VER=$(cat "$ROOT/VERSION" 2>/dev/null | tr -d '[:space:]')
+if [ -n "$VER" ]; then
+    sed -i -E "s#@v[0-9]+\.[0-9]+\.[0-9]+/assets/badges/version\.svg#@v$VER/assets/badges/version.svg#g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
+    sed -i -E "s#>v[0-9]+\.[0-9]+\.[0-9]+<#>v$VER<#" "$ROOT/assets/badges/version.svg" 2>/dev/null || true
+    echo "徽章版本已同步: v$VER"
+fi
+
 echo "== 2/4 打包 =="
 ZIP="$OUT/${ZIPNAME}.zip"
 rm -f "$ZIP"
