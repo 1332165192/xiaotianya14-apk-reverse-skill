@@ -11,7 +11,8 @@ set -uo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/.." && pwd)
 ROOTNAME=$(basename "$ROOT")
-OUT="${OUT:-/sdcard/Download}"
+DL_BASE="${DL_BASE:-/sdcard/Download}"
+OUT="${OUT:-$DL_BASE/DSH-Go}"
 MODE=normal
 ZIPNAME="$ROOTNAME"
 

@@ -17,7 +17,8 @@ set -u
 
 VER="17.26.2"
 SRC="/root/tools/frida-server-${VER}-android-arm64"
-DST_DIR="${DST_DIR:-/sdcard/Download}"
+DL_BASE="${DL_BASE:-/sdcard/Download}"
+DST_DIR="${DST_DIR:-$DL_BASE/DSH-Go}"
 DST="$DST_DIR/frida-server-${VER}-arm64"
 PORT="27043"                     # 27042 是 宿主自带实例，禁止使用
 MODE="prep"
@@ -167,7 +168,7 @@ cat <<EOF
  在 Termux 里依次粘贴执行（3 条）：
 ┌────────────────────────────────────────────────────────┐
   su
-  cp /sdcard/Download/frida-server-${VER}-arm64 /data/local/tmp/frida-server
+  cp ${DST_DIR}/frida-server-${VER}-arm64 /data/local/tmp/frida-server
   chmod 755 /data/local/tmp/frida-server && /data/local/tmp/frida-server -l 127.0.0.1:${PORT} &
 └────────────────────────────────────────────────────────┘
 
