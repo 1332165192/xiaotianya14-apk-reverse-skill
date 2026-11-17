@@ -6,6 +6,11 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.4] - 2026-11-17
+
+- 发布包里不再附带历史遗留的 npm 打包文件（`dsh-skill-apk-reverse-0.5.13.tgz`），解压后不会再看到旧版本号
+- 打包脚本增加排除规则（*.tgz / *.zip），仓库忽略打包产物
+
 ## [0.6.3] - 2026-11-18
 
 ### Changed

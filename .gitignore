@@ -13,3 +13,7 @@ assets/banner-*.png
 assets/.trashed-*
 # local-only files
 scripts/.privacy_words.local
+
+# 打包产物不入库
+*.tgz
+*.zip

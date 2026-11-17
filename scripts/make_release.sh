@@ -35,24 +35,33 @@ check() {
     esac
 }
 
-echo "== 1/4 自检（$MODE）=="
-check "$ROOT" || { echo "自检失败，停止发布"; exit 1; }
-
-# 同步版本徽章（README 用 jsdelivr 的版本 tag URL，避免 CDN 旧缓存；发版时自动改成当前版本）
-VER=$(cat "$ROOT/VERSION" 2>/dev/null | tr -d '[:space:]')
-if [ -n "$VER" ]; then
-    sed -i -E "s#@v[0-9]+\.[0-9]+\.[0-9]+/assets/badges/version\.svg#@v$VER/assets/badges/version.svg#g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
+# 同步版本徽章（发版前执行，保证 README/表格/SVG 与 VERSION 一致）
+sync_version_badge() {
+    local VER
+    VER=$(cat "$ROOT/VERSION" 2>/dev/null | tr -d '[:space:]')
+    [ -n "$VER" ] || return 0
+    # 按版本号生成新的徽章文件（jsdelivr 对同名文件缓存久，换名字可立即生效）
+    if [ -f "$ROOT/assets/badges/version.svg" ]; then
+        sed -E "s#>v[0-9]+\.[0-9]+\.[0-9]+<#>v$VER<#" "$ROOT/assets/badges/version.svg"             > "$ROOT/assets/badges/version-$VER.svg"
+    fi
     sed -i -E "s#>v[0-9]+\.[0-9]+\.[0-9]+<#>v$VER<#" "$ROOT/assets/badges/version.svg" 2>/dev/null || true
-    # At a glance 表格里的版本号也自动同步（| vX.Y.Z | 形式）
+    # README 引用换成当前版本号的文件名
+    sed -i -E "s#assets/badges/version-[0-9]+\.[0-9]+\.[0-9]+\.svg#assets/badges/version-$VER.svg#g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
+    # At a glance 表格版本号
     sed -i -E "s/\| v[0-9]+\.[0-9]+\.[0-9]+ \|/| v$VER |/g" "$ROOT/README.md" "$ROOT/README_zh.md" 2>/dev/null || true
     echo "徽章与表格版本已同步: v$VER"
-fi
+}
+
+sync_version_badge
+
+echo "== 1/4 自检（$MODE）=="
+check "$ROOT" || { echo "自检失败，停止发布"; exit 1; }
 
 echo "== 2/4 打包 =="
 ZIP="$OUT/${ZIPNAME}.zip"
 rm -f "$ZIP"
 cd "$(dirname "$ROOT")" || exit 1
-zip -qr "$ZIP" "$ROOTNAME" -x "*__pycache__*" "*.pyc" "*.bak" "*/.git/*" || { echo "打包失败"; exit 1; }
+zip -qr "$ZIP" "$ROOTNAME" -x "*__pycache__*" "*.pyc" "*.bak" "*/.git/*" "*.tgz" "*.zip" || { echo "打包失败"; exit 1; }
 echo "   $ZIP"
 
 echo "== 3/4 完整性 + SHA256 =="
