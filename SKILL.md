@@ -400,6 +400,7 @@ bash scripts/frida_server_prep.sh --stop-hint # ⑤ 提醒用户关闭
 ```
 
 用户端要粘贴的命令（`frida_server_prep.sh` 会打印，这里备查）：
+（`<输出目录>` = 脚本的 `DST_DIR`，默认 `$DL_BASE/DSH-Go`，`DL_BASE` 默认 `/sdcard/Download`；实际路径以脚本打印为准）
 ```sh
 su
 cp <输出目录>/frida-server-17.26.2-arm64 /data/local/tmp/frida-server

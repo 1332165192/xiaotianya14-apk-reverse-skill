@@ -61,7 +61,7 @@ AI: "这个判定点被混淆了，静态找不到，需要开一次 Frida 动�
 本机已装 **Termux**（`com.termux`），root 管理器是 **KernelSU**（`me.weishu.kernelsu`）。
 
 1. AI 先跑：`bash scripts/frida_server_prep.sh`
-   → 会把 frida-server 复制到 `<输出目录>/frida-server-17.26.2-arm64`，并给你操作卡。
+   → 会把 frida-server 复制到 `<输出目录>/frida-server-17.26.2-arm64`（`<输出目录>` = `DST_DIR`，默认 `$DL_BASE/DSH-Go`），并给你操作卡。
 2. 打开 **Termux**，输入 `su` 回车；KernelSU 弹「授予超级用户」→ 点**允许**（只授权 Termux 即可）。
 3. 复制粘贴这 3 条（一条一条执行）：
 
