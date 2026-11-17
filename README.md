@@ -52,7 +52,7 @@
 
 | Way | Action |
 |---|---|
-| **DSH Go marketplace** (recommended) | App → Plugins → search `apk-reverse` → install; restart the core |
+| **DSH Go App marketplace** (recommended; index data from awesome-dsh-plugin) | App → Plugins → search `apk-reverse` → install; restart the core |
 | **Plugin command** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
 | **Manual** | Download the release zip, unzip, `dsh plugin --profile web add <dir>` |
 
@@ -73,7 +73,7 @@
 - 手机端不需要 adb：DSH Go 自带手机操控工具（`screen`/`tap`/`type`/`open`/`key`/`handoff`）可做真机验证。
 - 电脑端（Linux/WSL）同样可装，命令与工具链一致。
 - **手动包要解压**：`dsh plugin add` 只接受「本地目录 / npm 包名 / github:owner/repo」，不收 zip；所以离线包要先解压成文件夹，再 `dsh plugin --profile web add <那个文件夹>`。商城安装与插件命令都不用解压。
-- 商城收录情况：当前已在 **awesome-dsh-plugin** 上架；其他商城尚在审核/抓取中，搜不到时请用上面的「插件命令」或「手动包」。
+- 收录情况：目前公开索引仅 **awesome-dsh-plugin** 收录（App 插件市场读的就是这份目录）；dsh.so / dshfind 尚未收录，请用「插件命令」或「手动包」。
 
 <p align="right">(<a href="#about">Back to top</a>)</p>
 

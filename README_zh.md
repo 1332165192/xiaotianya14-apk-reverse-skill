@@ -106,7 +106,7 @@ APK
 
 | 方式 | 操作 |
 |---|---|
-| **DSH Go 商城**（推荐） | App → 插件市场 → 搜 `apk-reverse` → 安装；重启内核生效 |
+| **DSH Go App 插件市场**（推荐；目录数据来自 awesome-dsh-plugin） | App → 插件市场 → 搜 `apk-reverse` → 安装；重启内核生效 |
 | **插件命令** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
 | **手动包** | 下载 Release 的 zip → 解压 → `dsh plugin --profile web add <目录>` |
 
