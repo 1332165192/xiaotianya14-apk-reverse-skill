@@ -6,6 +6,13 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-11-17
+
+### Fixed
+
+- 发布 zip 改为**根目录铺平**（LICENSE、SKILL.md、scripts 等直接在压缩包根目录，不再包一层 `apk-reverse-git/`）：dsh.so 等商城扫描 Release 附件时按根路径查找 `LICENSE`，旧包会找不到而报「无法确定 SPDX 标识」
+
+
 ## [0.6.1] - 2026-11-17
 
 ### Fixed
