@@ -255,9 +255,14 @@ def cmd_resolve(args: argparse.Namespace) -> int:
         print(f"没有能力 {args.capability} 的工具", file=sys.stderr)
         return 2
     r = rows[0]
-    print(f"mode={mode} capability={args.capability} -> {r['id']} ({r.get('type')})")
+    print(f"mode={mode} capability={args.capability} -> {r['id']} ({type_label(r)})")
+    print(f"installed: {'yes' if r.get('installed') else 'no'}")
     if r.get("type") == "self" and mode == "thirdparty":
-        print("注意：当前 thirdparty 模式，不建议调用自研工具；请切换到 self/hybrid。")
+        if any(x.get("type") == "third_party" for x in rows):
+            print("第三方有同类工具，但当前都不适用/未安装；先按 plan 安装，不要默认调用自研。")
+            print("如确需自研，切 `mode self` 或 `mode hybrid`。")
+        else:
+            print("第三方没有同类工具 → 回退自研（实验性）；建议先 dry-run/小样本验证，失败再切 thirdparty。")
     print(f"source: {r.get('source','')}")
     return 0
 
