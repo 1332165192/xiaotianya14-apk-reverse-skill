@@ -92,68 +92,15 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 | adb 端口又变了 / 自动连不上 | `scripts/adb_common.sh` 内置端口扫描；`device_adb_guard.sh status` 会自动 connect |
 | 动态调试（Frida，需用户配合） | §9 强制告知 → `references/dynamic-hook-help.md` + `scripts/frida_server_prep.sh`；环境细节见 `protection-map.md` §七 |
 
-## §1 工具清单（本机已验证）
+## §1 工具链（按需，不打包）
 
-| 工具 | 版本/安装 | 用途 |
-|---|---|---|
-| `java` | OpenJDK 21（`/usr/bin/java`） | jadx/apktool/apksigner/keytool 运行时 |
-| `apktool` | 2.7.0（apt） | 解包/重打包（**必须 `--use-aapt2`**） |
-| `jadx` | 1.5.1（`/root/jadx/bin/jadx`，github 下载） | Java 源码反编译（源码交付物） |
-| `apksigner` / `zipalign` | apt | 对齐、v1/v2/v3 签名、验签 |
-| `aapt` / `aapt2` | apt（ARM64） | badging/清单导出（**aapt2 过旧，见坑区**） |
-| `python3` / `unzip` / `zip` / `keytool` | 自带 | 脚本、拆包、keystore |
-| `frida` / `frida-tools` | **已装** 17.26.2（`frida` 已在 PATH）| 动态 Hook：权益判定/数值/响应（需用户 root 起 frida-server）|
-| `frida-server` | **已下载** `/root/tools/frida-server-17.26.2-android-arm64` | 设备端；用户 root 终端拷到 `/data/local/tmp` 启动 |
-| `androguard` / `lief` / `blackboxprotobuf` | **已装**（pip）| dex/APK 解析、.so 读写、protobuf 存档解析 |
-| `sqlite3` / `jq` / `xxd` / `xz` | **已装**（apt）| 改存档数据库、JSON、十六进制、解压 |
-| `radare2` / `binutils` | **已装**（r2 5.5.0 / strings 2.42）| `.so` 分析/改指令、`strings` |
-| `mitmproxy` | **已装** 12.3.1（`mitmdump` / `mitmweb` 在 PATH）| 抓 HTTPS 看服务端权益/数值接口、改响应（证书+代理见 `protection-map.md` §六）|
-| `apk-mitm` | **已装** 1.3.0（node 全局，`apk-mitm` 命令）| 重打包自动改 `network_security_config` 信任用户 CA，绕 Java 层证书固定（§六 路径 B）|
-| `tcpdump` / `ngrep` | **已装** 4.99.4 / 1.47.1（apt）| 不走系统代理的原始流量：Flutter/自定义协议/QUIC，pcap 落盘再分析；**proot 内无 CAP_NET_RAW，真机抓包在 root 侧跑** |
-| `apkid` / `binwalk` | **已装** apkid 3.2.0 / binwalk 2.3.3（apt 版；pip 的 2.1.0 是残缺 stub 已弃用）| 加固壳/混淆一键识别；扫 APK/.so 里的嵌套 dex、加密 payload |
-| `CFR` / `smali3` | **已装** CFR 0.152（`java -jar /root/tools/jars/cfr.jar <jar>`，吃 jar/class 不吃 dex）；`smali3` / `baksmali3` 3.0.9（PATH 直接调）| 新 dex 指令集反编译/回编（baksmali3/smali3）、SDK jar 源码恢复（CFR）|
-| `objection` | **已装** 1.12.5（`objection -g <包名> explore`）| Frida 封装：`android sslpinning disable` 一键解证书固定（需先起 frida-server）|
+先跑 `python3 scripts/tool_manager.py plan --task <decode|analyze|dynamic|network|sign|unpack>`，把「缺什么 / 体积 / 许可证 / 第三方 vs 自研」给用户看，**确认后**再装。默认 **thirdparty + minimal**；第三方工具不打包，只留来源/许可证/校验入口。完整清单、版本、apt/pip 注意事见 `references/toolchain.md`。
 
-> `unidbg`/`Ghidra` **本机不装**（理由与替代见 `references/mobile-toolchain.md`「深度逆向与抓包工具」）；同批装了 `yara` 4.5.0、`hermes-dec` 0.1.8、`protoc` 3.21.12。
+关键事实：**jadx 不在 apt 源**（GitHub 下载）；**build-tools 34 的 aapt2 是 x86_64，ARM 手机跑不了**（用 aarch64 系统 aapt2 + apktool 2.7）；**pip 装 frida 用官方源**（清华镜像 403）；**frida-server 需 root**；**本机不装 Ghidra/IDA**，桌面场景见 `references/mobile-toolchain.md`。
 
-**手机端 App（非 CLI）**按需装，挑法见 `references/android-app-tools.md`：只装 App Manager / LibChecker / PCAPdroid 这类开源工具，
-不装修改成品/加载器；多数活 CLI 已经能做，别堆 App。
+## §2 配套脚本
 
-**缺工具不用手动装**：跑 `bash scripts/install_tools.sh`，它按「本地缓存 → 镜像/官方源」自动补齐
-（apt 类、pip 类、frida-server、jadx），完事自动跑 `toolcheck.sh` 验一遍。
-下载链接与镜像说明见 `references/mobile-toolchain.md`；本机缓存目录 `/root/tools/toolcache`（有离线包先用）。
-
-安装/修复命令见 `references/mobile-toolchain.md`。关键事实：**jadx 不在 apt 源**，要从 GitHub 下载（用 `gh-proxy.com` 镜像）；**build-tools 34 的 aapt2 是 x86_64，ARM 手机跑不了（SIGILL）**，只能用系统 aarch64 aapt2 + apktool 2.7；**pip 装 frida 要用官方源**（清华镜像对 frida wheel 返回 403），装完先 `export PATH="/opt/python/bin:$PATH"`（`frida`/`frida-ps` 默认不在 PATH）。
-
-## §2 配套脚本（`$SK/scripts/`）
-
-> 开工先 `bash scripts/toolcheck.sh`；缺工具 `bash scripts/install_tools.sh`（缓存/镜像/官方源，装完自检），换机重装同样一条命令补齐（本机已齐全）。
-
-| 脚本 | 用途 |
-|---|---|
-| `decode.sh` | 一键 jadx + apktool 落盘 + Triage 摘要（包名/java/smali/so） |
-| `manifest_summary.py` | 抽 manifest：包名、启动 Activity、权限、组件、debuggable/allowBackup |
-| `analyze_ads.py` | 广告特征扫描：SDK 包名、广告字符串+资源 ID 反查、开关候选类 |
-| `merge_splits.py` | AAB 拆分包资源/原生库合并进 base（跳过 split 的 public.xml） |
-| `fix_dollar_resources.py` | 修复 `$mtrl_*` 等非法资源名（重命名+public.xml+引用，资源 ID 不变） |
-| `manifest_clean.py` | 清拆分包标记、广告权限、AdMob 组件与 meta-data |
-| （npm/Release 包不含） | pairip 授权壳：发布包不提供自动放行脚本，手动补丁见 `references/patch-patterns.md` §五 |
-| `install_tools.sh` | 自动装缺失工具：apt / pip / frida-server / jadx（缓存优先，失败回退镜像），装完自检；`--re` 补深度逆向/抓包，`--community` 按需装社区工具（Vineflower/dex2jar/bundletool/unicorn），`--net` 抓包编译链|
-| `toolcheck.sh` | 工具链自检（新会话先跑，退出码 0 = 齐）|
-| `adb_device.sh` | **真机 root 通道**（adb）：`check` / `frida start\|stop\|status` / `tcpdump start\|stop\|pull` / `logcat` / `install` / `uninstall` / `clear` / `start` / `stop` / `info` / `screencap` / `push` / `pull`（`-h` 看全量；serial **自动发现**：5555 或无线调试随机端口如 `127.0.0.1:42777`，可 `--serial`/`ADB_SERIAL` 指定）|
-| `device_input.sh` | 输入法安全：`detect`（识别拼音/双拼/九键）/ `url`（不打字开网址）/ `type --switch-ime`（临时切英文键盘）/ `ascii list\|on\|off` |
-| `device_adb_guard.sh` | adb 通道守口（**只检查、不自动关**）：`status` 只读检查（自动发现目标 serial/在线/root/两调试开关/是否重启过）、`close` **只打印手动关闭步骤**（不改 settings、不跑 `adb usb`）、`open-hint` 恢复步骤、`policy` 开/关规则 |
-| `device_perm_chain.sh` | **权限链路检测（只读，两层）**：能力层（adb root / 本机 su / App 侧 su / rish，真提权成功才算）+ 迹象层（/proc/modules 的 kernelsu、su 隐藏、适配状态、管理器包名）；`--channel` 只输出通道名（exit 0=真 root / 2=shell 级 / 1=无）；判据见 `references/perm-chain.md` |
-| `device_ui.sh` | **adb 界面操控**：`foreground` / `launch` / `dump` / `tap` / `swipe` / `key` / `text` / `screen` / `wait` / `apps`（adb 优先的混合操控入口，见 `references/device-control.md`）|
-| `frida_server_prep.sh` | 复制 frida-server 到 /sdcard + 打印用户操作卡（adb 通道不可用时的兜底）；`--auto` 走 adb 自动启动、`--status` 验证、`--stop-hint` 关闭（serial **自动发现**：5555 或无线调试随机端口，可 `--serial`/`ADB_SERIAL` 指定） |
-| `identity_report.py` | 本地身份卡：包名/版本/签名指纹/SDK/ABI/权限/结构，**替代上网搜应用判身份** |
-| `scan_premium.py` | 付费权益 + 数值定位扫描：付费点 SDK、权益判定类、货币字段、存档点、接口 URL、完整性校验、native 线索 |
-| `find_api_calls.py` | 扫接口线索：硬编码 URL/ws、Retrofit 注解、OkHttp/Volley/WebSocket、GraphQL、认证参数（Authorization/sign/token）、可疑密钥；`--json`/`--report` |
-| `patch_method.py` | 定点补丁：方法返回固定值（权益判定恒真 / 数值改大）、静态字段初值、方法签名查找；支持 `--dry-run`/`--restore`，自动 `.bak` |
-| `so_patch.py` | **原生 .so 补丁**：`info`/`find`（符号·字符串）/ `patch` NOP·恒真·常数返回·hex（按 VA/Offset/符号，自动 .bak）/ `restore` |
-| `build_sign.sh` | 一键打包(--use-aapt2)→zipalign→keystore→apksigner→verify |
-
-脚本均已在实测（单元测试 + 真实 smali 补丁 + 端到端打包签名）。
+脚本按能力分组，完整清单见 `references/scripts.md`。开工先 `bash scripts/toolcheck.sh`（会附带按需清单）；缺工具用 `tool_manager.py`，不要直接全量装。
 
 ## §3 标准工作流
 

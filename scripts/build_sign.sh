@@ -39,3 +39,6 @@ apksigner sign --ks "$KS" --ks-pass "pass:$PASS" --key-pass "pass:$PASS" -out "$
 echo "== 4/4 验证 =="
 apksigner verify "$OUT" && echo "SIGN_OK: $OUT"
 ls -la "$OUT"
+if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$OUT"
+fi

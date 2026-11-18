@@ -8,6 +8,8 @@
 #   bash scripts/install_tools.sh --pip      # 只补 pip 类 Python 工具
 #   bash scripts/install_tools.sh --frida    # 只补 frida-server
 #   bash scripts/install_tools.sh --jadx     # 只补 jadx
+#   bash scripts/install_tools.sh --only jadx # 只补单个工具（推荐；按需下载用）
+#   bash scripts/install_tools.sh --plan      # 交给 tool_manager，只列清单不下载
 #   bash scripts/install_tools.sh --re       # 深度逆向：apkid/binwalk/hermes-dec/objection + apk-mitm +
 #                                            # CFR 0.152 + smali/baksmali 3.0.9（jar + smali3/baksmali3 包装）
 #   bash scripts/install_tools.sh --net      # 抓包编译链 + mitmproxy（体积大、耗时长，单独跑）
@@ -142,8 +144,19 @@ pymod() { python3 -c "import $1" >/dev/null 2>&1; }
 jar_ok() { [ -s "$1" ] && has java && java -jar "$1" --version >/dev/null 2>&1; }
 
 MODE="all"
+# 新入口：交给按需管理器（只列清单 / 只装用户确认的 ids）
+if [ "${1:-}" = "--plan" ]; then
+    shift
+    exec python3 "$HERE/tool_manager.py" plan "$@"
+fi
+if [ "${1:-}" = "--manager-ids" ]; then
+    shift
+    exec python3 "$HERE/tool_manager.py" install --ids "$*" --yes
+fi
+
 case "${1:-}" in
     --check) MODE="check" ;;
+    --only) MODE="only"; ONLY="${2:-}"; shift 2 ;;
     --apt) MODE="apt" ;;
     --pip) MODE="pip" ;;
     --frida) MODE="frida" ;;
@@ -614,8 +627,24 @@ jadx_group() {
       && ln -sf "$JADX_BIN" /usr/local/bin/jadx 2>/dev/null && green "jadx 已安装: $($JADX_BIN --version 2>&1 | head -1)"
 }
 
+only_group() {
+    case "$ONLY" in
+        jadx) jadx_group ;;
+        apktool) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apktool ;;
+        aapt2) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends aapt ;;
+        apksigner) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apksigner ;;
+        zipalign) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends zipalign ;;
+        adb) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends adb ;;
+        python-androguard) pip_install_log androguard ;;
+        python-frida) pip_install_log frida frida-tools ;;
+        frida|frida-server) frida_group ;;
+        *) red "不支持 --only $ONLY（组安装项：cfr/smali/baksmali/dex2jar/bundletool/mitmproxy；用 tool_manager.py 加 --allow-group）"; return 2 ;;
+    esac
+}
+
 main() {
     case "$MODE" in
+        only) only_group; return $? ;;
         apt) apt_group ;;
         pip) pip_group ;;
         frida) frida_group ;;

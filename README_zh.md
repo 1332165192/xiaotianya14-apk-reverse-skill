@@ -132,7 +132,7 @@ python3 scripts/tool_manager.py plan --task decode
 python3 scripts/tool_manager.py install --task decode --yes   # 用户确认后才执行
 ```
 
-它会列出缺失项、体积、许可证，以及「第三方成熟工具 / 内部自研」选择。**默认启用第三方**：自研工具还未完善，先给用户成熟方案；thirdparty 模式下不调用未完善的自研同名工具。默认最小集、不静默下载；可用 `mode self` / `mode hybrid` 切回。
+它会列出缺失项、体积、许可证，以及「第三方成熟工具 / 内部自研」选择。单工具安装：`bash scripts/install_tools.sh --only jadx`；组安装工具仍由 `--allow-group` 保护。**默认启用第三方**：自研工具还未完善，先给用户成熟方案；thirdparty 模式下不调用未完善的自研同名工具。默认最小集、不静默下载；可用 `mode self` / `mode hybrid` 切回。
 
 ### 版本节奏（0.x）
 

@@ -34,6 +34,8 @@
    ```
 6. 复核：`python3 scripts/tool_manager.py status`。
 
+**组安装**：`cfr` / `smali` / `baksmali` / `dex2jar` / `bundletool` / `mitmproxy` 目前仍复用 `install_tools.sh` 的组参数；默认跳过，需 `--allow-group`。单工具（jadx/apktool/aapt2/apksigner/zipalign/adb/frida）走 `--only <id>`。
+
 **禁止**：不先问就 `install_tools.sh` 全装；不把 `--profile full` 当默认；不在用户不知情时下载。
 
 ## 3. 三种模式

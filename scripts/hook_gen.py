@@ -467,6 +467,7 @@ def main(argv=None):
                     help='original|true|false|null|int:<n>|string:<s>（默认 original）')
     ap.add_argument('--args', action='store_true', help='打印每个入参')
     ap.add_argument('--out', help='写入文件；只生成模式省略则打印到 stdout，--run 模式建议加 --out 存档')
+    ap.add_argument('--dry-run', action='store_true', help='只打印生成的 JS，不写文件、不注入')
 
     g = ap.add_mutually_exclusive_group()
     g.add_argument('--package', help='一键注入目标包名（配合 --run；可加 --spawn）')
@@ -481,6 +482,9 @@ def main(argv=None):
                     help='观察秒数（默认 10；0 = 一直等到 Ctrl-C）')
     args = ap.parse_args(argv)
 
+    if args.dry_run and args.run:
+        _print_err('--dry-run 不能和 --run 一起用（dry-run 只生成不注入）')
+        return 2
     if not args.run:
         if args.package or args.pid or args.spawn:
             _print_err('指定了 --package/--pid/--spawn，但没有 --run（只生成模式不需要目标）。\n'
@@ -506,6 +510,10 @@ def main(argv=None):
     except ValueError as exc:
         _print_err(str(exc))
         return 2
+
+    if args.dry_run:
+        print(js)
+        return 0
 
     if args.out:
         with open(args.out, 'w', encoding='utf-8') as f:

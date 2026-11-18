@@ -77,7 +77,7 @@
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --jadx",
+      "install_cmd": "bash scripts/install_tools.sh --only jadx",
       "source": "https://github.com/skylot/jadx",
       "note": "成熟方案，默认推荐；不要在第三方模式下再调用自研反编译包装。"
     },
@@ -111,10 +111,9 @@
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "install_cmd": "bash scripts/install_tools.sh --only apktool",
       "source": "https://github.com/iBotPeaches/Apktool",
-      "note": "apt 安装组；如果系统包版本旧，优先官方 jar。",
-      "install_group": "apt"
+      "note": "apt 安装组；如果系统包版本旧，优先官方 jar。"
     },
     {
       "id": "aapt2",
@@ -140,10 +139,9 @@
           "version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "install_cmd": "bash scripts/install_tools.sh --only aapt2",
       "source": "https://developer.android.com/tools/aapt2",
-      "note": "Android SDK 工具；随 apt 组安装。",
-      "install_group": "apt"
+      "note": "Android SDK 工具；随 apt 组安装。"
     },
     {
       "id": "apksigner",
@@ -167,10 +165,9 @@
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "install_cmd": "bash scripts/install_tools.sh --only apksigner",
       "source": "https://developer.android.com/tools/apksigner",
-      "note": "重打包后签名必需。",
-      "install_group": "apt"
+      "note": "重打包后签名必需。"
     },
     {
       "id": "zipalign",
@@ -191,10 +188,9 @@
       "detect": {
         "command": "zipalign"
       },
-      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "install_cmd": "bash scripts/install_tools.sh --only zipalign",
       "source": "https://developer.android.com/tools/zipalign",
-      "note": "签名前对齐。",
-      "install_group": "apt"
+      "note": "签名前对齐。"
     },
     {
       "id": "python-androguard",
@@ -215,10 +211,9 @@
       "detect": {
         "python_module": "androguard"
       },
-      "install_cmd": "bash scripts/install_tools.sh --pip",
+      "install_cmd": "bash scripts/install_tools.sh --only python-androguard",
       "source": "https://github.com/androguard/androguard",
-      "note": "Python 库；pip 组安装。",
-      "install_group": "pip"
+      "note": "Python 库；pip 组安装。"
     },
     {
       "id": "python-frida",
@@ -238,10 +233,9 @@
       "detect": {
         "python_module": "frida"
       },
-      "install_cmd": "bash scripts/install_tools.sh --frida",
+      "install_cmd": "bash scripts/install_tools.sh --only python-frida",
       "source": "https://github.com/frida/frida-python",
-      "note": "Python 端；与设备端 frida-server 版本必须一致。",
-      "install_group": "frida"
+      "note": "Python 端；与设备端 frida-server 版本必须一致。"
     },
     {
       "id": "frida",
@@ -265,10 +259,9 @@
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --frida",
+      "install_cmd": "bash scripts/install_tools.sh --only frida",
       "source": "https://github.com/frida/frida",
-      "note": "设备端 frida-server 按手机架构单独准备。",
-      "install_group": "frida"
+      "note": "设备端 frida-server 按手机架构单独准备。"
     },
     {
       "id": "frida-server",
@@ -288,10 +281,9 @@
       "detect": {
         "path": "/root/tools/frida-server-17.26.2-android-arm64"
       },
-      "install_cmd": "bash scripts/install_tools.sh --frida",
+      "install_cmd": "bash scripts/install_tools.sh --only frida-server",
       "source": "https://github.com/frida/frida/releases",
-      "note": "设备端二进制；需 adb root/本机 root 才能启动。",
-      "install_group": "frida"
+      "note": "设备端二进制；需 adb root/本机 root 才能启动。"
     },
     {
       "id": "mitmproxy",
@@ -484,10 +476,9 @@
           "version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "install_cmd": "bash scripts/install_tools.sh --only adb",
       "source": "https://developer.android.com/tools/adb",
-      "note": "真机调试通道；需要用户开启 USB/无线调试。",
-      "install_group": "apt"
+      "note": "真机调试通道；需要用户开启 USB/无线调试。"
     },
     {
       "id": "self-hook-gen",

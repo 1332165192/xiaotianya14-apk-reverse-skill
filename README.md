@@ -80,7 +80,7 @@ python3 scripts/tool_manager.py plan --task decode
 python3 scripts/tool_manager.py install --task decode --yes   # only after you confirm
 ```
 
-It shows what is missing, size, license, and the `third_party` / `self` choice. **Default: thirdparty** — mature third-party tools are enabled first because our self-developed tools are not finished yet. In `thirdparty` mode, unfinished self-developed wrappers are not used; switch with `mode self` / `mode hybrid`. Default set: **minimal**, and no silent download.
+It shows what is missing, size, license, and the `third_party` / `self` choice. Per-tool install: `bash scripts/install_tools.sh --only jadx`; group-only tools stay guarded by `--allow-group`. **Default: thirdparty** — mature third-party tools are enabled first because our self-developed tools are not finished yet. In `thirdparty` mode, unfinished self-developed wrappers are not used; switch with `mode self` / `mode hybrid`. Default set: **minimal**, and no silent download.
 
 ### Versioning & release cadence
 

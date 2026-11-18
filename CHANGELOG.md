@@ -13,6 +13,9 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - `SKILL.md` 的 ACTION REQUIRED：工具核对改为先 `tool_manager.py plan`，给用户看清单与推荐，再确认安装
+- `toolcheck.sh` 追加按需清单；`install_tools.sh` 支持 `--plan` / `--only <id>`，单工具不再被迫整组安装
+- `SKILL.md` 瘦身：工具清单/脚本清单移到 `references/toolchain.md` / `references/scripts.md`
+- `hook_gen.py` 增加 `--dry-run`；`dex_dump.py` 增加 `--summary-json`；`build_sign.sh` 完成后打印 sha256
 - `package.json.files` 加入 `tools`
 
 ## [0.8.0] - 2026-11-19

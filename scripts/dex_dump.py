@@ -20,6 +20,7 @@
 """
 import argparse
 import hashlib
+import json
 import os
 import re
 import sys
@@ -109,6 +110,7 @@ def main(argv=None):
     ap.add_argument('--protections', default='r--,rw-,r-x,rwx',
                     help="扫描的内存保护段，逗号分隔（默认 'r--,rw-,r-x,rwx'；壳解密后的 DEX 常在 rw-/rwx/r-x）")
     ap.add_argument('--max-bytes', type=int, default=0, help='单轮发送字节上限（默认 0=脚本内置 256MB）')
+    ap.add_argument('--summary-json', help='可选：把导出结果摘要写到 JSON 文件')
     args = ap.parse_args(argv)
 
     # ── 参数校验（旧版 --rounds 0 / 非法 --protections 会静默跑成空结果）──
@@ -282,6 +284,27 @@ def main(argv=None):
     if pkg_bytes:
         print('    其中含目标包名 %s 的: %d / %d（其余多为系统框架/boot vdex 等内存 DEX）' % (
             args.package, app_count, len(saved)))
+
+    if args.summary_json:
+        summary = {
+            'package': args.package,
+            'pid': args.pid,
+            'out': args.out,
+            'count': len(saved),
+            'total_bytes': sum(x[1] for x in saved),
+            'skipped_dup': skipped_dup,
+            'rejected': dict(rejected),
+            'dex': [
+                {'path': x[0], 'size': x[1], 'sha256': x[2], 'version': x[3], 'is_app': x[4]}
+                for x in saved
+            ],
+        }
+        try:
+            with open(args.summary_json, 'w', encoding='utf-8') as f:
+                json.dump(summary, f, ensure_ascii=False, indent=2)
+            print('摘要已写入: %s' % args.summary_json)
+        except OSError as exc:
+            print('写摘要失败: %s' % exc, file=sys.stderr)
 
     if not saved:
         print('未发现有效 DEX。排查建议: 确认目标进程已启动且壳已解密（加 --rounds 2/3）、'

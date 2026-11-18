@@ -214,3 +214,8 @@ if [ "$miss" -gt 0 ]; then
     exit 1
 fi
 green "工具链可用。"
+
+echo
+# 按需工具清单（不下载）：交给 tool_manager，默认 thirdparty + minimal。
+echo "[按需工具清单 / 不下载]"
+python3 "$HERE_DIR/tool_manager.py" plan --task "${TOOL_TASK:-decode}" 2>/dev/null || true

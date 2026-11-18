@@ -195,8 +195,8 @@ def cmd_install(args: argparse.Namespace) -> int:
         if not args.yes:
             print("\n没有可执行的第三方下载项；当前未下载任何东西。")
             return 3
-        print("没有可执行的第三方下载项。")
-        return 0
+        print("没有可执行的第三方下载项；选中项仍未安装。")
+        return 4
     print_recommendation(rows, args.task or args.profile or "通用")
     print("\n将执行（只针对选中的缺失项）：")
     for r in third:
