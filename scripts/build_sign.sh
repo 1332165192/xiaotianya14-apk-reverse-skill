@@ -1,16 +1,25 @@
 #!/bin/bash
 # APK 重打包 + 对齐 + 签名一键脚本
 # 用法: build_sign.sh <apktool解码目录> [输出apk] [keystore] [密码]
+#       build_sign.sh --help
 set -euo pipefail
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 . "$HERE/safe_rm.sh"
 
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    sed -n '2,4p' "$0"
+    exit 0
+fi
 if [ $# -lt 1 ]; then
     echo "用法: build_sign.sh <解码目录> [输出apk] [keystore] [密码]" >&2
     exit 2
 fi
 DEC="$1"
+[ -d "$DEC" ] || { echo "错误: 解码目录不存在: $DEC" >&2; exit 2; }
+for c in apktool zipalign apksigner keytool; do
+    command -v "$c" >/dev/null 2>&1 || { echo "错误: 缺命令 $c（先跑 tool_manager.py plan --task sign）" >&2; exit 2; }
+done
 OUT="${2:-$(dirname "$DEC")/mod_signed.apk}"
 KS="${3:-$HOME/mod.ks}"
 PASS="${4:-modmod1}"
