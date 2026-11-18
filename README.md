@@ -65,12 +65,13 @@
 
 ### Versioning & release cadence
 
-This project is in the **0.x fast-iteration** stage:
+This project is in the **0.x fast-iteration** stage. APIs and scripts may change.
 
-- Pin a **Release tag** for production; do not blindly follow `main`.
-- Small fixes are **batched** into one release; security-critical fixes may ship as an immediate patch.
+- **Pin a Release tag** for production; do not blindly follow `main`.
+- **SemVer**: patch for fixes (`0.8.1`), minor for new features (`0.9.0`), major for breaking changes (`1.0.0`).
+- **Regular releases** are batched every 1–2 weeks or when there is a substantial change; small fixes stay as commits until then.
+- **Security-critical fixes** may ship as an immediate patch.
 - `-beta.N` tags are **pre-releases for testing**, not the stable `latest`.
-- Breaking changes or large refactors will bump the **minor** version (0.x) and be called out in `CHANGELOG.md`.
 
 ### 中文说明（安装到 DSH Go）
 

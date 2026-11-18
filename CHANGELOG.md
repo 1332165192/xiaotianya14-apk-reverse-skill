@@ -8,10 +8,10 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 - `package.json` 新增 `dshGo` 原生插件声明（协议 v1）：在 DSH Go App 输入框上方提供「逆向 APK」「清广告」两个快捷动作（只插入提示词，不自动发送），并在插件市场标记为「适配 DSH Go」
-- 版本节奏说明（README / README_zh）：锁 Release Tag、小修合批、Critical 例外、`-beta` 预发布不自动升级
+- 版本节奏说明（README / README_zh）：锁 Release Tag、SemVer（patch/minor/major）、常规 1–2 周合批、Critical 例外、`-beta` 预发布不自动升级
 
 ### Changed
-- CI 增加 ShellCheck（仅 error 级），覆盖 `scripts/*.sh`
+- ShellCheck 拆为独立 workflow（`.github/workflows/shellcheck.yml`）：仅在 `.sh` 变更时触发，仅检查 error 级；主 `ci.yml` 不再重复跑
 
 ## [0.7.1] - 2026-11-18
 

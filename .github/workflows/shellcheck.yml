@@ -1,0 +1,27 @@
+name: ShellCheck
+
+on:
+  push:
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
+  pull_request:
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安装 ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+      - name: 仅检查 error 级
+        run: shellcheck -S error scripts/*.sh
