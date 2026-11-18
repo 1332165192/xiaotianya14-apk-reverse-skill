@@ -1,7 +1,7 @@
 {
   "name": "dsh-skill-apk-reverse",
   "description": "Android APK reverse-engineering skill for DeepSeek Harness and DSH Go: decode, patch, repack, sign and verify APKs on a phone (proot Ubuntu) or PC.",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -44,6 +44,42 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    }
+  },
+  "dshGo": {
+    "v": 1,
+    "icon": "skill",
+    "title": {
+      "zh": "手机版逆向",
+      "en": "APK Reverse"
+    },
+    "contributes": {
+      "composer.actions": [
+        {
+          "id": "apk-reverse",
+          "icon": "skill",
+          "label": {
+            "zh": "逆向 APK",
+            "en": "Reverse"
+          },
+          "effect": {
+            "type": "insert",
+            "text": "请用 apk-reverse 技能帮我分析这个 APK：先解包/反编译，再看广告组件和付费/权益逻辑。"
+          }
+        },
+        {
+          "id": "apk-clean-ads",
+          "icon": "skill",
+          "label": {
+            "zh": "清广告",
+            "en": "Clean ads"
+          },
+          "effect": {
+            "type": "insert",
+            "text": "用 apk-reverse 技能分析这个 APK 的广告 SDK，并给出清理方案。"
+          }
+        }
+      ]
     }
   },
   "peerDependencies": {

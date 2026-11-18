@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">拆开它、看懂它、改对它、再证明它能跑。</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.7.1.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.8.0.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.7.1 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.8.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -116,6 +116,15 @@ APK
 - 手机端不需要 adb：DSH Go 自带手机操控工具（`screen`/`tap`/`type`/`open`/`key`/`handoff`）可做真机验证。
 - 电脑端（Linux/WSL）同样可装，命令与工具链一致。
 - **手动包要解压**：`dsh plugin add` 只接受「本地目录 / npm 包名 / github:owner/repo」，不收 zip；所以离线包要先解压成文件夹，再 `dsh plugin --profile web add <那个文件夹>`。商城安装与插件命令都不用解压。
+
+### 版本节奏（0.x）
+
+本项目处于 **0.x 高速迭代期**：
+
+- 正式使用请**锁定 Release tag**，不要盲目跟随 `main`；
+- 小修会**合并后统一发版**，安全 Critical 例外，立即发补丁；
+- 带 `-beta.N` 的是**测试版**，不是稳定 `latest`；
+- 破坏性改动或大重构会升 **minor**（0.x）并在 `CHANGELOG.md` 写明。
 
 <p align="right">(<a href="#关于">返回顶部</a>)</p>
 

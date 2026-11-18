@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">Unpack it, understand it, patch it, prove it works.</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.7.1.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.8.0.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -63,6 +63,15 @@
 - Desktop (Linux/WSL) works with the same commands and toolchain.
 - **Manual package needs unzipping**: `dsh plugin add` accepts a local directory, an npm package, or `github:owner/repo` — not a zip. Unzip the release package first, then run `dsh plugin --profile web add <unzipped-dir>`. Marketplace and plugin-command installs need no unzip.
 
+### Versioning & release cadence
+
+This project is in the **0.x fast-iteration** stage:
+
+- Pin a **Release tag** for production; do not blindly follow `main`.
+- Small fixes are **batched** into one release; security-critical fixes may ship as an immediate patch.
+- `-beta.N` tags are **pre-releases for testing**, not the stable `latest`.
+- Breaking changes or large refactors will bump the **minor** version (0.x) and be called out in `CHANGELOG.md`.
+
 ### 中文说明（安装到 DSH Go）
 
 | 方式 | 操作 |
@@ -109,7 +118,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.7.1 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.8.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
