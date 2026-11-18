@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
-# 工具自动安装器：缺什么装什么（本地缓存优先 → 镜像/官方源下载）。不需要人盯着。
+# 工具自动安装器：按需单装（本地缓存优先 → 镜像/官方源下载）。一个 --only 只装一个工具，不整组下载。
 #
-# 用法:
-#   bash scripts/install_tools.sh            # 补齐必需工具 + 深度逆向（apt + pip + frida-server + jadx + re）
-#   bash scripts/install_tools.sh --check    # 只检查缺什么，给出下载链接，不动手
-#   bash scripts/install_tools.sh --apt      # 只补 apt 类系统工具
-#   bash scripts/install_tools.sh --pip      # 只补 pip 类 Python 工具
-#   bash scripts/install_tools.sh --frida    # 只补 frida-server
-#   bash scripts/install_tools.sh --jadx     # 只补 jadx
-#   bash scripts/install_tools.sh --only jadx # 只补单个工具（推荐；按需下载用）
-#   bash scripts/install_tools.sh --plan      # 交给 tool_manager，只列清单不下载
-#   bash scripts/install_tools.sh --re       # 深度逆向：apkid/binwalk/hermes-dec/objection + apk-mitm +
-#                                            # CFR 0.152 + smali/baksmali 3.0.9（jar + smali3/baksmali3 包装）
-#   bash scripts/install_tools.sh --net      # 抓包编译链 + mitmproxy（体积大、耗时长，单独跑）
-#   bash scripts/install_tools.sh --community # 社区工具按需装：Vineflower + dex2jar + bundletool + unicorn/capstone
-#                                            # （用到才装；不要一次全装，体积约 60MB）
+# 用法（推荐单装）:
+#   bash scripts/install_tools.sh --only <id>            # 只装单个工具（推荐；按需下载用）
+#   bash scripts/install_tools.sh --only <id> --dry-run  # 只打印会做什么，不下载/不安装
+#   bash scripts/install_tools.sh --check                # 只检查缺什么，给出下载链接，不动手
+#   bash scripts/install_tools.sh --plan                 # 交给 tool_manager，只列清单不下载
+#   bash scripts/install_tools.sh                        # 补齐必需工具 + 深度逆向（apt + pip + frida-server + jadx）
+#   bash scripts/install_tools.sh --apt|--pip|--frida|--jadx  # 单类补齐
 #
-# --all = 必需项 + --re；默认不含 --net / --community（按需显式跑）。
+# --only 支持的 id（每个只装自己；未知 id 退出码 2）:
+#   jadx apktool aapt2 apksigner zipalign adb python-androguard python-frida frida frida-server
+#   cfr smali baksmali dex2jar bundletool mitmproxy
+#
+# 旧组入口（仅兼容旧脚本/文档，不推荐；单装请用 --only）:
+#   bash scripts/install_tools.sh --re         # CFR + smali/baksmali + apkid/binwalk/hermes-dec/objection/apk-mitm
+#   bash scripts/install_tools.sh --community  # Vineflower + dex2jar + bundletool + unicorn/capstone（约 60MB）
+#   bash scripts/install_tools.sh --net        # 抓包编译链 + mitmproxy（体积大、耗时长）
+#   --all = 必需项 + --re（默认不含 --net / --community）
 #
 # 下载源（可被环境变量覆盖）:
 #   PIP_INDEX   默认 https://mirrors.aliyun.com/pypi/simple（实测能下 frida 的 aarch64 wheel；
@@ -143,8 +144,34 @@ verify_sha256() {  # <文件> <标签> <期望值> [quiet]
 pymod() { python3 -c "import $1" >/dev/null 2>&1; }
 jar_ok() { [ -s "$1" ] && has java && java -jar "$1" --version >/dev/null 2>&1; }
 
+# ── dry-run 辅助：--dry-run 只打印计划，不下载、不安装、不创建目录 ──────
+dry() { echo "  [dry-run] $*"; }
+
+apt_one() {  # apt_one <debian 包名> [工具 id]
+    local pkg="$1" id="${2:-$1}"
+    if [ "$DRY_RUN" = 1 ]; then dry "$id: 将执行 apt-get install -y --no-install-recommends $pkg"; return 0; fi
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "$pkg"
+}
+
+pip_one() {  # pip_one <工具 id> <pip 包...>
+    local id="$1"; shift
+    if [ "$DRY_RUN" = 1 ]; then dry "$id: 将执行 pip install $*（索引 $PIP_INDEX，失败回退 pypi.org）"; return 0; fi
+    pip_install_log "$@"
+}
+
 MODE="all"
-# 新入口：交给按需管理器（只列清单 / 只装用户确认的 ids）
+DRY_RUN="${DRY_RUN:-0}"
+# 全局 --dry-run：先摘出来（可出现在任意位置），只影响安装/下载，不改变 --plan 的子命令语义
+_args=()
+for _a in "$@"; do
+    case "$_a" in
+        --dry-run) DRY_RUN=1 ;;
+        *) _args+=("$_a") ;;
+    esac
+done
+set -- ${_args[@]+"${_args[@]}"}
+
+# 新入口：交给按需管理器（只列清单 / 自动安装本次必需）
 if [ "${1:-}" = "--plan" ]; then
     shift
     exec python3 "$HERE/tool_manager.py" plan "$@"
@@ -156,7 +183,8 @@ fi
 
 case "${1:-}" in
     --check) MODE="check" ;;
-    --only) MODE="only"; ONLY="${2:-}"; shift 2 ;;
+    --only) MODE="only"; ONLY="${2:-}"; [ -n "$ONLY" ] || { red "--only 需要 <id>"; exit 2; }; shift 2 ;;
+    --only=*) MODE="only"; ONLY="${1#*=}"; [ -n "$ONLY" ] || { red "--only 需要 <id>"; exit 2; } ;;
     --apt) MODE="apt" ;;
     --pip) MODE="pip" ;;
     --frida) MODE="frida" ;;
@@ -165,7 +193,7 @@ case "${1:-}" in
     --net) MODE="net" ;;
     --community|--extra) MODE="community" ;;
     --all|"") MODE="all" ;;
-    -h|--help) sed -n '2,24p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,29p' "$0"; exit 0 ;;
     *) red "未知参数: $1"; exit 2 ;;
 esac
 
@@ -377,64 +405,100 @@ apk_mitm_group() {
       || red "apk-mitm 安装失败（npm 网络），可稍后重跑 --re"
 }
 
-jars_group() {
+# ---- 单个 jar 工具安装（--only cfr / smali / baksmali 各自只装自己；--re 旧组 = 三个依次调）----
+install_cfr() {
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "cfr: $(jar_ok "$JARS/cfr.jar" && echo "已就绪 $JARS/cfr.jar" || echo "缺 → 下载 cfr-${CFR_VER}.jar 到 $JARS/cfr.jar")"
+        dry "       源: ${GH_PROXY}https://github.com/leibnitz27/cfr/releases/download/${CFR_VER}/cfr-${CFR_VER}.jar"
+        return 0
+    fi
     mkdir -p "$JARS" "$TOOLCACHE"
-    if ! has java; then red "缺 java，jar 工具无法运行（apt-get install -y openjdk-21-jre-headless）"; return; fi
-
-    # CFR 0.152：单文件 jar，反编译大 dex 比 jadx 稳
+    if ! has java; then red "缺 java，jar 工具无法运行（apt-get install -y openjdk-21-jre-headless）"; return 0; fi
     if jar_ok "$JARS/cfr.jar"; then
         green "CFR 已就绪: $JARS/cfr.jar ($(java -jar "$JARS/cfr.jar" --version 2>&1 | head -1))"
-    else
-        fetch_to "$JARS/cfr.jar" "$TOOLCACHE/cfr-${CFR_VER}.jar" \
-          "${GH_PROXY}https://github.com/leibnitz27/cfr/releases/download/${CFR_VER}/cfr-${CFR_VER}.jar" \
-          "https://github.com/leibnitz27/cfr/releases/download/${CFR_VER}/cfr-${CFR_VER}.jar"
-        if jar_ok "$JARS/cfr.jar"; then
-            green "CFR 已安装: $JARS/cfr.jar ($(java -jar "$JARS/cfr.jar" --version 2>&1 | head -1))"
-        else
-            rm -f "$JARS/cfr.jar"
-            red "CFR 下载失败（网络），稍后重跑 --re"
-        fi
+        return 0
     fi
-
-    # smali / baksmali 3.x：v3 只发 thin jar（无 Main-Class，不能直接 java -jar）；
-    # google/smali 的 3.0.9 release 没有二进制附件，可运行的是 baksmali/smali 仓库的
-    # *-fat.jar（toolsmith 实测通过）。故这里固定用 fat jar，多地址回退。
-    local sdst="$JARS/smali-${SMALI_VER}-fat.jar"
-    local bdst="$JARS/baksmali-${SMALI_VER}-fat.jar"
-    if jar_ok "$sdst"; then
-        green "smali3 已就绪: $sdst"
+    fetch_to "$JARS/cfr.jar" "$TOOLCACHE/cfr-${CFR_VER}.jar" \
+      "${GH_PROXY}https://github.com/leibnitz27/cfr/releases/download/${CFR_VER}/cfr-${CFR_VER}.jar" \
+      "https://github.com/leibnitz27/cfr/releases/download/${CFR_VER}/cfr-${CFR_VER}.jar"
+    if jar_ok "$JARS/cfr.jar"; then
+        green "CFR 已安装: $JARS/cfr.jar ($(java -jar "$JARS/cfr.jar" --version 2>&1 | head -1))"
     else
+        rm -f "$JARS/cfr.jar"
+        red "CFR 下载失败（网络），稍后重跑 --only cfr"
+    fi
+}
+
+install_smali() {
+    local sdst="$JARS/smali-${SMALI_VER}-fat.jar"
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "smali: $(jar_ok "$sdst" && echo "已就绪 $sdst" || echo "缺 → 下载 smali-${SMALI_VER}-fat.jar 到 $sdst")"
+        dry "       源: ${GH_PROXY}https://github.com/baksmali/smali/releases/download/${SMALI_VER}/smali-${SMALI_VER}-fat.jar"
+        return 0
+    fi
+    mkdir -p "$JARS" "$TOOLCACHE"
+    if ! has java; then red "缺 java，jar 工具无法运行（apt-get install -y openjdk-21-jre-headless）"; return 0; fi
+    if jar_ok "$sdst"; then
+        green "smali3 jar 已就绪: $sdst"
+    else
+        # smali / baksmali 3.x：v3 只发 thin jar（无 Main-Class，不能直接 java -jar）；
+        # google/smali 的 3.0.9 release 没有二进制附件，可运行的是 baksmali/smali 仓库的
+        # *-fat.jar（toolsmith 实测通过）。故这里固定用 fat jar，多地址回退。
         fetch_to "$sdst" "$TOOLCACHE/smali-${SMALI_VER}-fat.jar" \
           "${GH_PROXY}https://github.com/baksmali/smali/releases/download/${SMALI_VER}/smali-${SMALI_VER}-fat.jar" \
           "https://github.com/baksmali/smali/releases/download/${SMALI_VER}/smali-${SMALI_VER}-fat.jar" \
           "${GH_PROXY}https://github.com/baksmali/smali/releases/download/${SMALI_VER}/smali-${SMALI_VER}-fat-release.jar"
-        jar_ok "$sdst" && green "smali3 jar 已安装: $sdst" \
-          || { rm -f "$sdst"; red "smali jar 下载失败（网络），稍后重跑 --re"; }
+        if jar_ok "$sdst"; then
+            green "smali3 jar 已安装: $sdst"
+        else
+            rm -f "$sdst"
+            red "smali jar 下载失败（网络），稍后重跑 --only smali"
+            return 0
+        fi
     fi
+    write_jar_wrapper /usr/local/bin/smali3 "$sdst"
+    green "smali3 已就绪: $(smali3 --version 2>&1 | head -1)"
+}
+
+install_baksmali() {
+    local bdst="$JARS/baksmali-${SMALI_VER}-fat.jar"
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "baksmali: $(jar_ok "$bdst" && echo "已就绪 $bdst" || echo "缺 → 下载 baksmali-${SMALI_VER}-fat.jar 到 $bdst")"
+        dry "          源: ${GH_PROXY}https://github.com/baksmali/smali/releases/download/${SMALI_VER}/baksmali-${SMALI_VER}-fat.jar"
+        return 0
+    fi
+    mkdir -p "$JARS" "$TOOLCACHE"
+    if ! has java; then red "缺 java，jar 工具无法运行（apt-get install -y openjdk-21-jre-headless）"; return 0; fi
     if jar_ok "$bdst"; then
-        green "baksmali3 已就绪: $bdst"
+        green "baksmali3 jar 已就绪: $bdst"
     else
         fetch_to "$bdst" "$TOOLCACHE/baksmali-${SMALI_VER}-fat.jar" \
           "${GH_PROXY}https://github.com/baksmali/smali/releases/download/${SMALI_VER}/baksmali-${SMALI_VER}-fat.jar" \
           "https://github.com/baksmali/smali/releases/download/${SMALI_VER}/baksmali-${SMALI_VER}-fat.jar" \
           "${GH_PROXY}https://github.com/baksmali/smali/releases/download/${SMALI_VER}/baksmali-${SMALI_VER}-fat-release.jar"
-        jar_ok "$bdst" && green "baksmali3 jar 已安装: $bdst" \
-          || { rm -f "$bdst"; red "baksmali jar 下载失败（网络），稍后重跑 --re"; }
+        if jar_ok "$bdst"; then
+            green "baksmali3 jar 已安装: $bdst"
+        else
+            rm -f "$bdst"
+            red "baksmali jar 下载失败（网络），稍后重跑 --only baksmali"
+            return 0
+        fi
     fi
+    write_jar_wrapper /usr/local/bin/baksmali3 "$bdst"
+    green "baksmali3 已就绪: $(baksmali3 --version 2>&1 | head -1)"
+}
 
-    # 生成 smali3 / baksmali3 包装脚本（幂等：每次都按当前版本路径重写）
-    if jar_ok "$sdst" && jar_ok "$bdst"; then
-        write_jar_wrapper /usr/local/bin/smali3 "$sdst"
-        write_jar_wrapper /usr/local/bin/baksmali3 "$bdst"
-        green "smali3/baksmali3 已就绪: $(smali3 --version 2>&1 | head -1) / $(baksmali3 --version 2>&1 | head -1)"
-    fi
+jars_group() {
+    install_cfr
+    install_smali
+    install_baksmali
 }
 
 write_jar_wrapper() {    # write_jar_wrapper <包装脚本路径> <jar 路径>
     local out="$1" jar="$2"
     cat > "$out" <<EOF
 #!/usr/bin/env bash
-# 由 install_tools.sh --re 生成：smali/baksmali 3.x fat jar 包装（$SMALI_VER）
+# 由 install_tools.sh --only smali/baksmali（或旧组 --re）生成：smali/baksmali 3.x fat jar 包装（$SMALI_VER）
 exec java -jar "$jar" "\$@"
 EOF
     chmod +x "$out" 2>/dev/null || true
@@ -446,7 +510,35 @@ re_group() {
     jars_group
 }
 
-# ---- --net：抓包编译链 + mitmproxy（体积大，单独跑；不进 --all）----
+# ---- 单工具：mitmproxy（--only mitmproxy 只装 mitmproxy，不装编译链）----
+install_mitmproxy() {
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "mitmproxy: $(has mitmproxy && echo "已就绪 $(mitmproxy --version 2>&1 | head -1)" || echo "缺 → pip install mitmproxy（约 90MB；若缺编译链，旧组 --net 会先装 build-essential 等）")"
+        dry "            索引: $PIP_INDEX（失败回退 pypi.org）"
+        return 0
+    fi
+    if has mitmproxy; then green "mitmproxy 已就绪: $(mitmproxy --version 2>&1 | head -1)"; return 0; fi
+    echo "pip 安装 mitmproxy（超时 300s/包，aarch64 一般有 wheel）…"
+    local t0 t1 log2; log2=$(mktemp); t0=$(date +%s)
+    if pip install --index-url "$PIP_INDEX" --trusted-host "$PIP_HOST" --retries 3 --timeout 300 mitmproxy >"$log2" 2>&1; then
+        t1=$(date +%s); tail -2 "$log2"
+        green "mitmproxy 完成（耗时 $((t1-t0))s）"
+    else
+        t1=$(date +%s); tail -4 "$log2"
+        yel "pip 安装失败（耗时 $((t1-t0))s），回退 pypi.org 重试"
+        if pip install --index-url https://pypi.org/simple --retries 3 --timeout 300 mitmproxy >"$log2" 2>&1; then
+            tail -2 "$log2"; green "mitmproxy 完成（pypi 回退）"
+        else
+            tail -4 "$log2"
+            red "mitmproxy 安装失败：可试旧组 bash scripts/install_tools.sh --net（含编译链）；或 apt-get install -y mitmproxy（8.1.1，功能较旧）"
+        fi
+    fi
+    rm -f "$log2"
+    has mitmproxy && green "mitmproxy 已就绪: $(mitmproxy --version 2>&1 | head -1)" \
+      || red "仍缺 mitmproxy（抓包可先用 Frida Hook 代替）"
+}
+
+# ---- --net（旧组，仅兼容）：抓包编译链 + mitmproxy ----
 net_group() {
     local apts=(build-essential cmake python3-dev pkg-config libssl-dev libffi-dev)
     echo "apt 安装编译链: ${apts[*]}（mitmproxy 及原生依赖编译用）"
@@ -460,30 +552,17 @@ net_group() {
     fi
     rm -f "$log"
 
-    if has mitmproxy; then green "mitmproxy 已就绪: $(mitmproxy --version 2>&1 | head -1)"; return; fi
-    echo "pip 安装 mitmproxy（超时 300s/包，aarch64 一般有 wheel）…"
-    local t0 t1 log2; log2=$(mktemp); t0=$(date +%s)
-    if pip install --index-url "$PIP_INDEX" --trusted-host "$PIP_HOST" --retries 3 --timeout 300 mitmproxy >"$log2" 2>&1; then
-        t1=$(date +%s); tail -2 "$log2"
-        green "mitmproxy 完成（耗时 $((t1-t0))s）"
-    else
-        t1=$(date +%s); tail -4 "$log2"
-        yel "pip 安装失败（耗时 $((t1-t0))s），回退 pypi.org 重试"
-        if pip install --index-url https://pypi.org/simple --retries 3 --timeout 300 mitmproxy >"$log2" 2>&1; then
-            tail -2 "$log2"; green "mitmproxy 完成（pypi 回退）"
-        else
-            tail -4 "$log2"
-            red "mitmproxy 安装失败：可试 apt-get install -y mitmproxy（8.1.1，功能较旧）；或稍后重跑 --net"
-        fi
-    fi
-    rm -f "$log2"
-    has mitmproxy && green "mitmproxy 已就绪: $(mitmproxy --version 2>&1 | head -1)" \
-      || red "仍缺 mitmproxy（抓包可先用 Frida Hook 代替）"
+    # 单装入口：--only mitmproxy（不装编译链）；旧组 --net 才连编译链一起装
+    install_mitmproxy
 }
 
 frida_group() {
     FRIDA_VER=$(python3 -c "import frida;print(frida.__version__)" 2>/dev/null || echo "$FRIDA_VER_DEFAULT")
     FS_PLAIN="$TOOLS/frida-server-${FRIDA_VER}-android-arm64"
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "frida-server: $( [ -x "$FS_PLAIN" ] && echo "已就绪 $FS_PLAIN" || echo "缺 → 下载 frida-server-${FRIDA_VER}-android-arm64.xz（约 24MB）解压到 $FS_PLAIN" )"
+        return 0
+    fi
     if [ -x "$FS_PLAIN" ]; then green "frida-server 已就绪: $FS_PLAIN"; return; fi
     mkdir -p "$TOOLS"
     local xz="$TOOLCACHE/frida-server-${FRIDA_VER}-android-arm64.xz"
@@ -527,8 +606,62 @@ fetch_gh() {  # fetch_gh <缓存文件> <相对路径>：先 ghfast 再 gh-proxy
     rm -f "$out"; return 1
 }
 
+# ---- 单工具：dex2jar / bundletool（--only <id> 只装自己；--community 旧组依次调）----
+install_dex2jar() {
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "dex2jar: $( [ -x /root/tools/dex2jar/d2j-dex2jar.sh ] && echo "已就绪 /root/tools/dex2jar" || echo "缺 → 取最新 tag 下载 dex-tools-<tag>.zip 解压到 /root/tools/dex2jar（回退 v2.4）")"
+        return 0
+    fi
+    if [ -x /root/tools/dex2jar/d2j-dex2jar.sh ]; then
+        green "dex2jar 已就绪: /root/tools/dex2jar"
+        return 0
+    fi
+    local tag
+    tag=$(latest_tag pxb1988/dex2jar || true)
+    [ -n "$tag" ] || tag="v2.4"     # 固定回退版本
+    echo "下载 dex2jar $tag …"
+    if fetch_gh "$TOOLCACHE/dex-tools-${tag}.zip" "https://github.com/pxb1988/dex2jar/releases/download/${tag}/dex-tools-${tag}.zip"; then
+        safe_reset_dir "$TOOLS/dex2jar"
+        mkdir -p /root/tools/dex2jar
+        unzip -oq "$TOOLCACHE/dex-tools-${tag}.zip" -d /root/tools/dex2jar
+        # zip 内常带一层目录（dex-tools-v2.4/），拍平到 /root/tools/dex2jar
+        if [ ! -f /root/tools/dex2jar/d2j-dex2jar.sh ]; then
+            inner=$(find /root/tools/dex2jar -maxdepth 2 -name d2j-dex2jar.sh -printf '%h\n' | head -1)
+            [ -n "$inner" ] && cp -a "$inner"/. "$TOOLS/dex2jar"/ && safe_remove_path "$inner"
+        fi
+        chmod +x /root/tools/dex2jar/*.sh 2>/dev/null || true
+        green "dex2jar 已装: /root/tools/dex2jar/d2j-dex2jar.sh"
+    else
+        yel "dex2jar 下载失败（网络），稍后重跑 --only dex2jar"
+    fi
+}
+
+install_bundletool() {
+    local bt_jar="/root/tools/jars/bundletool.jar" btag
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "bundletool: $( [ -s "$bt_jar" ] && has java && java -jar "$bt_jar" version >/dev/null 2>&1 && echo "已就绪 $bt_jar" || echo "缺 → 取最新 tag 下载 bundletool-all-<ver>.jar 到 $bt_jar（回退 1.18.3）")"
+        return 0
+    fi
+    if [ -s "$bt_jar" ] && has java && java -jar "$bt_jar" version >/dev/null 2>&1; then
+        green "bundletool 已就绪: $bt_jar"
+        return 0
+    fi
+    btag=$(latest_tag google/bundletool || true)
+    [ -n "$btag" ] || btag="1.18.3"   # 固定回退版本
+    local ver="${btag#v}"
+    echo "下载 bundletool $btag …"
+    mkdir -p /root/tools/jars
+    if fetch_gh "$TOOLCACHE/bundletool-${ver}.jar" "https://github.com/google/bundletool/releases/download/${btag}/bundletool-all-${ver}.jar"; then
+        cp -f "$TOOLCACHE/bundletool-${ver}.jar" "$bt_jar"
+        write_jar_wrapper /usr/local/bin/bundletool "$bt_jar"
+        green "bundletool 已装: $bt_jar"
+    else
+        yel "bundletool 下载失败（网络），稍后重跑 --only bundletool"
+    fi
+}
+
 community_group() {
-    echo "── 社区工具组（按需，约 60MB）──"
+    echo "── 社区工具组（旧入口，按需，约 60MB；单装请用 --only dex2jar / --only bundletool）──"
     # 1) unicorn + capstone（MobileRE-Skill 的离线模拟执行基础）
     pymod unicorn || pip_install_log unicorn
     pymod capstone || pip_install_log capstone
@@ -553,58 +686,17 @@ community_group() {
             yel "取不到 Vineflower 最新 release（网络），跳过"
         fi
     fi
-    # 3) dex2jar（DEX→JAR，再喂 Vineflower）
-    if [ -x /root/tools/dex2jar/d2j-dex2jar.sh ]; then
-        green "dex2jar 已就绪: /root/tools/dex2jar"
-    else
-        tag=$(latest_tag pxb1988/dex2jar || true)
-        [ -n "$tag" ] || tag="v2.4"     # 固定回退版本
-        if [ -n "$tag" ]; then
-            echo "下载 dex2jar $tag …"
-            if fetch_gh "$TOOLCACHE/dex-tools-${tag}.zip" "https://github.com/pxb1988/dex2jar/releases/download/${tag}/dex-tools-${tag}.zip"; then
-                safe_reset_dir "$TOOLS/dex2jar"
-                mkdir -p /root/tools/dex2jar
-                unzip -oq "$TOOLCACHE/dex-tools-${tag}.zip" -d /root/tools/dex2jar
-                # zip 内常带一层目录（dex-tools-v2.4/），拍平到 /root/tools/dex2jar
-                if [ ! -f /root/tools/dex2jar/d2j-dex2jar.sh ]; then
-                    inner=$(find /root/tools/dex2jar -maxdepth 2 -name d2j-dex2jar.sh -printf '%h\n' | head -1)
-                    [ -n "$inner" ] && cp -a "$inner"/. "$TOOLS/dex2jar"/ && safe_remove_path "$inner"
-                fi
-                chmod +x /root/tools/dex2jar/*.sh 2>/dev/null || true
-                green "dex2jar 已装: /root/tools/dex2jar/d2j-dex2jar.sh"
-            else
-                yel "dex2jar 下载失败（网络），稍后重跑 --community"
-            fi
-        else
-            yel "取不到 dex2jar 最新 release（网络），跳过"
-        fi
-    fi
-    # 4) bundletool（AAB→APK）
-    local bt_jar="/root/tools/jars/bundletool.jar" btag
-    if [ -s "$bt_jar" ] && has java && java -jar "$bt_jar" version >/dev/null 2>&1; then
-        green "bundletool 已就绪: $bt_jar"
-    else
-        btag=$(latest_tag google/bundletool || true)
-        [ -n "$btag" ] || btag="1.18.3"   # 固定回退版本
-        if [ -n "$btag" ]; then
-            local ver="${btag#v}"
-            echo "下载 bundletool $btag …"
-            mkdir -p /root/tools/jars
-            if fetch_gh "$TOOLCACHE/bundletool-${ver}.jar" "https://github.com/google/bundletool/releases/download/${btag}/bundletool-all-${ver}.jar"; then
-                cp -f "$TOOLCACHE/bundletool-${ver}.jar" "$bt_jar"
-                write_jar_wrapper /usr/local/bin/bundletool "$bt_jar"
-                green "bundletool 已装: $bt_jar"
-            else
-                yel "bundletool 下载失败（网络），稍后重跑 --community"
-            fi
-        else
-            yel "取不到 bundletool 最新 release（网络），跳过"
-        fi
-    fi
+    # 3) dex2jar（DEX→JAR，再喂 Vineflower）/ 4) bundletool（AAB→APK）
+    install_dex2jar
+    install_bundletool
     green "社区工具组完成（用到再装，不占默认空间）"
 }
 
 jadx_group() {
+    if [ "$DRY_RUN" = 1 ]; then
+        dry "jadx: $( [ -x "$JADX_BIN" ] && echo "已就绪 $JADX_BIN" || echo "缺 → 下载 jadx-${JADX_VER}.zip（解压后约 122MB）到 /root/jadx" )"
+        return 0
+    fi
     if [ -x "$JADX_BIN" ]; then
         ln -sf "$JADX_BIN" /usr/local/bin/jadx 2>/dev/null || true
         green "jadx 已就绪: $($JADX_BIN --version 2>&1 | head -1)"; return
@@ -627,22 +719,41 @@ jadx_group() {
       && ln -sf "$JADX_BIN" /usr/local/bin/jadx 2>/dev/null && green "jadx 已安装: $($JADX_BIN --version 2>&1 | head -1)"
 }
 
+# ── --only <id>：单工具安装。每个 id 只装自己，不碰同组其它工具 ──────────
 only_group() {
     case "$ONLY" in
         jadx) jadx_group ;;
-        apktool) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apktool ;;
-        aapt2) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends aapt ;;
-        apksigner) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apksigner ;;
-        zipalign) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends zipalign ;;
-        adb) DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends adb ;;
-        python-androguard) pip_install_log androguard ;;
-        python-frida) pip_install_log frida frida-tools ;;
-        frida|frida-server) frida_group ;;
-        *) red "不支持 --only $ONLY（组安装项：cfr/smali/baksmali/dex2jar/bundletool/mitmproxy；用 tool_manager.py 加 --allow-group）"; return 2 ;;
+        apktool) apt_one apktool ;;
+        aapt2) apt_one aapt aapt2 ;;             # debian 包名是 aapt，id 用 aapt2 对齐 registry
+        apksigner) apt_one apksigner ;;
+        zipalign) apt_one zipalign ;;
+        adb) apt_one adb ;;
+        python-androguard) pip_one python-androguard androguard ;;
+        python-frida) pip_one python-frida frida ;;          # 只装 Python 绑定
+        frida) pip_one frida frida frida-tools ;;            # CLI + 绑定；设备端是 frida-server
+        frida-server) frida_group ;;
+        cfr) install_cfr ;;
+        smali) install_smali ;;
+        baksmali) install_baksmali ;;
+        dex2jar) install_dex2jar ;;
+        bundletool) install_bundletool ;;
+        mitmproxy) install_mitmproxy ;;
+        "")
+            red "--only 需要 <id>"; return 2 ;;
+        *)
+            red "不支持 --only $ONLY（未知 id）"
+            echo "  可用 id: jadx apktool aapt2 apksigner zipalign adb python-androguard python-frida frida frida-server cfr smali baksmali dex2jar bundletool mitmproxy"
+            echo "  旧组入口（不推荐；只作兼容）: --re / --community / --net"
+            return 2 ;;
     esac
 }
 
 main() {
+    if [ "$DRY_RUN" = 1 ] && [ "$MODE" != "only" ]; then
+        echo "[dry-run] 组/批量模式 $MODE：只打印计划，不下载、不安装。"
+        echo "          单装请用: bash scripts/install_tools.sh --only <id> [--dry-run]"
+        return 0
+    fi
     case "$MODE" in
         only) only_group; return $? ;;
         apt) apt_group ;;

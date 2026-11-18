@@ -5,9 +5,13 @@
     "default_mode": "thirdparty",
     "default_profile": "minimal",
     "bundle_third_party_binaries": false,
-    "ask_before_download": true,
+    "ask_before_download": false,
     "on_thirdparty_disable_self": true,
-    "license_rule": "MIT/Apache-2.0 可用并保留署名；GPL/AGPL/无 LICENSE 不打包、不默认下载"
+    "license_rule": "MIT/Apache-2.0 可用并保留署名；GPL/AGPL/无 LICENSE 不打包、不默认下载",
+    "auto_install": true,
+    "auto_profile": "minimal",
+    "report_after_install": true,
+    "auto_note": "按当前任务自动安装本次必需的工具；安装后向用户报告装了什么，不再逐次确认"
   },
   "profiles": {
     "minimal": [
@@ -307,10 +311,9 @@
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --net",
+      "install_cmd": "bash scripts/install_tools.sh --only mitmproxy",
       "source": "https://github.com/mitmproxy/mitmproxy",
-      "note": "抓包组体积大；只在需要时下载。",
-      "install_group": "net"
+      "note": "单装 mitmproxy（约 90MB，不连编译链）；旧 --net 组仅作兼容。"
     },
     {
       "id": "smali",
@@ -328,16 +331,15 @@
         "patch"
       ],
       "detect": {
-        "command": "smali",
+        "command": "smali3",
         "version": [
-          "smali",
+          "smali3",
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --re",
+      "install_cmd": "bash scripts/install_tools.sh --only smali",
       "source": "https://github.com/JesusFreke/smali",
-      "note": "smali/baksmali 同组。",
-      "install_group": "re"
+      "note": "单装 smali3 fat jar + 包装；不再连带 baksmali。"
     },
     {
       "id": "baksmali",
@@ -357,16 +359,15 @@
         "patch"
       ],
       "detect": {
-        "command": "baksmali",
+        "command": "baksmali3",
         "version": [
-          "baksmali",
+          "baksmali3",
           "--version"
         ]
       },
-      "install_cmd": "bash scripts/install_tools.sh --re",
+      "install_cmd": "bash scripts/install_tools.sh --only baksmali",
       "source": "https://github.com/JesusFreke/smali",
-      "note": "smali/baksmali 同组。",
-      "install_group": "re"
+      "note": "单装 baksmali3 fat jar + 包装；不再连带 smali。"
     },
     {
       "id": "cfr",
@@ -384,16 +385,11 @@
         "decode"
       ],
       "detect": {
-        "command": "cfr",
-        "version": [
-          "cfr",
-          "--version"
-        ]
+        "path": "/root/tools/jars/cfr.jar"
       },
-      "install_cmd": "bash scripts/install_tools.sh --re",
+      "install_cmd": "bash scripts/install_tools.sh --only cfr",
       "source": "https://www.benf.org/other/cfr/",
-      "note": "Java 反编译备选。",
-      "install_group": "re"
+      "note": "Java 反编译备选；单装 jar，不再连带 smali。"
     },
     {
       "id": "dex2jar",
@@ -412,16 +408,11 @@
         "decode"
       ],
       "detect": {
-        "command": "d2j-dex2jar",
-        "version": [
-          "d2j-dex2jar",
-          "--version"
-        ]
+        "path": "/root/tools/dex2jar/d2j-dex2jar.sh"
       },
-      "install_cmd": "bash scripts/install_tools.sh --community",
+      "install_cmd": "bash scripts/install_tools.sh --only dex2jar",
       "source": "https://github.com/pxb1988/dex2jar",
-      "note": "社区工具组；需要时才下载。",
-      "install_group": "community"
+      "note": "单装 dex2jar；不再连带 bundletool/Vineflower。"
     },
     {
       "id": "bundletool",
@@ -441,16 +432,11 @@
         "unpack"
       ],
       "detect": {
-        "command": "bundletool",
-        "version": [
-          "bundletool",
-          "version"
-        ]
+        "path": "/root/tools/jars/bundletool.jar"
       },
-      "install_cmd": "bash scripts/install_tools.sh --community",
+      "install_cmd": "bash scripts/install_tools.sh --only bundletool",
       "source": "https://github.com/google/bundletool",
-      "note": "AAB/APKS 场景；社区工具组。",
-      "install_group": "community"
+      "note": "AAB/APKS 场景；单装 bundletool，不再连带其它社区工具。"
     },
     {
       "id": "adb",

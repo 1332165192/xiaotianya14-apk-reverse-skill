@@ -23,6 +23,7 @@ import json
 import os
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 # ── 第三方库前缀（命中即视为库代码，不参与权益/数值候选）───────────────────
 LIB_PREFIXES = (
@@ -172,19 +173,56 @@ def iter_smali_files(dec):
                         yield os.path.join(dirpath, fn)
 
 
-def parse_methods_in(text):
-    """轻量解析：[(method_name, desc, ret)]"""
-    out = []
-    for line in text.splitlines():
-        s = line.strip()
-        if not s.startswith('.method'):
-            continue
-        m = re.search(r'\(([^)]*)\)(\S+)\s*$', s)
-        if not m:
-            continue
-        name = s.split('(')[0].split()[-1]
-        out.append((name, m.group(1), m.group(2)))
-    return out
+# 整文件扫描替代逐行 Python 循环：用带字面量前缀的普通正则快速定位
+# （CPython 对 \.field 这类固定前缀有加速；MULTILINE 的 ^... 反而更慢），
+# 再校验命中位置确实处于行首（smali 行首只允许缩进空白）。
+FIELD_LINE_RE = re.compile(r'\.field[^\n]*')
+METHOD_LINE_RE = re.compile(r'\.method[^\n]*')
+CONST_LINE_RE = re.compile(
+    r'const(?:/4|/16|/high16|-wide(?:/32|/high16)?)?\s+v\d+,\s*'
+    r'(0x[0-9a-fA-F]+|-?\d+)')
+METHOD_DESC_RE = re.compile(r'\(([^)]*)\)(\S+)\s*$')
+
+# 支付 SDK 应用侧引用：15 个 Lxxx 前缀合并成正则一次扫完
+SDK_REF_TO_LABEL = {'L' + p: label for label, p in PAY_SDKS}
+SDK_REF_RE = re.compile('|'.join(re.escape('L' + p) for _label, p in PAY_SDKS))
+
+# smali 在 /sdcard（FUSE）上逐文件串行读取时，单次 open 延迟是主要瓶颈：
+# 用少量线程预读、主线程按原顺序处理，输出顺序与逐行版本保持一致。
+READ_WORKERS = 24
+READ_BATCH = 96
+
+
+def _read_text(path):
+    try:
+        with open(path, encoding='utf-8', errors='ignore') as fh:
+            return fh.read()
+    except OSError:
+        return None
+
+
+def iter_smali_texts(dec):
+    """按 iter_smali_files 的顺序产出 (path, text|None)，读取由线程池预取。"""
+    paths = iter_smali_files(dec)
+    with ThreadPoolExecutor(max_workers=READ_WORKERS) as ex:
+        pending = []
+
+        def submit_next():
+            batch = []
+            for p in paths:
+                batch.append(p)
+                if len(batch) >= READ_BATCH:
+                    break
+            if batch:
+                pending.append((batch, ex.map(_read_text, batch)))
+
+        for _ in range(3):
+            submit_next()
+        while pending:
+            batch, texts = pending.pop(0)
+            for path, txt in zip(batch, texts):
+                yield path, txt
+            submit_next()
 
 
 def parse_strings_xml(dec):
@@ -251,45 +289,55 @@ def scan(dec, top=25):
     persist_hits, integrity_hits = {}, {}
     urls = {}
     n = 0
-    for path in iter_smali_files(dec):
+    for path, txt in iter_smali_texts(dec):
         n += 1
         if n % 10000 == 0:
             print(f'  …已扫描 {n} 个 smali', file=sys.stderr)
-        rel = os.path.relpath(path, dec).replace(os.sep, '/')
-        try:
-            txt = open(path, encoding='utf-8', errors='ignore').read()
-        except OSError:
+        if txt is None:
             continue
+        rel = os.path.relpath(path, dec).replace(os.sep, '/')
         cls = to_class(rel)
         lib = is_lib(cls)
         member_fields, member_methods = [], []
         curr_fields, curr_methods = [], []
         consts = []
-        for line in txt.splitlines():
-            s = line.strip()
-            if s.startswith('.field'):
-                tok = s.split()[-1]
-                if ':' not in tok:
-                    continue
-                name, typ = tok.split(':', 1)
-                if typ == 'Z':
-                    hit = match_kind(name, 'member')
-                    if hit:
-                        member_fields.append((name, typ, hit))
-                elif typ in ('I', 'J', 'S', 'B', 'Ljava/lang/String;'):
-                    hit = match_kind(name, 'currency')
-                    if hit:
-                        curr_fields.append((name, typ, hit))
-            elif s.startswith('const') or s.startswith('const-wide'):
-                m = CONST_LIT_RE.match(s)
-                if m:
-                    try:
-                        v = int(m.group(1), 0)
-                    except ValueError:
-                        continue
-                    if 10 <= abs(v) <= 0x7fffffff:
-                        consts.append(v)
-        for mname, desc, ret in parse_methods_in(txt):
+        for m in FIELD_LINE_RE.finditer(txt):
+            st = m.start()
+            if txt[txt.rfind('\n', 0, st) + 1:st].strip():
+                continue
+            s = m.group(0).strip()
+            tok = s.split()[-1]
+            if ':' not in tok:
+                continue
+            name, typ = tok.split(':', 1)
+            if typ == 'Z':
+                hit = match_kind(name, 'member')
+                if hit:
+                    member_fields.append((name, typ, hit))
+            elif typ in ('I', 'J', 'S', 'B', 'Ljava/lang/String;'):
+                hit = match_kind(name, 'currency')
+                if hit:
+                    curr_fields.append((name, typ, hit))
+        for m in CONST_LINE_RE.finditer(txt):
+            st = m.start()
+            if txt[txt.rfind('\n', 0, st) + 1:st].strip():
+                continue
+            try:
+                v = int(m.group(1), 0)
+            except ValueError:
+                continue
+            if 10 <= abs(v) <= 0x7fffffff:
+                consts.append(v)
+        for m in METHOD_LINE_RE.finditer(txt):
+            st = m.start()
+            if txt[txt.rfind('\n', 0, st) + 1:st].strip():
+                continue
+            s = m.group(0).strip()
+            dm = METHOD_DESC_RE.search(s)
+            if not dm:
+                continue
+            mname = s.split('(')[0].split()[-1]
+            desc, ret = dm.group(1), dm.group(2)
             if ret == 'Z':
                 hit = match_kind(mname, 'member')
                 if hit:
@@ -316,11 +364,14 @@ def scan(dec, top=25):
                 big = sorted({v for v in consts if abs(v) >= 1000})[:6]
                 if big:
                     res['const_hints'].append({'file': rel, 'values': [hex(v) for v in big]})
-        # 支付 SDK：库自身文件 + 应用侧引用（L 前缀描述符）
+        # 支付 SDK：库自身文件 + 应用侧引用（L 前缀描述符，一次正则扫完）
+        appref_labels = set()
+        for m in SDK_REF_RE.finditer(txt):
+            appref_labels.add(SDK_REF_TO_LABEL[m.group(0)])
         for label, prefix in PAY_SDKS:
             if prefix in rel:
                 sdk_hits.setdefault(label, set()).add(rel)
-            elif ('L' + prefix) in txt:
+            elif label in appref_labels:
                 sdk_apprefs.setdefault(label, set()).add(rel)
         if not lib:
             for cb in BILLING_CALLBACKS:

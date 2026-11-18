@@ -1,6 +1,6 @@
 # 工具链：按需下载 / 第三方 vs 自研
 
-> 目标：技能包**不打包第三方二进制**，只在需要时下载；先问用户，再按选择安装；第三方成熟工具与内部自研工具**不混用**。
+> 目标：技能包**不打包第三方二进制**；按当前任务自动安装缺失的最小集，装完报告；第三方成熟工具与内部自研工具**不混用**。
 
 ## 1. 默认策略（用户已确认）
 
@@ -8,7 +8,7 @@
 |---|---|
 | 模式 | `thirdparty`（默认；自研未完善，先启用第三方成熟工具） |
 | 首次安装 | `minimal`（只装本次必需） |
-| 下载 | 必须用户确认；没有 `--yes` 不下载 |
+| 下载 | **自动**：按任务自动装缺失的最小集，装完报告；不再逐次确认 |
 | 自研工具 | 实验性；thirdparty 模式下不调用同名自研工具 |
 | 第三方工具 | 不打包、不静默下载、保留来源/许可证/校验 |
 
@@ -16,15 +16,12 @@
 
 1. 读注册表：`python3 scripts/tool_manager.py plan --task <任务>`
 2. 把清单给用户看：缺什么、多大、许可证、哪些是第三方/自研。
-3. 问用户三件事（先说默认推荐）：
-   - **本次 APK 任务需要这些工具，推荐这几款**；默认用**第三方成熟工具**（自研未完善），问用户是否改用内部自研（实验性）？
-   - 只装**本次必需** / **推荐集** / **整套** / **自己挑**？
-   - 是否同意下载（需要联网、占空间）。
-4. 用户确认后才执行：
+3. 默认选**本次任务必需 + thirdparty**；不再问用户“要不要下载”（小白用户无法判断）。
+4. 直接执行（只装缺失的最小集）：
    ```bash
-   python3 scripts/tool_manager.py install --task decode --yes
+   python3 scripts/tool_manager.py install --task decode
    # 或
-   python3 scripts/tool_manager.py install --ids jadx,apktool --yes
+   python3 scripts/tool_manager.py install --ids jadx,apktool
    ```
 5. 设置模式：
    ```bash
@@ -36,7 +33,7 @@
 
 **组安装**：`cfr` / `smali` / `baksmali` / `dex2jar` / `bundletool` / `mitmproxy` 目前仍复用 `install_tools.sh` 的组参数；默认跳过，需 `--allow-group`。单工具（jadx/apktool/aapt2/apksigner/zipalign/adb/frida）走 `--only <id>`。
 
-**禁止**：不先问就 `install_tools.sh` 全装；不把 `--profile full` 当默认；不在用户不知情时下载。
+**自动安装**：按任务只装本次必需（minimal），装完报告名称/体积/许可证；不把 `--profile full` 当默认、不一次全装。
 
 ## 3. 三种模式
 
@@ -72,7 +69,7 @@
 - `capability`：能力标签（decompile / dynamic / network / sign / dump / device…）
 - `license` / `size_mb` / `source`：给用户看，避免侵权与空间浪费
 - `detect`：命令、Python 模块、或仓库内路径
-- `install_cmd`：只有用户确认后才执行
+- `install_cmd`：自动安装时按任务执行；`--dry-run` 只打印计划
 - `completeness`（自研）：`stable` / `experimental`
 - `conflicts`：同名/同能力冲突项
 
@@ -123,4 +120,4 @@ REA（Reverse Engineer Anything，MIT）的做法值得借鉴：
 
 ## 8. 风险提示（同步到 README / 主页）
 
-使用本技能可能对手机有风险，部分功能需要 **root / ADB / Shizuku** 等高风险权限；请先备份，勿在主力机/生产环境使用。第三方工具由各自作者提供，请自行确认来源与许可证；本技能不提供盗版、破解付费、绕过服务器校验或分发改装包。
+使用本技能可能对手机有风险，部分功能需要 **root / ADB / Shizuku** 等高风险权限；请先备份，勿在主力机/生产环境使用。第三方工具由各自作者提供，请自行确认来源与许可证。**自有应用/自建服务器**的校验测试可在你的授权范围内进行；本技能不随包提供针对第三方/未授权应用的成品绕过，也不分发改装包。

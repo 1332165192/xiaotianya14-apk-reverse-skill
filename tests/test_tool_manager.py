@@ -33,6 +33,9 @@ class ToolManagerTest(unittest.TestCase):
         self.assertEqual(data["policy"]["default_mode"], "thirdparty")
         self.assertEqual(data["policy"]["default_profile"], "minimal")
         self.assertFalse(data["policy"]["bundle_third_party_binaries"])
+        self.assertFalse(data["policy"]["ask_before_download"])
+        self.assertTrue(data["policy"]["auto_install"])
+        self.assertTrue(data["policy"]["report_after_install"])
         for t in data["tools"]:
             self.assertIn(t["type"], {"third_party", "self"})
             self.assertTrue(t.get("license"), t["id"])
@@ -51,9 +54,10 @@ class ToolManagerTest(unittest.TestCase):
         self.assertGreater(len(payload["tools"]), 0)
         self.assertIn("estimated_mb", payload)
 
-    def test_install_requires_yes(self):
-        r = self.run_tm("install", "--task", "decode")
-        self.assertEqual(r.returncode, 3, r.stdout + r.stderr)
+    def test_install_dry_run_does_not_download(self):
+        r = self.run_tm("install", "--task", "decode", "--dry-run")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("[dry-run]", r.stdout)
         self.assertFalse(self.state.exists() and json.loads(self.state.read_text()).get("installed"))
 
     def test_mode_and_resolve(self):

@@ -72,13 +72,14 @@ def run_grep(root, patterns, include='*.smali'):
     return files
 
 
-def scan_sdks(dec):
+def scan_sdks(dec, hits=None):
     print('\n══════ 广告 SDK 命中 ══════')
     sdk_files = {}
     all_prefixes = []
     for name, prefixes in SDK_SIGNATURES:
         all_prefixes.extend(prefixes)
-    hits = run_grep(dec, [re.escape(p) for p in all_prefixes])
+    if hits is None:
+        hits = run_grep(dec, [re.escape(p) for p in all_prefixes])
     for rel in hits:
         for name, prefixes in SDK_SIGNATURES:
             if any(p in rel for p in prefixes):
@@ -94,13 +95,14 @@ def scan_sdks(dec):
     return sdk_files
 
 
-def scan_app_refs(dec, sdk_files):
+def scan_app_refs(dec, sdk_files, hits=None):
     """非 SDK 自身文件里引用广告类型（应用侧调用点）"""
     print('\n══════ 应用侧广告引用（非 SDK 目录） ══════')
     sdk_roots = {os.path.dirname(f) for files in sdk_files.values() for f in files}
     pats = [r'com/google/android/gms/ads', r'com/google/android/gms/internal/ads',
             r'com/bytedance/sdk/openadsdk', r'com/qq/e', r'com/kwad', r'com/baidu/mobads']
-    hits = run_grep(dec, pats)
+    if hits is None:
+        hits = run_grep(dec, pats)
     noise = ('smali/com/google', 'smali/com/bytedance', 'smali/androidx', 'smali/android/',
              'smali/kotlin', 'smali/kotlinx', 'smali/org/chromium', 'smali/android/support')
     app_refs = []
@@ -156,14 +158,15 @@ def scan_strings(dec):
     return results
 
 
-def scan_id_usage(dec, string_hits):
+def scan_id_usage(dec, string_hits, hits=None):
     print('\n══════ 资源 ID 使用类反查 ═══════')
     ids = [r['id'] for r in string_hits if r.get('id')]
     if not ids:
         print('  无可用 ID（public.xml 缺失或字符串未命中）')
         return []
     pat = '|'.join(re.escape(i.lower()) for i in ids)
-    hits = run_grep(dec, [pat])
+    if hits is None:
+        hits = run_grep(dec, [pat])
     app_hits = [h for h in hits if not h.startswith('smali/com/google')]
     for h in app_hits[:40]:
         print('  ' + h)
@@ -202,19 +205,27 @@ def scan_switches(dec, candidates):
     return rows
 
 
-def scan_protection(dec):
+def scan_protection(dec, hits=None):
     print('\n══════ 保护特征 ═══════')
     found_any = False
-    for name, prefixes in PACKER_SIGNATURES:
-        hits = run_grep(dec, [re.escape(p) for p in prefixes])
-        if hits:
+    # 一次 grep 扫全部保护特征；原来每个特征一次全盘 grep，16k smali 会跑几分钟
+    if hits is None:
+        patterns = []
+        for _name, prefixes in PACKER_SIGNATURES:
+            patterns.extend(re.escape(p) for p in prefixes)
+        patterns.append(re.escape('L$/$;->$_'))  # StringFog 特征
+        hits = run_grep(dec, patterns)
+    for rel in hits:
+        try:
+            txt = open(os.path.join(dec, rel), encoding='utf-8', errors='ignore').read()
+        except OSError:
+            continue
+        matched = [name for name, prefixes in PACKER_SIGNATURES if any(p in txt for p in prefixes)]
+        if 'L$/$;->$_' in txt or '$/ $;->$' in txt:
+            matched.append('StringFog 字符串加密')
+        for name in dict.fromkeys(matched):
             found_any = True
-            print(f'  [{name}] {len(hits)} 处，如 {hits[0]}')
-    # StringFog 特征
-    hits = run_grep(dec, [r'L\$/\$;->\$_'])
-    if hits:
-        found_any = True
-        print(f'  [StringFog 字符串加密] {len(hits)} 个文件（native 解密，明文 grep 不到）')
+            print(f'  [{name}] {rel}')
     # 原生库
     lib = os.path.join(dec, 'lib')
     if os.path.isdir(lib):
@@ -239,13 +250,26 @@ def main():
     if not os.path.isdir(dec):
         print(f'ERR: 目录不存在: {dec}')
         return 1
-    sdk_files = scan_sdks(dec)
-    app_refs = scan_app_refs(dec, sdk_files)
+    # 关键优化：先算字符串/资源 ID，再只跑一次全盘 grep，避免 4-10 次重复扫描。
     string_hits = scan_strings(dec)
-    usage = scan_id_usage(dec, string_hits)
+    patterns = []
+    for _name, prefixes in SDK_SIGNATURES:
+        patterns.extend(re.escape(p) for p in prefixes)
+    for p in (r'com/google/android/gms/ads', r'com/google/android/gms/internal/ads',
+              r'com/bytedance/sdk/openadsdk', r'com/qq/e', r'com/kwad', r'com/baidu/mobads'):
+        patterns.append(re.escape(p))
+    for _name, prefixes in PACKER_SIGNATURES:
+        patterns.extend(re.escape(p) for p in prefixes)
+    patterns.append(re.escape('L$/$;->$_'))
+    patterns.extend(re.escape((r.get('id') or '').lower()) for r in string_hits if r.get('id'))
+    hits = run_grep(dec, patterns)
+
+    sdk_files = scan_sdks(dec, hits)
+    app_refs = scan_app_refs(dec, sdk_files, hits)
+    usage = scan_id_usage(dec, string_hits, hits)
     candidates = list(dict.fromkeys(app_refs + usage))
     switches = scan_switches(dec, candidates)
-    scan_protection(dec)
+    scan_protection(dec, hits)
 
     print('\n══════ 下一步建议 ══════')
     if sdk_files:

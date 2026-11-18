@@ -2,7 +2,7 @@
 """按需工具管理器（默认不下载任何东西）。
 
 设计目标：
-- 先检测、再给出清单、再由用户选择；没有 --yes 绝不安装。
+- 先检测、再给出清单、默认自动安装本次必需；装完报告，不再逐次确认。
 - 区分 third_party / self；thirdparty 模式默认禁用自研同名工具。
 - 注册表只放元数据与下载/安装入口，不把第三方二进制打进技能包。
 
@@ -10,8 +10,9 @@
   python3 scripts/tool_manager.py status
   python3 scripts/tool_manager.py plan --task decode
   python3 scripts/tool_manager.py plan --profile minimal
-  python3 scripts/tool_manager.py install --profile minimal --yes
-  python3 scripts/tool_manager.py install --ids jadx,apktool --yes
+  python3 scripts/tool_manager.py install --profile minimal
+  python3 scripts/tool_manager.py install --ids jadx,apktool
+  python3 scripts/tool_manager.py install --task decode --dry-run   # 只看计划
   python3 scripts/tool_manager.py mode thirdparty
   python3 scripts/tool_manager.py resolve --capability dynamic
 """
@@ -115,7 +116,7 @@ def print_table(rows: list[dict[str, Any]], state: dict[str, Any]) -> None:
             note += f"（{r.get('completeness','experimental')}）"
         print(f"{r['id']:<22} {type_label(r):<6} {st:<6} {size:>7}  {r.get('license',''):<26} {note}")
     print("-" * 120)
-    print("只装你选中的；没有 --yes 不会下载。第三方工具不打包在本技能里，只保存来源/许可证/校验入口。")
+    print("默认按当前任务自动安装缺失的第三方工具；安装后报告给你。第三方工具不打包在本技能里，只保存来源/许可证/校验入口。")
 
 
 def print_recommendation(rows: list[dict[str, Any]], task: str) -> None:
@@ -123,7 +124,7 @@ def print_recommendation(rows: list[dict[str, Any]], task: str) -> None:
     self_tools = [r for r in rows if r.get("type") == "self"]
     print(f"\n本次 APK 任务「{task or '通用'}」需要的工具：")
     if third:
-        print("  推荐第三方成熟工具：" + "、".join(f"{r['id']}（{r.get('size_mb',0)}MB，{r.get('license','')}）" + ("[组安装]" if r.get("install_group") else "") for r in third))
+        print("  推荐第三方成熟工具：" + "、".join(f"{r['id']}（{r.get('size_mb',0)}MB，{r.get('license','')}）" + ("[旧组兼容]" if r.get("install_group") else "") for r in third))
     if self_tools:
         print("  自研工具（未完善，默认不启用）：" + "、".join(r["id"] for r in self_tools))
     print("  建议：默认用第三方成熟工具；自研工具想试再切 `mode self` 或 `mode hybrid`。")
@@ -154,11 +155,14 @@ def cmd_plan(args: argparse.Namespace) -> int:
     print(f"\n本次缺失: {len(missing)} 项；预计下载约 {total} MB。")
     grouped = [r for r in missing if r.get("install_group")]
     if grouped:
-        print("其中这些是组安装（默认不执行，避免顺带装同组其它工具）：" + "、".join(f"{r['id']}[{r.get('install_group')}]" for r in grouped))
-        print("如接受同组安装，执行时加 --allow-group；或只选非组工具。")
+        print("其中这些是旧注册表的组安装项（默认不执行，仅兼容旧数据，避免顺带装同组其它工具）：" + "、".join(f"{r['id']}[{r.get('install_group')}]" for r in grouped))
+        print("如接受同组安装，执行时加 --allow-group；单装请用对应 --only <id>。")
+    single = [r for r in missing if r.get("type") != "self" and r.get("install_cmd") and not r.get("install_group")]
+    if single:
+        print("单装入口（每个只装自己，不整组）：bash scripts/install_tools.sh --only <id>")
     if any(r.get("type") == "self" and not r.get("installed") for r in rows):
         print("注意：自研工具缺失时不应从网络下载；它们是本技能脚本，检查安装目录是否完整。")
-    print("下一步：把清单给用户看，让用户选「只装本次必需 / 推荐集 / 整套 / 自己挑」；确认后再加 --yes 执行。")
+    print("下一步：自动安装本次必需（无需用户确认）；安装完成后告诉用户装了什么、多大、什么许可证。")
     return 0
 
 
@@ -166,6 +170,11 @@ def cmd_install(args: argparse.Namespace) -> int:
     reg = load_registry()
     state = load_state(args.state)
     chosen = selected_tools(reg, args)
+    if args.ids:
+        known = {t["id"] for t in reg.get("tools", [])}
+        unknown = [x.strip() for x in args.ids.split(",") if x.strip() and x.strip() not in known]
+        if unknown:
+            print("忽略未知工具 id: " + ", ".join(unknown), file=sys.stderr)
     if not chosen:
         print("没有选中的工具。用 --task / --profile / --ids 指定。", file=sys.stderr)
         return 2
@@ -175,16 +184,25 @@ def cmd_install(args: argparse.Namespace) -> int:
         rows.append({**t, **d})
     missing = [r for r in rows if not r.get("installed")]
     third = [r for r in missing if r.get("type") != "self" and r.get("install_cmd")]
+    # 旧注册表 install_group 的条目只有在 --allow-group 时才执行；新版 registry 已全部改成 --only 单装，
+    # 所以这里正常情况下 grouped 为空，--allow-group 只是旧组兼容开关，不改变默认行为。
     grouped = [r for r in third if r.get("install_group")]
     if grouped and not args.allow_group:
         third = [r for r in third if not r.get("install_group")]
-        print("\n以下属于组安装，默认不执行（避免顺带装同组其它工具）：" + ", ".join(f"{r['id']}[{r.get('install_group')}]" for r in grouped))
-        print("如接受同组安装，加 --allow-group；或只选非组工具。")
+        print("\n以下属于旧注册表的组安装项，默认不执行（仅兼容旧数据）：" + ", ".join(f"{r['id']}[{r.get('install_group')}]" for r in grouped))
+        print("如接受同组安装，加 --allow-group；单装请用对应 --only <id>。")
     self_missing = [r for r in missing if r.get("type") == "self"]
     if args.json:
-        print(json.dumps({"chosen": rows, "missing": missing, "will_run": third}, ensure_ascii=False, indent=2))
-        if not args.yes:
-            return 3
+        print(json.dumps({"chosen": rows, "missing": missing, "will_run": third, "dry_run": bool(args.dry_run)}, ensure_ascii=False, indent=2))
+        return 0
+    if args.dry_run:
+        print_table(rows, state)
+        print("\n[dry-run] 本次将自动安装：")
+        for r in third:
+            print(f"  - {r['id']}（{r.get('size_mb',0)}MB，{r.get('license','')}）: {r['install_cmd']}")
+        if not third:
+            print("  （没有可执行的第三方下载项）")
+        return 0
     if not missing:
         print("选中的工具都已安装，无需下载。")
         return 0
@@ -192,18 +210,15 @@ def cmd_install(args: argparse.Namespace) -> int:
     if self_missing:
         print("\n以下自研工具缺失（不会联网下载）：" + ", ".join(r["id"] for r in self_missing))
     if not third:
-        if not args.yes:
-            print("\n没有可执行的第三方下载项；当前未下载任何东西。")
-            return 3
+        refs = [r for r in missing if r.get("type") == "third_party" and not r.get("install_cmd")]
+        if refs:
+            print("以下工具只作参考/不自动安装：" + ", ".join(r["id"] for r in refs))
         print("没有可执行的第三方下载项；选中项仍未安装。")
         return 4
     print_recommendation(rows, args.task or args.profile or "通用")
     print("\n将执行（只针对选中的缺失项）：")
     for r in third:
         print(f"  - {r['id']} ({r.get('size_mb',0)}MB, {r.get('license','')}): {r['install_cmd']}")
-    if not args.yes:
-        print("\n需要用户确认后再执行；确认后加 --yes。当前未下载任何东西。")
-        return 3
     failed = []
     for r in third:
         print(f"\n>>> 安装 {r['id']} ...")
@@ -218,7 +233,17 @@ def cmd_install(args: argparse.Namespace) -> int:
     if failed:
         print("\n失败项: " + ", ".join(failed) + "（可重试；未完成前不要宣称已装好）")
         return 1
-    print("\n选中项安装完成；用 `tool_manager.py status` 复核。")
+    installed_now = [r for r in third if detect(r).get("installed")]
+    not_installed = [r for r in third if not detect(r).get("installed")]
+    print("\n已自动安装：")
+    for r in installed_now:
+        print(f"  - {r['id']}（{r.get('size_mb',0)}MB，{r.get('license','')}）")
+    if not installed_now:
+        print("  （无）")
+    if failed or not_installed:
+        print("未完成: " + ", ".join(failed + [r["id"] for r in not_installed]))
+        return 1
+    print("用 `tool_manager.py status` 可复核。")
     return 0
 
 
@@ -283,12 +308,13 @@ def build_parser() -> argparse.ArgumentParser:
     pl.add_argument("--json", action="store_true")
     pl.set_defaults(func=cmd_plan)
 
-    ins = sub.add_parser("install", help="只装选中的缺失工具（需 --yes）")
+    ins = sub.add_parser("install", help="自动安装选中的缺失工具（默认无需确认；--dry-run 只看计划）")
     ins.add_argument("--task", default="")
     ins.add_argument("--profile", choices=["minimal", "recommended", "full"], default="")
     ins.add_argument("--ids", default="")
-    ins.add_argument("--yes", action="store_true", help="用户已确认；没有它不会下载")
-    ins.add_argument("--allow-group", action="store_true", help="允许组安装（会连带同组工具，仍只执行选中项对应的组）")
+    ins.add_argument("--yes", action="store_true", help="兼容旧参数；默认自动安装，无需确认")
+    ins.add_argument("--dry-run", action="store_true", help="只打印计划，不执行安装")
+    ins.add_argument("--allow-group", action="store_true", help="（兼容旧注册表）允许旧 install_group 条目执行；新版各工具都是 --only 单装，默认不需要它")
     ins.add_argument("--json", action="store_true")
     ins.set_defaults(func=cmd_install)
 

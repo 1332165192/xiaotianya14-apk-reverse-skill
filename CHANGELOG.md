@@ -7,16 +7,19 @@ versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- `tools/registry.json` + `scripts/tool_manager.py`：按需工具管理（检测 / 清单 / 用户确认后安装 / 三种模式），默认 thirdparty + minimal，不打包第三方二进制、不静默下载
+- `tools/registry.json` + `scripts/tool_manager.py`：按需工具管理（检测 / 清单 / **自动安装本次必需** / 三种模式），默认 thirdparty + minimal，不打包第三方二进制，装完报告
+- `analyze_ads.py`：多次全盘 grep 合并为一次，样本 122s → 约 32s
+- `scan_premium.py`：并行预读 + 整文件正则，样本 40–44s → 18–24s（约 2 倍，输出逐字节一致）
 - `references/tool-manager.md`：首次使用询问流程、第三方 vs 自研、许可证规则、REA 架构参考
 - README 风险提示：root / ADB / Shizuku 高风险权限与第三方工具来源提醒
 
 ### Changed
-- `SKILL.md` 的 ACTION REQUIRED：工具核对改为先 `tool_manager.py plan`，给用户看清单与推荐，再确认安装
-- `toolcheck.sh` 追加按需清单；`install_tools.sh` 支持 `--plan` / `--only <id>`，单工具不再被迫整组安装
+- `SKILL.md` 的 ACTION REQUIRED：工具核对改为 `plan` 后自动安装本次必需，装完告知用户；默认 thirdparty + minimal
+- `toolcheck.sh` 追加按需清单；`install_tools.sh` 支持 `--plan` / `--only <id>`，cfr/smali/baksmali/dex2jar/bundletool/mitmproxy 均可单装，单工具不再被迫整组安装
 - `SKILL.md` 瘦身：工具清单/脚本清单移到 `references/toolchain.md` / `references/scripts.md`
 - `hook_gen.py` 增加 `--dry-run`；`dex_dump.py` 增加 `--summary-json`；`build_sign.sh` 完成后打印 sha256
 - `package.json.files` 加入 `tools`
+- 工具 `detect` 改为真实路径/命令：cfr、dex2jar、bundletool、smali3/baksmali3 不再误报缺
 
 ## [0.8.0] - 2026-11-19
 

@@ -48,7 +48,7 @@
 > **风险提示**
 >
 > 本技能仅用于你本人拥有或已获明确授权的应用安全研究。部分功能需要 **root / ADB / Shizuku** 等高风险权限，可能导致设备不稳定、数据丢失、保修失效或被目标应用检测；请先备份，勿在主力机/生产环境使用。
-> 第三方工具由各自作者提供，请自行确认来源与许可证；本技能不提供盗版、破解付费、绕过服务器校验或分发改装包。
+> 第三方工具由各自作者提供，请自行确认来源与许可证。自有应用/自建服务器的校验测试可在你的授权范围内进行；本技能不随包提供针对第三方/未授权应用的成品绕过，也不分发改装包。
 
 <a id="about"></a>
 
@@ -129,7 +129,7 @@ APK
 
 ```bash
 python3 scripts/tool_manager.py plan --task decode
-python3 scripts/tool_manager.py install --task decode --yes   # 用户确认后才执行
+python3 scripts/tool_manager.py install --task decode          # 自动安装本次必需
 ```
 
 它会列出缺失项、体积、许可证，以及「第三方成熟工具 / 内部自研」选择。单工具安装：`bash scripts/install_tools.sh --only jadx`；组安装工具仍由 `--allow-group` 保护。**默认启用第三方**：自研工具还未完善，先给用户成熟方案；thirdparty 模式下不调用未完善的自研同名工具。默认最小集、不静默下载；可用 `mode self` / `mode hybrid` 切回。
