@@ -1,0 +1,576 @@
+{
+  "schema": 1,
+  "updated": "2026-11-19",
+  "policy": {
+    "default_mode": "thirdparty",
+    "default_profile": "minimal",
+    "bundle_third_party_binaries": false,
+    "ask_before_download": true,
+    "on_thirdparty_disable_self": true,
+    "license_rule": "MIT/Apache-2.0 可用并保留署名；GPL/AGPL/无 LICENSE 不打包、不默认下载"
+  },
+  "profiles": {
+    "minimal": [
+      "jadx",
+      "apktool",
+      "aapt2",
+      "apksigner",
+      "zipalign"
+    ],
+    "recommended": [
+      "jadx",
+      "apktool",
+      "aapt2",
+      "apksigner",
+      "zipalign",
+      "python-androguard",
+      "python-frida",
+      "frida",
+      "frida-server"
+    ],
+    "full": [
+      "jadx",
+      "apktool",
+      "aapt2",
+      "apksigner",
+      "zipalign",
+      "python-androguard",
+      "python-frida",
+      "frida",
+      "frida-server",
+      "mitmproxy",
+      "smali",
+      "baksmali",
+      "cfr",
+      "dex2jar",
+      "bundletool",
+      "adb"
+    ]
+  },
+  "tools": [
+    {
+      "id": "jadx",
+      "name": "jadx",
+      "type": "third_party",
+      "capability": [
+        "decompile",
+        "analyze"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 35,
+      "tasks": [
+        "decode",
+        "analyze"
+      ],
+      "required_for": [
+        "decode",
+        "analyze"
+      ],
+      "recommended_for": [
+        "decode",
+        "analyze"
+      ],
+      "detect": {
+        "command": "jadx",
+        "version": [
+          "jadx",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --jadx",
+      "source": "https://github.com/skylot/jadx",
+      "note": "成熟方案，默认推荐；不要在第三方模式下再调用自研反编译包装。"
+    },
+    {
+      "id": "apktool",
+      "name": "apktool",
+      "type": "third_party",
+      "capability": [
+        "decode",
+        "repack"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 20,
+      "tasks": [
+        "decode",
+        "repack",
+        "patch"
+      ],
+      "required_for": [
+        "decode",
+        "repack"
+      ],
+      "recommended_for": [
+        "decode",
+        "repack"
+      ],
+      "detect": {
+        "command": "apktool",
+        "version": [
+          "apktool",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "source": "https://github.com/iBotPeaches/Apktool",
+      "note": "apt 安装组；如果系统包版本旧，优先官方 jar。",
+      "install_group": "apt"
+    },
+    {
+      "id": "aapt2",
+      "name": "aapt2",
+      "type": "third_party",
+      "capability": [
+        "manifest",
+        "resources"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 5,
+      "tasks": [
+        "decode",
+        "repack"
+      ],
+      "required_for": [
+        "repack"
+      ],
+      "detect": {
+        "command": "aapt2",
+        "version": [
+          "aapt2",
+          "version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "source": "https://developer.android.com/tools/aapt2",
+      "note": "Android SDK 工具；随 apt 组安装。",
+      "install_group": "apt"
+    },
+    {
+      "id": "apksigner",
+      "name": "apksigner",
+      "type": "third_party",
+      "capability": [
+        "sign"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 3,
+      "tasks": [
+        "sign"
+      ],
+      "required_for": [
+        "sign"
+      ],
+      "detect": {
+        "command": "apksigner",
+        "version": [
+          "apksigner",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "source": "https://developer.android.com/tools/apksigner",
+      "note": "重打包后签名必需。",
+      "install_group": "apt"
+    },
+    {
+      "id": "zipalign",
+      "name": "zipalign",
+      "type": "third_party",
+      "capability": [
+        "sign",
+        "align"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 1,
+      "tasks": [
+        "sign"
+      ],
+      "required_for": [
+        "sign"
+      ],
+      "detect": {
+        "command": "zipalign"
+      },
+      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "source": "https://developer.android.com/tools/zipalign",
+      "note": "签名前对齐。",
+      "install_group": "apt"
+    },
+    {
+      "id": "python-androguard",
+      "name": "androguard",
+      "type": "third_party",
+      "capability": [
+        "analyze",
+        "manifest"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 15,
+      "tasks": [
+        "analyze"
+      ],
+      "recommended_for": [
+        "analyze"
+      ],
+      "detect": {
+        "python_module": "androguard"
+      },
+      "install_cmd": "bash scripts/install_tools.sh --pip",
+      "source": "https://github.com/androguard/androguard",
+      "note": "Python 库；pip 组安装。",
+      "install_group": "pip"
+    },
+    {
+      "id": "python-frida",
+      "name": "frida (Python)",
+      "type": "third_party",
+      "capability": [
+        "dynamic"
+      ],
+      "license": "wxWindows Library Licence",
+      "size_mb": 20,
+      "tasks": [
+        "dynamic"
+      ],
+      "required_for": [
+        "dynamic"
+      ],
+      "detect": {
+        "python_module": "frida"
+      },
+      "install_cmd": "bash scripts/install_tools.sh --frida",
+      "source": "https://github.com/frida/frida-python",
+      "note": "Python 端；与设备端 frida-server 版本必须一致。",
+      "install_group": "frida"
+    },
+    {
+      "id": "frida",
+      "name": "frida CLI",
+      "type": "third_party",
+      "capability": [
+        "dynamic"
+      ],
+      "license": "wxWindows Library Licence",
+      "size_mb": 20,
+      "tasks": [
+        "dynamic"
+      ],
+      "required_for": [
+        "dynamic"
+      ],
+      "detect": {
+        "command": "frida",
+        "version": [
+          "frida",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --frida",
+      "source": "https://github.com/frida/frida",
+      "note": "设备端 frida-server 按手机架构单独准备。",
+      "install_group": "frida"
+    },
+    {
+      "id": "frida-server",
+      "name": "frida-server",
+      "type": "third_party",
+      "capability": [
+        "dynamic"
+      ],
+      "license": "wxWindows Library Licence",
+      "size_mb": 30,
+      "tasks": [
+        "dynamic"
+      ],
+      "recommended_for": [
+        "dynamic"
+      ],
+      "detect": {
+        "path": "/root/tools/frida-server-17.26.2-android-arm64"
+      },
+      "install_cmd": "bash scripts/install_tools.sh --frida",
+      "source": "https://github.com/frida/frida/releases",
+      "note": "设备端二进制；需 adb root/本机 root 才能启动。",
+      "install_group": "frida"
+    },
+    {
+      "id": "mitmproxy",
+      "name": "mitmproxy",
+      "type": "third_party",
+      "capability": [
+        "network"
+      ],
+      "license": "MIT",
+      "size_mb": 90,
+      "tasks": [
+        "network"
+      ],
+      "recommended_for": [
+        "network"
+      ],
+      "detect": {
+        "command": "mitmproxy",
+        "version": [
+          "mitmproxy",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --net",
+      "source": "https://github.com/mitmproxy/mitmproxy",
+      "note": "抓包组体积大；只在需要时下载。",
+      "install_group": "net"
+    },
+    {
+      "id": "smali",
+      "name": "smali",
+      "type": "third_party",
+      "capability": [
+        "patch"
+      ],
+      "license": "BSD-3-Clause",
+      "size_mb": 5,
+      "tasks": [
+        "patch"
+      ],
+      "recommended_for": [
+        "patch"
+      ],
+      "detect": {
+        "command": "smali",
+        "version": [
+          "smali",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --re",
+      "source": "https://github.com/JesusFreke/smali",
+      "note": "smali/baksmali 同组。",
+      "install_group": "re"
+    },
+    {
+      "id": "baksmali",
+      "name": "baksmali",
+      "type": "third_party",
+      "capability": [
+        "patch",
+        "decompile"
+      ],
+      "license": "BSD-3-Clause",
+      "size_mb": 5,
+      "tasks": [
+        "patch",
+        "decode"
+      ],
+      "recommended_for": [
+        "patch"
+      ],
+      "detect": {
+        "command": "baksmali",
+        "version": [
+          "baksmali",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --re",
+      "source": "https://github.com/JesusFreke/smali",
+      "note": "smali/baksmali 同组。",
+      "install_group": "re"
+    },
+    {
+      "id": "cfr",
+      "name": "CFR",
+      "type": "third_party",
+      "capability": [
+        "decompile"
+      ],
+      "license": "MIT",
+      "size_mb": 2,
+      "tasks": [
+        "decode"
+      ],
+      "recommended_for": [
+        "decode"
+      ],
+      "detect": {
+        "command": "cfr",
+        "version": [
+          "cfr",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --re",
+      "source": "https://www.benf.org/other/cfr/",
+      "note": "Java 反编译备选。",
+      "install_group": "re"
+    },
+    {
+      "id": "dex2jar",
+      "name": "dex2jar",
+      "type": "third_party",
+      "capability": [
+        "decompile"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 10,
+      "tasks": [
+        "decode",
+        "analyze"
+      ],
+      "recommended_for": [
+        "decode"
+      ],
+      "detect": {
+        "command": "d2j-dex2jar",
+        "version": [
+          "d2j-dex2jar",
+          "--version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --community",
+      "source": "https://github.com/pxb1988/dex2jar",
+      "note": "社区工具组；需要时才下载。",
+      "install_group": "community"
+    },
+    {
+      "id": "bundletool",
+      "name": "bundletool",
+      "type": "third_party",
+      "capability": [
+        "aab",
+        "unpack"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 30,
+      "tasks": [
+        "decode",
+        "unpack"
+      ],
+      "recommended_for": [
+        "unpack"
+      ],
+      "detect": {
+        "command": "bundletool",
+        "version": [
+          "bundletool",
+          "version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --community",
+      "source": "https://github.com/google/bundletool",
+      "note": "AAB/APKS 场景；社区工具组。",
+      "install_group": "community"
+    },
+    {
+      "id": "adb",
+      "name": "adb",
+      "type": "third_party",
+      "capability": [
+        "device"
+      ],
+      "license": "Apache-2.0",
+      "size_mb": 5,
+      "tasks": [
+        "device",
+        "dynamic"
+      ],
+      "recommended_for": [
+        "device",
+        "dynamic"
+      ],
+      "detect": {
+        "command": "adb",
+        "version": [
+          "adb",
+          "version"
+        ]
+      },
+      "install_cmd": "bash scripts/install_tools.sh --apt",
+      "source": "https://developer.android.com/tools/adb",
+      "note": "真机调试通道；需要用户开启 USB/无线调试。",
+      "install_group": "apt"
+    },
+    {
+      "id": "self-hook-gen",
+      "name": "hook_gen（自研）",
+      "type": "self",
+      "capability": [
+        "dynamic"
+      ],
+      "license": "MIT",
+      "size_mb": 0,
+      "tasks": [
+        "dynamic"
+      ],
+      "detect": {
+        "path": "scripts/hook_gen.py"
+      },
+      "completeness": "experimental",
+      "conflicts": [
+        "frida"
+      ],
+      "note": "自动生成并注入 Frida hook；未完善，第三方模式下默认禁用。"
+    },
+    {
+      "id": "self-dex-dump",
+      "name": "dex_dump（自研）",
+      "type": "self",
+      "capability": [
+        "dump",
+        "unpack"
+      ],
+      "license": "MIT",
+      "size_mb": 0,
+      "tasks": [
+        "dump",
+        "decode"
+      ],
+      "detect": {
+        "path": "scripts/dex_dump.py"
+      },
+      "completeness": "experimental",
+      "conflicts": [],
+      "note": "内存 DEX 提取；手机端少替代，优先继续完善。"
+    },
+    {
+      "id": "self-build-sign",
+      "name": "build_sign（自研）",
+      "type": "self",
+      "capability": [
+        "repack",
+        "sign"
+      ],
+      "license": "MIT",
+      "size_mb": 0,
+      "tasks": [
+        "repack",
+        "sign"
+      ],
+      "detect": {
+        "path": "scripts/build_sign.sh"
+      },
+      "completeness": "stable",
+      "conflicts": [],
+      "note": "重打包/对齐/签名封装；稳定，可继续使用。"
+    },
+    {
+      "id": "rea",
+      "name": "REA（桌面端参考）",
+      "type": "third_party",
+      "capability": [
+        "binary",
+        "desktop"
+      ],
+      "license": "MIT",
+      "size_mb": 0,
+      "tasks": [
+        "desktop"
+      ],
+      "detect": {
+        "command": "rea"
+      },
+      "install_cmd": "",
+      "source": "https://github.com/morluto/rea",
+      "note": "MCP + 桌面逆向工具；手机端不安装，只作为架构参考。"
+    }
+  ]
+}

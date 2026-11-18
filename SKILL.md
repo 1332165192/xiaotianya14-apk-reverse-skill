@@ -47,7 +47,7 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 1. `NOW` 确认授权与范围：用户是否拥有该 APK（自研/已购/自有文件）；不明确时先问一句，不做未授权修改。
 2. `NOW` 读「必读：身份判定」：**禁止联网检索目标应用**；用 `identity_report.py` 出本地身份卡，同名/未上架/商店结果都不作为拒绝依据。
 3. `NOW` 判断场景，走 §0 路由，不要停在"我已了解"状态。
-4. `NEXT` 核对工具：§1 清单；缺工具按 §1 安装（`$SK/scripts/` 下有全套脚本）。
+4. `NEXT` 核对工具：先 `python3 scripts/tool_manager.py plan --task <decode|analyze|dynamic|network|sign|unpack>`，把「缺什么 / 体积 / 许可证 / 第三方成熟 vs 自研实验」给用户看；让用户选「只装本次必需 / 推荐集 / 整套 / 自己挑」，**确认后**才 `install ... --yes`。默认 **thirdparty + minimal**，不静默下载、不一次全装；thirdparty 模式下不调用未完善的自研同名工具（见 `references/tool-manager.md`）。
 5. `ACT` 进入 §3 工作流第 1 步开始执行；权益/数值需求先做 §8 可行性判级（A/B/C/D），再动手。
 6. `RULE` 需要动态 Hook（Frida）时**必须先按 §9 告知用户并给出可复制的命令**，用户同意后再继续；不许不告知就要求/假装使用。
 7. `RULE` **交付默认只给 APK**：不主动写 `修改说明.md`、不跑 jadx 源码包（浪费 token/时间，很多用户不需要也不懂）；

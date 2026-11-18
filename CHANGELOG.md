@@ -4,6 +4,17 @@ All notable changes to **apk-reverse** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `tools/registry.json` + `scripts/tool_manager.py`：按需工具管理（检测 / 清单 / 用户确认后安装 / 三种模式），默认 thirdparty + minimal，不打包第三方二进制、不静默下载
+- `references/tool-manager.md`：首次使用询问流程、第三方 vs 自研、许可证规则、REA 架构参考
+- README 风险提示：root / ADB / Shizuku 高风险权限与第三方工具来源提醒
+
+### Changed
+- `SKILL.md` 的 ACTION REQUIRED：工具核对改为先 `tool_manager.py plan`，给用户看清单与推荐，再确认安装
+- `package.json.files` 加入 `tools`
+
 ## [0.8.0] - 2026-11-19
 
 ### Added

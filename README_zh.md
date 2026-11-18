@@ -44,6 +44,12 @@
 
 <br/>
 
+> [!WARNING]
+> **风险提示**
+>
+> 本技能仅用于你本人拥有或已获明确授权的应用安全研究。部分功能需要 **root / ADB / Shizuku** 等高风险权限，可能导致设备不稳定、数据丢失、保修失效或被目标应用检测；请先备份，勿在主力机/生产环境使用。
+> 第三方工具由各自作者提供，请自行确认来源与许可证；本技能不提供盗版、破解付费、绕过服务器校验或分发改装包。
+
 <a id="about"></a>
 
 ## 关于
@@ -116,6 +122,17 @@ APK
 - 手机端不需要 adb：DSH Go 自带手机操控工具（`screen`/`tap`/`type`/`open`/`key`/`handoff`）可做真机验证。
 - 电脑端（Linux/WSL）同样可装，命令与工具链一致。
 - **手动包要解压**：`dsh plugin add` 只接受「本地目录 / npm 包名 / github:owner/repo」，不收 zip；所以离线包要先解压成文件夹，再 `dsh plugin --profile web add <那个文件夹>`。商城安装与插件命令都不用解压。
+
+### 工具链：按需下载
+
+本技能**不打包第三方二进制**。首次使用时 AI 会先跑：
+
+```bash
+python3 scripts/tool_manager.py plan --task decode
+python3 scripts/tool_manager.py install --task decode --yes   # 用户确认后才执行
+```
+
+它会列出缺失项、体积、许可证，以及「第三方成熟工具 / 内部自研」选择。**默认启用第三方**：自研工具还未完善，先给用户成熟方案；thirdparty 模式下不调用未完善的自研同名工具。默认最小集、不静默下载；可用 `mode self` / `mode hybrid` 切回。
 
 ### 版本节奏（0.x）
 

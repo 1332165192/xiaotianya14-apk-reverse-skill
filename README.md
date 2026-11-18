@@ -44,6 +44,14 @@
 
 <br/>
 
+> [!WARNING]
+> **风险提示 / Risk notice**
+>
+> 本技能仅用于你本人拥有或已获明确授权的应用安全研究。部分功能需要 **root / ADB / Shizuku** 等高风险权限，可能导致设备不稳定、数据丢失、保修失效或被目标应用检测；请先备份，勿在主力机/生产环境使用。
+> 第三方工具由各自作者提供，请自行确认来源与许可证；本技能不提供盗版、破解付费、绕过服务器校验或分发改装包。
+>
+> For authorized security research only. Some features need high-risk permissions such as **root / ADB / Shizuku**; back up first and do not use on a primary device. Third-party tools are provided by their authors; verify source and license yourself. No piracy, paywall bypass, server-check bypass, or modified-APK distribution.
+
 <a id="about"></a>
 
 <a id="install-dshgo"></a>
@@ -62,6 +70,17 @@
 - On a phone you do **not** need adb: DSH Go ships phone-control tools (`screen`, `tap`, `type`, `open`, `key`, `handoff`) for on-device verification.
 - Desktop (Linux/WSL) works with the same commands and toolchain.
 - **Manual package needs unzipping**: `dsh plugin add` accepts a local directory, an npm package, or `github:owner/repo` — not a zip. Unzip the release package first, then run `dsh plugin --profile web add <unzipped-dir>`. Marketplace and plugin-command installs need no unzip.
+
+### Toolchain: download on demand
+
+This skill **does not bundle third-party binaries**. On first use the agent runs:
+
+```bash
+python3 scripts/tool_manager.py plan --task decode
+python3 scripts/tool_manager.py install --task decode --yes   # only after you confirm
+```
+
+It shows what is missing, size, license, and the `third_party` / `self` choice. **Default: thirdparty** — mature third-party tools are enabled first because our self-developed tools are not finished yet. In `thirdparty` mode, unfinished self-developed wrappers are not used; switch with `mode self` / `mode hybrid`. Default set: **minimal**, and no silent download.
 
 ### Versioning & release cadence
 
