@@ -30,6 +30,14 @@ class SelfToolsTest(unittest.TestCase):
         r = self.run_cmd(PY, "scripts/dex_dump.py", "--package", "com.example", "--protections", "xxx")
         self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
 
+    def test_dex_dump_app_detection(self):
+        import sys
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import dex_dump
+        raw = b"Lumito/android/minipiano/ads/Foo;"
+        self.assertTrue(dex_dump._looks_like_app(raw, "umito.android.minipiano.cn"))
+        self.assertFalse(dex_dump._looks_like_app(raw, "com.example.unknown"))
+
     def test_build_sign_help_and_missing(self):
         r = self.run_cmd("bash", "scripts/build_sign.sh", "--help")
         self.assertEqual(r.returncode, 0, r.stderr)

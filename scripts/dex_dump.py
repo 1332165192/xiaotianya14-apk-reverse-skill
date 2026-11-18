@@ -63,6 +63,26 @@ def valid_dex(data):
     return True, ''
 
 
+def _looks_like_app(raw, package):
+    """判断 DEX 是否包含目标应用特征。
+
+    有的 App 的包名只出现在清单里，DEX 里只有 ``Lumito/android/minipiano/...``
+    这类类描述符，不包含完整的 ``umito.android.minipiano.cn``。所以同时检查
+    包名本身、包名路径，以及按段递减的路径前缀。
+    """
+    if not package:
+        return False
+    pkg = package.encode()
+    if pkg in raw:
+        return True
+    parts = package.split('.')
+    for n in range(len(parts), 1, -1):
+        prefix = '/'.join(parts[:n]).encode()
+        if prefix in raw:
+            return True
+    return False
+
+
 def _resolve_pid(device, package):
     """按包名找 PID。Android 进程名不一定是包名（可能是应用显示名，如「全球网测」），
     所以优先用 enumerate_applications 的 identifier，再退回进程名匹配。"""
@@ -147,6 +167,24 @@ def main(argv=None):
     session = attach(device, args)
     if session is None:
         return 2
+    # 用 --pid 时 args.package 为空；优先从已安装应用映射出真实包名，
+    # 进程名可能只是显示名（例如「轻音钢琴」），不能直接当包名用。
+    if not args.package and args.pid:
+        try:
+            for app in device.enumerate_applications():
+                if app.pid == args.pid and app.identifier:
+                    args.package = app.identifier
+                    break
+        except Exception:
+            pass
+        if not args.package:
+            try:
+                for proc in device.enumerate_processes():
+                    if proc.pid == args.pid:
+                        args.package = proc.name
+                        break
+            except Exception:
+                pass
 
     lock = threading.Lock()
     saved = []           # [(path, size, sha256, version)]
@@ -194,7 +232,7 @@ def main(argv=None):
                 except OSError as exc:
                     script_errors.append('写文件失败 %s: %s' % (path, exc))
                     return
-                is_app = bool(pkg_bytes) and pkg_bytes in raw
+                is_app = bool(pkg_bytes) and _looks_like_app(raw, args.package)
                 saved.append((path, len(raw), sha, version, is_app))
             print('[+] %s %d bytes, dex %s, addr %s%s' % (
                 path, len(raw), version, payload.get('address', '?'),
