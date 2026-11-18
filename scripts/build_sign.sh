@@ -3,6 +3,9 @@
 # 用法: build_sign.sh <apktool解码目录> [输出apk] [keystore] [密码]
 set -euo pipefail
 
+HERE=$(cd "$(dirname "$0")" && pwd)
+. "$HERE/safe_rm.sh"
+
 if [ $# -lt 1 ]; then
     echo "用法: build_sign.sh <解码目录> [输出apk] [keystore] [密码]" >&2
     exit 2
@@ -13,7 +16,7 @@ KS="${3:-$HOME/mod.ks}"
 PASS="${4:-modmod1}"
 
 # 清掉可能损坏的 framework 缓存（aapt2 运行时报告 RES_TABLE_TYPE_TYPE 错误时也需要）
-rm -rf "$HOME/.local/share/apktool/framework"
+safe_rm_tree "$HOME/.local/share/apktool/framework"
 
 DIR="$(dirname "$OUT")"
 RAW="$DIR/mod_raw.apk"

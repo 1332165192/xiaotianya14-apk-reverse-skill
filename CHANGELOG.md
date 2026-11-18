@@ -4,6 +4,16 @@ All notable changes to **apk-reverse** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.7.1] - 2026-11-18
+
+### Security
+- 移除脚本里所有 `rm -rf` 调用：新增 `scripts/safe_rm.sh`，删除前校验路径（拒绝 `/`、`$HOME`、`..`、空路径），并改为「先移入临时回收站，退出时清理」
+- `scripts/install_tools.sh`：清理 `/root/tools/dex2jar` 前增加路径断言与应用白名单，不再直接递归删除绝对路径
+- `scripts/build_sign.sh` / `decode.sh` / `make_release.sh` / `install_ddc.sh`：改用 `safe_rm_tree`，不再出现 destructive rm -rf
+
+### Changed
+- 文档同步：`references/mobile-toolchain.md`、`references/protection-map.md` 里的 `rm -rf` 示例改为安全清理方式
+
 ## [0.7.0] - 2026-11-18
 
 ### Fixed

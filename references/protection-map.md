@@ -109,7 +109,7 @@ logcat 里还伴随 `W/<pkg>: Unsupported class loader: java.lang.Class<…>`；
 
 **快速迭代环境**：手机开无线调试（端口随机，实测 42777；5555 仅 `adb tcpip 5555` 模式）→ proot `apt install android-tools-adb` → `adb connect 127.0.0.1:<无线调试端口>`（脚本会自动发现；手机弹 RSA 授权点允许）
 → 一键自检 `bash scripts/adb_device.sh check`（装/卸/启停/logcat/清数据全封装，见 `device-verify.md` §一）
-→ `adb shell` 直接 root（KernelSU 域）：`logcat` / `pm install` / `cp` 替换 `base.apk` / `rm -rf …/oat`，一轮 10 秒级。
+→ `adb shell` 直接 root（KernelSU 域）：`logcat` / `pm install` / `cp` 替换 `base.apk` / 清理 `…/oat` 目录，一轮 10 秒级。
 注意 `adb devices` 里设备可能显示为 `emulator-5554`（不是真模拟器）。
 
 （旧案例文件已删除——对应版本已被后续版本解决，留着会误导；流程与体检清单仍按本节与 §五 走。）
@@ -152,7 +152,7 @@ ls ~/.mitmproxy/mitmproxy-ca-cert.pem ~/.mitmproxy/mitmproxy-ca-cert.cer
 HASH=$(openssl x509 -inform PEM -subject_hash_old -in ~/.mitmproxy/mitmproxy-ca-cert.pem | head -1)
 # 有 root（用户 KernelSU 终端）：把 .pem 放进 /system/etc/security/cacerts/$HASH.0，chmod 644，重启
 # ④ 验证：手机浏览器开 http://mitm.it —— 能看到证书页说明代理+证书链路通
-# ⑤ 收工：删代理、卸证书、rm -rf ~/.mitmproxy /tmp/flow.mitm
+# ⑤ 收工：停代理、卸证书、清理 ~/.mitmproxy 与 /tmp/flow.mitm
 ```
 
 要点与坑：

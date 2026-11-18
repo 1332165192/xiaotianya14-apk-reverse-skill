@@ -44,6 +44,65 @@ red()   { printf '\033[31m%s\033[0m\n' "$*"; }
 yel()   { printf '\033[33m%s\033[0m\n' "$*"; }
 has()   { command -v "$1" >/dev/null 2>&1; }
 
+# ── 安全清理（不执行 rm -rf 绝对路径；先移入临时回收站，退出时再删）──────
+TRASH_LIST=()
+cleanup_trash() {
+    local t
+    for t in "${TRASH_LIST[@]:-}"; do
+        [ -n "$t" ] || continue
+        [ -d "$t" ] && find "$t" -mindepth 1 -delete 2>/dev/null
+        rmdir "$t" 2>/dev/null
+    done
+}
+trap cleanup_trash EXIT
+
+# 只允许清理 $TOOLS 下的子目录；禁止 $TOOLS 本身、空路径与 ".."
+_safe_trash_path() {  # <路径> [allow_nested]
+    local target="${1:-}" nested="${2:-}"
+    case "$target" in
+        "$TOOLS"/*) : ;;
+        *) red "拒绝清理：只允许 $TOOLS 下的子目录（收到: ${target:-<空>}）"; return 1 ;;
+    esac
+    case "$target" in
+        *..*) red "拒绝清理可疑路径: $target"; return 1 ;;
+    esac
+    if [ "$nested" != "1" ]; then
+        case "${target#"$TOOLS"/}" in
+            */*|"") red "拒绝清理：只允许 $TOOLS 的直接子目录（收到: $target）"; return 1 ;;
+        esac
+    fi
+    return 0
+}
+
+# 把目标目录移入 /tmp 回收站（原子 mv，不动用 rm -rf）
+safe_reset_dir() {  # <$TOOLS 的直接子目录>
+    local target="${1:-}" trash
+    [ -e "$target" ] || return 0
+    _safe_trash_path "$target" || return 1
+    trash=$(mktemp -d "${TMPDIR:-/tmp}/dsh-trash.XXXXXX") || return 1
+    if mv -- "$target" "$trash/old" 2>/dev/null; then
+        TRASH_LIST+=("$trash")
+        return 0
+    fi
+    rmdir "$trash" 2>/dev/null
+    red "清理失败（目录被占用？）: $target"
+    return 1
+}
+
+# 删除本次解压产生的内层临时目录（允许嵌套，仍限制在 $TOOLS 内）
+safe_remove_path() {  # <$TOOLS 下任意深度的目录>
+    local target="${1:-}" trash
+    [ -e "$target" ] || return 0
+    _safe_trash_path "$target" 1 || return 1
+    trash=$(mktemp -d "${TMPDIR:-/tmp}/dsh-trash.XXXXXX") || return 1
+    if mv -- "$target" "$trash/old" 2>/dev/null; then
+        TRASH_LIST+=("$trash")
+        return 0
+    fi
+    rmdir "$trash" 2>/dev/null
+    return 1
+}
+
 # ── 下载校验（SHA256 固定表 scripts/download-sha256.txt）────────────────
 SHA_MANIFEST="$HERE/download-sha256.txt"
 
@@ -490,13 +549,13 @@ community_group() {
         if [ -n "$tag" ]; then
             echo "下载 dex2jar $tag …"
             if fetch_gh "$TOOLCACHE/dex-tools-${tag}.zip" "https://github.com/pxb1988/dex2jar/releases/download/${tag}/dex-tools-${tag}.zip"; then
-                rm -rf /root/tools/dex2jar
+                safe_reset_dir "$TOOLS/dex2jar"
                 mkdir -p /root/tools/dex2jar
                 unzip -oq "$TOOLCACHE/dex-tools-${tag}.zip" -d /root/tools/dex2jar
                 # zip 内常带一层目录（dex-tools-v2.4/），拍平到 /root/tools/dex2jar
                 if [ ! -f /root/tools/dex2jar/d2j-dex2jar.sh ]; then
                     inner=$(find /root/tools/dex2jar -maxdepth 2 -name d2j-dex2jar.sh -printf '%h\n' | head -1)
-                    [ -n "$inner" ] && cp -a "$inner"/. /root/tools/dex2jar/ && rm -rf "$inner"
+                    [ -n "$inner" ] && cp -a "$inner"/. "$TOOLS/dex2jar"/ && safe_remove_path "$inner"
                 fi
                 chmod +x /root/tools/dex2jar/*.sh 2>/dev/null || true
                 green "dex2jar 已装: /root/tools/dex2jar/d2j-dex2jar.sh"

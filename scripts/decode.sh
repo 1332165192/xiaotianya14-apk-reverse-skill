@@ -8,6 +8,9 @@
 #   bash decode.sh --summary-only <apktool解码目录>     # 已解码，只打印摘要
 set -uo pipefail
 
+HERE=$(cd "$(dirname "$0")" && pwd)
+. "$HERE/safe_rm.sh"
+
 APK_PATH=""; TASK_NAME=""; OUT_ROOT=""; SKIP_JADX=false; SKIP_APKTOOL=false; CLEAN=false; SUMMARY_ONLY=""
 
 while [[ $# -gt 0 ]]; do
@@ -64,7 +67,7 @@ TASK_ROOT="$OUT_ROOT/$TASK_NAME"
 JADX_OUT="$TASK_ROOT/jadx"
 APKTOOL_OUT="$TASK_ROOT/apktool"
 mkdir -p "$TASK_ROOT"
-[[ "$CLEAN" == "true" ]] && rm -rf "$JADX_OUT" "$APKTOOL_OUT"
+[[ "$CLEAN" == "true" ]] && { safe_rm_tree "$JADX_OUT"; safe_rm_tree "$APKTOOL_OUT"; }
 
 # 工具检查（手机版固定路径）
 JADX_BIN="$(command -v jadx 2>/dev/null || true)"
@@ -80,7 +83,7 @@ fi
 # 1) jadx
 if [[ "$SKIP_JADX" != "true" ]]; then
   echo "=== jadx 反编译（大包可能要 5-15 分钟，可后台跑）==="
-  rm -rf "$JADX_OUT"
+  safe_rm_tree "$JADX_OUT"
   "$JADX_BIN" -d "$JADX_OUT" -j 4 --no-debug-info --show-bad-code "$APK_PATH" 2>&1 | tail -2
   echo "jadx_exit=$?（部分类报错正常）"
 fi
@@ -88,7 +91,7 @@ fi
 # 2) apktool（手机环境必须 --use-aapt2 才能在重建时不踩坑；解码本身不需要）
 if [[ "$SKIP_APKTOOL" != "true" ]]; then
   echo "=== apktool 解包 ==="
-  rm -rf "$APKTOOL_OUT"
+  safe_rm_tree "$APKTOOL_OUT"
   apktool d -f "$APK_PATH" -o "$APKTOOL_OUT" 2>&1 | tail -2
 fi
 

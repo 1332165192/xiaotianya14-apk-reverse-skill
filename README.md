@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">Unpack it, understand it, patch it, prove it works.</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.7.0.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.7.1.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -109,7 +109,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.7.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.7.1 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·

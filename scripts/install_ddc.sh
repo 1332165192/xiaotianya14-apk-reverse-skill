@@ -5,6 +5,9 @@
 # 用法: bash scripts/install_ddc.sh            # 安装/升级到钉死版本
 #       bash scripts/install_ddc.sh --check    # 只检查是否已安装
 set -uo pipefail
+
+HERE=$(cd "$(dirname "$0")" && pwd)
+. "$HERE/safe_rm.sh"
 VER="0.1.35"
 ASSET_ID="700957278"          # aarch64-unknown-linux-musl（静态，手机 ARM64 可用）
 SHA256="15cea25b77b4aba1ed128db41892e52de4cc7bea310216b6460c77f0aab32904"
@@ -20,7 +23,7 @@ if [ "${1:-}" = "--check" ]; then
   exit 0
 fi
 
-TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
+TMP=$(mktemp -d); trap 'safe_rm_tree "$TMP" /tmp' EXIT
 echo "== 下载 ddc ${VER}（aarch64-musl）=="
 if command -v curl >/dev/null 2>&1; then
   curl -sSL --max-time 180 -H 'Accept: application/octet-stream' "$API" -o "$TMP/ddc" || { echo "下载失败：api.github.com 不可达，可手动到项目 Releases 下载 aarch64-unknown-linux-musl"; exit 1; }

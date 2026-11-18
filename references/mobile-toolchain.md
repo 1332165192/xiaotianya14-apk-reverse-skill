@@ -45,7 +45,7 @@ apt-get install -y --no-install-recommends apksigner zipalign
 
 1. **aapt2 版本太旧**：Ubuntu 的 aapt2 不认新版 Material 的 `$mtrl_*`/`$avd_*` 资源名 → `fix_dollar_resources.py` 重命名 + 修 public.xml/引用（资源 ID 不变，smali 数字引用不受影响）。
 2. **apktool 2.11 自带 aapt2 是 x86_64** → SIGILL；**用 apt 的 apktool 2.7.0 + `--use-aapt2`**（走 PATH 里的 aarch64 aapt2）。
-3. **framework 缓存损坏**（`RES_TABLE_TYPE_TYPE entry offsets overlap`）→ `rm -rf ~/.local/share/apktool/framework` 重建；`build_sign.sh` 已自动处理。
+3. **framework 缓存损坏**（`RES_TABLE_TYPE_TYPE entry offsets overlap`）→ 清空 `~/.local/share/apktool/framework` 后重建（用 `scripts/safe_rm.sh` 的 `safe_rm_tree` 清理，先校验路径再删；`build_sign.sh` 已自动处理）。
 4. **build-tools 34 的 aapt2 x86_64 别下载**（跑不了）。
 5. **`$` 资源名修复**：`python3 scripts/fix_dollar_resources.py <解码目录>`（幂等，可重复跑）。
 6. **jadx 反编译慢**：7MB dex 约 5-15 分钟；后台跑（run_in_background），先干别的；`--show-bad-code` 容忍部分类报错。

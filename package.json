@@ -1,7 +1,7 @@
 {
   "name": "dsh-skill-apk-reverse",
   "description": "Android APK reverse-engineering skill for DeepSeek Harness and DSH Go: decode, patch, repack, sign and verify APKs on a phone (proot Ubuntu) or PC.",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -9,6 +9,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "VERSION",
     "lib/index.js",
     "cordis.patch.yml",
     "SKILL.md",

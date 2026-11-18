@@ -9,6 +9,7 @@
 set -uo pipefail
 
 HERE=$(cd "$(dirname "$0")" && pwd)
+. "$HERE/safe_rm.sh"
 ROOT=$(cd "$HERE/.." && pwd)
 ROOTNAME=$(basename "$ROOT")
 DL_BASE="${DL_BASE:-/sdcard/Download}"
@@ -74,7 +75,7 @@ cat "$ZIP.sha256"
 
 echo "== 4/4 解压复检 =="
 TMP=$(mktemp -d)
-trap 'rm -rf "$TMP"' EXIT
+trap 'safe_rm_tree "$TMP" /tmp' EXIT
 unzip -q "$ZIP" -d "$TMP" || { echo "解压失败"; exit 1; }
 check "$TMP/$ROOTNAME" || { echo "解压后自检失败"; exit 1; }
 echo "发布包就绪: $ZIP"
