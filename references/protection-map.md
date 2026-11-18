@@ -28,7 +28,7 @@ grep -rn 'System.loadLibrary' smali --include='*.smali' | grep -vE 'google|andro
 |---|---|---|
 | 加固壳（dex 加密） | 广告逻辑若在壳外/资源/Flutter 层，直接跳过解包还原 | FART/BlackDex/Frida dump（需 root） |
 | StringFog 字符串加密 | 不啃算法：用资源字符串、资源 ID、结构/调用链定位 | Hook 解密方法打印字符串 |
-| pairip 授权 | `pairip_bypass.py` 5 处放行 | — |
+| pairip 授权 | npm/Release 包不含自动脚本；按 `references/patch-patterns.md` §五 手动补 5 处 | — |
 | 签名校验 | 找证书 hash 比较/`PackageManager.getPackageInfo` 校验点 → 改判定 | Hook 校验方法 |
 | 反调试 | 一般不影响重打包后功能；真受阻再 patch `Debug.isDebuggerConnected` 判定 | Frida 隐藏 |
 | root 检测 | 目标本身不改 root 判定（广告组件清理不需要） | Shamiko/Magisk Hide |

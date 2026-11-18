@@ -40,6 +40,7 @@
   - 本机 pip 的 frida 版本与设备 frida-server 一致（本技能：17.26.2）。
 """
 import argparse
+import json
 import re
 import sys
 import time
@@ -66,7 +67,11 @@ def js_literal(kind, value):
         except ValueError:
             raise ValueError('int 返回值必须是整数')
     if kind == 'string':
-        return '"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"'
+        # 用 JSON 编码：换行 / 引号 / 反斜杠 / 制表符 / 控制字符都会被转义，
+        # 避免字符串里带换行时生成非法 JS（旧版只转义 \ 和 "）。
+        lit = json.dumps(value, ensure_ascii=False)
+        # U+2028/U+2029 在 JSON 里合法，但老引擎的 JS 字符串里会被当换行符
+        return lit.replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
     if kind == 'original':
         return '__orig'
     raise ValueError('未知返回类型: %s' % kind)

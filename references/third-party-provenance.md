@@ -10,7 +10,7 @@
 `scripts/` 下除 1.2 列出的 3 个 Frida 脚本外，其余为本项目自写：
 
 - Shell：`adb_common.sh`、`adb_device.sh`、`build_sign.sh`、`decode.sh`、`device_adb_guard.sh`、`device_input.sh`、`device_perm_chain.sh`、`device_ui.sh`、`frida_server_prep.sh`、`install_ddc.sh`、`install_tools.sh`、`make_release.sh`、`publish_github.sh`、`toolcheck.sh`、`verify_release.sh`、`bump_version.sh`
-- Python：`analyze_ads.py`、`call_graph.py`、`check_commands.py`、`check_repo.py`、`check_routing.py`、`dex_dump.py`、`find_api_calls.py`、`find_framework_apis.py`、`fix_dollar_resources.py`、`hook_gen.py`、`identity_report.py`、`il2cpp_meta.py`、`ledger.py`、`manifest_clean.py`、`manifest_summary.py`、`merge_splits.py`、`pairip_bypass.py`、`patch_method.py`、`privacy_scan.py`、`scan_premium.py`、`so_patch.py`、`unpack_archive.py`
+- Python：`analyze_ads.py`、`call_graph.py`、`check_commands.py`、`check_repo.py`、`check_routing.py`、`dex_dump.py`、`find_api_calls.py`、`find_framework_apis.py`、`fix_dollar_resources.py`、`hook_gen.py`、`identity_report.py`、`il2cpp_meta.py`、`ledger.py`、`manifest_clean.py`、`manifest_summary.py`、`merge_splits.py`、`patch_method.py`、`privacy_scan.py`、`scan_premium.py`、`so_patch.py`、`unpack_archive.py`
 - Frida（未标第三方来源的 10 个）：`exit_blocker.js`、`frida_hider.js`、`function_patcher.js`、`hook_encryption_algo.js`、`keystore_dump.js`、`root_bypass.js`、`run_frida.sh`、`ssl_log.js`、`ssl_unpinning.js`、`anti_debug_bypass.js`
 - 文档：`SKILL.md`、`README.md`、`README_zh.md`、`references/*.md`、`docs/*.md`、本说明本身
 

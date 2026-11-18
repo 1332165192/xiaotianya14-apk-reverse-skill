@@ -4,6 +4,19 @@ All notable changes to **apk-reverse** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] - 2026-11-18
+
+### Fixed
+- hook_gen.py：`--return string:<值>` 里含换行/引号/制表符时生成的 JS 会非法，改为 JSON 编码转义
+- dex_dump.js：`--max-bytes` 由软上限改为硬上限，不再多导一个文件
+- dex_dump.py：`--rounds 0`、非法 `--protections` 等参数现在明确报错（退出码 2）
+- dex_dump.js：跨内存段的 DEX 不再静默丢弃，改为实读并统计跨段成功/失败
+- dex_dump.py：扫描失败时不再留下空的输出目录；已有目录不受影响
+
+### Changed
+- 发布包不再包含 `scripts/pairip_bypass.py`（合规考虑；包内文档改为手动补丁说明，见 `references/patch-patterns.md` §五）
+- package.json 补充 `repository` / `homepage`
+
 ## [0.6.9] - 2026-11-18
 
 ### Added

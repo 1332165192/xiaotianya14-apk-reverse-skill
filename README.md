@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">Unpack it, understand it, patch it, prove it works.</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.6.9.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.7.0.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -53,6 +53,8 @@
 | Way | Action |
 |---|---|
 | **DSH Go App marketplace** (recommended; index data from awesome-dsh-plugin) | App → Plugins → search `apk-reverse` → install; restart the core |
+| **npm (one-click)** | `dsh plugin --profile web add dsh-skill-apk-reverse` — package: [dsh-skill-apk-reverse](https://www.npmjs.com/package/dsh-skill-apk-reverse) |
+| **dshfind directory** | Search `apk-reverse-skill` (author `xiaotianya14`) — [dshfind page](https://dshfind.com/zh/plugins/xiaotianya14/apk-reverse-skill) |
 | **Plugin command** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
 | **Manual** | Download the release zip, unzip, `dsh plugin --profile web add <dir>` |
 
@@ -107,7 +109,7 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.6.9 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.7.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·

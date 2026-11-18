@@ -21,6 +21,7 @@
 import argparse
 import hashlib
 import os
+import re
 import sys
 import threading
 import time
@@ -110,7 +111,36 @@ def main(argv=None):
     ap.add_argument('--max-bytes', type=int, default=0, help='单轮发送字节上限（默认 0=脚本内置 256MB）')
     args = ap.parse_args(argv)
 
-    os.makedirs(args.out, exist_ok=True)
+    # ── 参数校验（旧版 --rounds 0 / 非法 --protections 会静默跑成空结果）──
+    errs = []
+    if args.rounds < 1:
+        errs.append('--rounds 至少为 1（当前 %d）：轮数不能是 0 或负数' % args.rounds)
+    if args.interval < 0:
+        errs.append('--interval 不能是负数（当前 %s）' % args.interval)
+    if args.timeout < 1:
+        errs.append('--timeout 至少为 1 秒（当前 %d）' % args.timeout)
+    if args.max_bytes < 0:
+        errs.append('--max-bytes 不能是负数（当前 %d；0 表示用脚本内置 256MB）' % args.max_bytes)
+    prot_tokens = [p.strip() for p in args.protections.split(',') if p.strip()]
+    if not prot_tokens:
+        errs.append("--protections 不能为空，示例: 'r--,rw-,r-x,rwx'")
+    else:
+        bad = [p for p in prot_tokens if not re.fullmatch(r'[r-][w-][x-]', p)]
+        if bad:
+            errs.append('--protections 含非法段 %s：每段必须是 rwx 三个字符（r=可读，-=无），'
+                        "如 'r--'、'rw-'、'r-x'、'rwx'，逗号分隔" % bad)
+        else:
+            unreadable = [p for p in prot_tokens if p[0] != 'r']
+            if unreadable:
+                errs.append('--protections 里这些段不可读，扫不出 DEX: %s（第一字符必须是 r）' % unreadable)
+            args.protections = ','.join(dict.fromkeys(prot_tokens))
+    if errs:
+        for e in errs:
+            print('错误: %s' % e, file=sys.stderr)
+        return 2
+
+    # 输出目录延迟创建：扫描/连接全失败时不留空目录
+    created_out = not os.path.isdir(args.out)
     device = frida.get_device_manager().add_remote_device(args.host)
     session = attach(device, args)
     if session is None:
@@ -155,6 +185,8 @@ def main(argv=None):
                 version = raw[4:7].decode('ascii', 'replace')
                 path = os.path.join(args.out, 'classes_dump_%02d_%s.dex' % (idx, sha[:8]))
                 try:
+                    if created_out:
+                        os.makedirs(args.out, exist_ok=True)
                     with open(path, 'wb') as f:
                         f.write(raw)
                 except OSError as exc:
@@ -210,17 +242,29 @@ def main(argv=None):
             st = holder.get('stats') or {}
             done_stats.append(st)
             print('[*] 第 %d 轮: 扫描 %s 个 range, magic 命中 %s, 候选 %s, 发送 %s 个/%s bytes, '
-                  '重复 %s, 读失败 %s, range 扫描失败 %s, 用时 %sms' % (
+                  '重复 %s, 读失败 %s, range 扫描失败 %s, 跨段尝试 %s(成功 %s/失败 %s), 用时 %sms' % (
                       rnd, st.get('ranges', '?'), st.get('matches', '?'), st.get('candidates', '?'),
                       st.get('sent', '?'), st.get('bytes', '?'), st.get('dup', '?'),
-                      st.get('readFail', '?'), st.get('scanFail', '?'), st.get('elapsedMs', '?')),
+                      st.get('readFail', '?'), st.get('scanFail', '?'),
+                      st.get('crossRangeTry', '?'), st.get('crossRangeOk', '?'),
+                      st.get('crossRangeFail', '?'), st.get('elapsedMs', '?')),
                   flush=True)
+            if st.get('budgetHit'):
+                print('[!] 达到 --max-bytes 上限，后面的候选没发送；要扫全请调大该值（当前 %s）'
+                      % (args.max_bytes or '脚本内置 256MB'), flush=True)
             if rnd < args.rounds:
                 time.sleep(max(0.0, args.interval))
     finally:
         try:
             session.detach()
         except Exception:
+            pass
+
+    # 一个有效 DEX 都没有时，删掉「本次新建的空输出目录」，别留空壳
+    if created_out and not saved:
+        try:
+            os.rmdir(args.out)
+        except OSError:
             pass
 
     if script_errors:

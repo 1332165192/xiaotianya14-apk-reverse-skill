@@ -137,7 +137,7 @@ whenToUse: 用户提供 .apk/.apks 或要求反编译、源码恢复、广告组
 | `merge_splits.py` | AAB 拆分包资源/原生库合并进 base（跳过 split 的 public.xml） |
 | `fix_dollar_resources.py` | 修复 `$mtrl_*` 等非法资源名（重命名+public.xml+引用，资源 ID 不变） |
 | `manifest_clean.py` | 清拆分包标记、广告权限、AdMob 组件与 meta-data |
-| `pairip_bypass.py` | pairip 授权壳 5 处放行（幂等） |
+| （npm/Release 包不含） | pairip 授权壳：发布包不提供自动放行脚本，手动补丁见 `references/patch-patterns.md` §五 |
 | `install_tools.sh` | 自动装缺失工具：apt / pip / frida-server / jadx（缓存优先，失败回退镜像），装完自检；`--re` 补深度逆向/抓包，`--community` 按需装社区工具（Vineflower/dex2jar/bundletool/unicorn），`--net` 抓包编译链|
 | `toolcheck.sh` | 工具链自检（新会话先跑，退出码 0 = 齐）|
 | `adb_device.sh` | **真机 root 通道**（adb）：`check` / `frida start\|stop\|status` / `tcpdump start\|stop\|pull` / `logcat` / `install` / `uninstall` / `clear` / `start` / `stop` / `info` / `screencap` / `push` / `pull`（`-h` 看全量；serial **自动发现**：5555 或无线调试随机端口如 `127.0.0.1:42777`，可 `--serial`/`ADB_SERIAL` 指定）|
@@ -248,7 +248,7 @@ mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 | 布局占位 | 删占位文字、容器高度改 0dp；**保留被代码 findViewById 的父容器 id** 防 NPE |
 | 资源替换 | 改 `res/values*/strings.xml` 文案；改布局 XML 属性 |
 | 已购状态 | 找购买状态字段/StateFlow（`App.w`）→ 初始值 `Boolean.TRUE`；`d` 标志置 1 |
-| 授权壳 | pairip `LicenseContentProvider.onCreate`/`LicenseClient` 5 处放行（`pairip_bypass.py`） |
+| 授权壳 | pairip：`LicenseContentProvider.onCreate` 返 true + `LicenseClient` 4 个拦截方法 return-void（npm/Release 包无自动脚本，见 `references/patch-patterns.md` §五） |
 | 权益判定恒真 | `()Z` 开头 `const/4 v0, 0x1` + `return v0`：`patch_method.py ret --method isVip --return true` |
 | 静态权益标志 | `<clinit>` 里 `sput-boolean`：`patch_method.py field --field 'Lx/Y;->isVip:Z' --value true` |
 | 权益到期/期限 | long 字段置大（2100 年）或把到期比较改成恒不过期 |
@@ -270,7 +270,7 @@ mcp__phone__open(app="包名或应用名") → 启动 → screen 读屏/截图
 | `/sdcard` 二进制无法执行 | FAT 无执行位 | 工具放 `/root` 下 |
 | 安装提示签名冲突 | 原版已装且签名不同 | 先卸载原版（先确认！）或用户 root `pm uninstall` |
 | 重装提示"已安装相同版本" | 同 versionCode | 选"重新安装"覆盖 |
-| 启动跳 Play 商店/闪退 | pairip 授权壳 | `pairip_bypass.py` |
+| 启动跳 Play 商店/闪退 | pairip 授权壳 | npm/Release 包不提供自动脚本；按 `references/patch-patterns.md` §五 手动补 5 处 |
 | 重打包后一启动就闪退（`UnsatisfiedLinkError … native <clinit>`） | MT_Protector 做 **APK 文件级完整性**校验，**与签名无关**（保留原签名/仅重打 zip/root 替换装好的 base.apk 都崩） | 先跑「四级实验法」；有**同版本修改包**时逐字节 diff 双方 `lib/*.so` 直接拿补丁点（v2.26.9 全套偏移见 journal），在官方包上复刻后重签即可跑；无参考包则：自用（有 root）可「保留原 APK Signing Block 重建 zip + root 覆盖 base.apk + 清 oat」——PM 缓存签名不变即可跑（v2.26.11 实测，见 journal）；要产出可安装 APK 才需 patch libmtprotect 校验函数（`mov w0,#1;ret`）或 LSPosed 模块 |
 | apktool 解码后 `res/` 只剩 values/font、资源都在 `unknown/` | 资源名+路径被混淆（MT_Protector 类） | 不走 apktool 重打包：只重组 dex，再用 python 逐条复制原 zip 条目替换（journal 有完整脚本思路） |
 | frida 在 Android 17(SDK37) `Java.perform` 不执行 | frida 17 对 SDK37 support 不全（`Java.available=true` 但 bridge 不跑） | 只用 native hook（Interceptor/Stalker）+ root adb logcat |

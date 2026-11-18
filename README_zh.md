@@ -12,7 +12,7 @@
 <p align="center"><em style="font-family: Georgia, serif; font-size: 1.15em; color: #888;">拆开它、看懂它、改对它、再证明它能跑。</em></p>
 
 <p align="center">
-  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.6.9.svg" alt="version"></a>
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill/releases"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/version-0.7.0.svg" alt="version"></a>
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
@@ -74,7 +74,7 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.6.9 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.7.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -107,6 +107,8 @@ APK
 | 方式 | 操作 |
 |---|---|
 | **DSH Go App 插件市场**（推荐；目录数据来自 awesome-dsh-plugin） | App → 插件市场 → 搜 `apk-reverse` → 安装；重启内核生效 |
+| **npm（一键安装）** | `dsh plugin --profile web add dsh-skill-apk-reverse` —— 包页 [dsh-skill-apk-reverse](https://www.npmjs.com/package/dsh-skill-apk-reverse) |
+| **dshfind 插件超市** | 搜 `apk-reverse-skill`（作者 `xiaotianya14`）—— [dshfind 页面](https://dshfind.com/zh/plugins/xiaotianya14/apk-reverse-skill) |
 | **插件命令** | `dsh plugin --profile web add github:xiaotianya14/apk-reverse-skill` |
 | **手动包** | 下载 Release 的 zip → 解压 → `dsh plugin --profile web add <目录>` |
 

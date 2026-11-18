@@ -94,7 +94,7 @@ const/4 v0, 0x0        # 例：方法返回对象/布尔时占位
 ## 五、授权/付费点（pairip 等）
 
 - pairip：`LicenseContentProvider.onCreate` → `LicenseClient` → 未授权 → 弹窗/跳 Play/30s 杀进程。
-- 补丁：`pairip_bypass.py`（onCreate 返 true + 4 个拦截方法 return-void）。
+- 补丁（npm/Release 包不含自动脚本，按此手动补）：`LicenseContentProvider.onCreate` 返 true + `LicenseClient` 4 个拦截方法 return-void。
 - 其他授权形态：签名校验（对比 cert hash）、`CHECK_LICENSE`、自研序列号/激活码 → 找返回值判定点，改成恒真；或直接 no-op 校验调用。
 - 付费点判断：billing `Purchase` 回调里 `sput-boolean 1` 的开关 → 置真（等于已购）。
 

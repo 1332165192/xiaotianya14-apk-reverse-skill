@@ -38,8 +38,8 @@ function parseDexAt(p, range) {
     if (headerSize !== 0x70) return null;
     if (fileSize < MIN_DEX_SIZE || fileSize > MAX_DEX_SIZE) return null;
     if (p.add(0x28).readU32() !== 0x12345678) return null; // endian_tag (LE 0x12345678)
-    // 不能越出当前 range 的末尾
-    if (p.add(fileSize).compare(range.base.add(range.size)) > 0) return null;
+    // 允许跨出当前 range：跨内存段的 DEX 交给 emitRange 实读一次，
+    // 读得到就收数，读不到计入 crossRangeFail（不再静默丢弃）
     return {
       fileSize: fileSize,
       version: String.fromCharCode(v0, v1, v2),
@@ -56,7 +56,8 @@ function scan(protections, opts) {
   var stats = {
     protections: protections,
     ranges: 0, matches: 0, candidates: 0, sent: 0, bytes: 0,
-    dup: 0, readFail: 0, scanFail: 0, perProt: {}, elapsedMs: 0
+    dup: 0, readFail: 0, scanFail: 0, perProt: {}, elapsedMs: 0,
+    crossRangeTry: 0, crossRangeOk: 0, crossRangeFail: 0, budgetHit: false
   };
   var seenAddr = {};
   var seenContent = {};   // fileSize:version:checksum → 同一 DEX 多映射只发一次
@@ -81,7 +82,7 @@ function scan(protections, opts) {
       for (var i = 0; i < matches.length; i++) {
         hits++;
         stats.matches++;
-        if (stats.sent > 0 && stats.bytes >= maxTotal) return;
+        if (stats.budgetHit) return;
         var addr = matches[i].address;
         var key = addr.toString();
         if (seenAddr[key]) continue;
@@ -91,9 +92,20 @@ function scan(protections, opts) {
         if (!hdr) continue;
         var ckey = hdr.fileSize + ':' + hdr.version + ':' + hdr.checksum;
         if (seenContent[ckey]) { stats.dup++; continue; }
+        var cross = addr.add(hdr.fileSize).compare(r.base.add(r.size)) > 0;
+        if (cross) stats.crossRangeTry++;
+        // 硬上限：本文件放不下就停（旧版先发再累加，会多导一个文件）
+        if (stats.bytes + hdr.fileSize > maxTotal) {
+          stats.budgetHit = true;
+          return;
+        }
         try {
           var buf = addr.readByteArray(hdr.fileSize);
-          if (!buf || buf.byteLength !== hdr.fileSize) { stats.readFail++; continue; }
+          if (!buf || buf.byteLength !== hdr.fileSize) {
+            stats.readFail++;
+            if (cross) stats.crossRangeFail++;
+            continue;
+          }
           seenContent[ckey] = true;
           send({
             type: 'dex',
@@ -104,9 +116,11 @@ function scan(protections, opts) {
           }, buf);
           stats.sent++;
           stats.bytes += hdr.fileSize;
+          if (cross) stats.crossRangeOk++;
         } catch (e) {
           stats.readFail++;
-          if (errors.length < 20) errors.push(key + ': ' + String(e));
+          if (cross) stats.crossRangeFail++;
+          if (errors.length < 20) errors.push((cross ? '[跨段] ' : '') + key + ': ' + String(e));
         }
       }
     }
@@ -123,7 +137,7 @@ function scan(protections, opts) {
     }
     var p = stats.perProt[prot] = { ranges: ranges.length, matches: 0 };
     ranges.forEach(function (r) {
-      if (stats.bytes >= maxTotal) return;
+      if (stats.budgetHit) return;
       stats.ranges++;
       try {
         p.matches += emitRange(r, prot) || 0;
