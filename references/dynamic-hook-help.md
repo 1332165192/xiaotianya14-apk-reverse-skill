@@ -21,6 +21,11 @@ bash scripts/adb_device.sh frida stop     # 用完自己关（只停它自己起
 - adb root 等于整机 root：只在这次分析期间用；你可以随时要求 AI「现在关掉」。
 - `check` 不通过（没开无线调试 / 没授权 / 你不想开）→ AI 自动退回 §4 的 Termux 手动方案。
 - 端口说明：**27043** 是这次分析用的测试实例；**27042 可能被宿主占用实例**，AI 不会去碰。
+- **SELinux Enforcing 的坑（真机实测）**：root 已通、frida-server 已起，但 attach 报
+  `TransportError: agent connection closed unexpectedly`，`dmesg` 出现
+  `Context u:object_r:frida_memfd:s0 is not valid`，是 KernelSU 策略里缺 `frida_memfd` 类型。
+  本次验证临时 `setenforce 0` 完成，**结束后必须 `setenforce 1` 恢复**；长期方案是给 KSU 补 sepolicy
+  或在 root 启动脚本里处理，不要默认关 SELinux 长期运行。
 
 ## §1 一句话流程
 
@@ -114,6 +119,7 @@ su -c 'kill $(pidof frida-server)'
 | `su: not found` 或没弹授权 | Termux 没拿到 root | KernelSU App → 超级用户 → 给 Termux 授权；或换用 KernelSU 侧终端 |
 | `cp: Permission denied` | 没在 su 下执行 | 先 `su` 再跑 `cp` |
 | `frida-server: not executable` | 权限没给 | `chmod 755 /data/local/tmp/frida-server` |
+| attach 报 `agent connection closed unexpectedly` + dmesg `frida_memfd ... not valid` | SELinux Enforcing + KernelSU 缺 frida_memfd 策略 | 临时 `setenforce 0` 验证后立刻 `setenforce 1`；长期给 KSU 补 sepolicy |
 | AI 连不上，报 unable to connect | server 没起/版本不一致/端口不对 | 先看 Termux 里进程在不在；`frida --version` 必须 = 17.26.2；换端口要两边一致 |
 | 连上就退出/被检测杀 | App 检测 Frida | 换端口 + 改名（`-l 0.0.0.0:8888`，文件改名 `fs`），或先 spawn 动态加载 |
 | Termux 切后台后连接断 | 系统杀后台 | Termux 里 `termux-wake-lock`；或保持前台 |

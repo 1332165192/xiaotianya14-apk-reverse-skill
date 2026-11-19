@@ -16,6 +16,20 @@
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/dsh-skill-apk-reverse"><img src="https://img.shields.io/npm/v/dsh-skill-apk-reverse.svg" alt="npm"></a>
+  <a href="https://dshfind.com/zh/plugins/xiaotianya14/apk-reverse-skill?ref=badge"><img src="https://dshfind.com/api/badge/xiaotianya14/apk-reverse-skill?lang=zh" alt="dshfind"></a>
+  <a href="https://www.dsh.so/artifact/apk-reverse-skill/?ref=badge"><img src="https://cdn.dsh.so/badge/apk-reverse-skill.svg" alt="dsh.so security"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill"><img src="https://img.shields.io/badge/GitHub-repo-181717?logo=github" alt="GitHub"></a>
+  <a href="https://awesome-dsh-plugin.com/p/xiaotianya14/apk-reverse-skill/"><img src="https://img.shields.io/badge/awesome--dsh--plugin-listed-8257D0" alt="awesome-dsh-plugin"></a>
+  <a href="https://go.dshtui.com/p/dsh-skill-apk-reverse"><img src="https://img.shields.io/badge/dsh--go--market-0.8.0-2ea44f" alt="dsh-go-market"></a>
+  <a href="https://dshmarket.com/"><img src="https://img.shields.io/badge/dsh--market-listed-ff6b35" alt="dsh-market"></a>
+</p>
+
+<p align="center">
+  <a href="https://dshfind.com/zh/plugins/xiaotianya14/apk-reverse-skill?ref=badge"><img src="https://dshfind.com/api/card/xiaotianya14/apk-reverse-skill?lang=zh" alt="dshfind showcase card" width="440"></a>
 </p>
 
 <p align="center">
@@ -138,7 +152,9 @@ APK
 
 | Version | Scripts | Reference docs | CI | License |
 |---:|---:|---:|---|---|
-| v0.8.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.8.0 | 32 tool + 9 release/check + 12 Frida | 30 | GitHub Actions + ShellCheck | MIT (code) / assets reserved |
+
+> 32 = user-facing tool scripts; the repository has **41** top-level scripts including 9 release/check helpers. 12 = Frida JS files.
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -190,6 +206,9 @@ the install, and an unpinned version prints its hash with a warning.
 
 ## Usage
 
+- For any **modification request** (remove ads, unlock benefits, change a feature/limit), the skill first runs a
+  **read-only feasibility preflight** and writes a one-page report answering **ads? benefits? can it meet the request?**
+  before patching. No preflight report, no patch.
 - The workflow rules and patch patterns live in [`SKILL.md`](SKILL.md); reference docs under
   [`references/`](references/) explain each step in depth.
 - Everything runs in proot Ubuntu on ARM64; a regular Linux machine works too.
@@ -232,8 +251,10 @@ apk-reverse/
 - [`references/protection-map.md`](references/protection-map.md) — packers, integrity checks, traffic capture
 - [`references/device-verify.md`](references/device-verify.md), [`references/device-control.md`](references/device-control.md) — on-device verification
 - [`references/security-audit.md`](references/security-audit.md) — exported components, WebView, secrets
-- [`docs/STAGES.md`](docs/STAGES.md) — six-stage workflow: entry, artifacts, gate for each stage
+- [`docs/STAGES.md`](docs/STAGES.md) — seven-stage workflow (stage 0 feasibility preflight): entry, artifacts, gate for each stage
 - [`docs/REPORT-TEMPLATE.md`](docs/REPORT-TEMPLATE.md) — analysis report template (conclusion first, evidence chain)
+- [`docs/FEASIBILITY-REPORT.md`](docs/FEASIBILITY-REPORT.md) — feasibility preflight template (ads / benefits / can it meet the goal)
+- [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) — third-party licenses and attribution (split from NOTICE)
 - [`docs/MCP-INTEGRATION.md`](docs/MCP-INTEGRATION.md) — JADX / Ghidra / IDA / Burp MCP integration notes
 - [`scripts/frida/README.md`](scripts/frida/README.md) — Frida script library (SSL unpinning, anti-debug, exit blocker, root bypass, Frida hider, return-value patcher)
 - [`tests/routing_cases.json`](tests/routing_cases.json) — routing regression cases (CI checks with `scripts/check_routing.py`)
@@ -317,6 +338,8 @@ tool this skill relies on. This project is a workflow layer on top of their work
 **Visual assets are NOT licensed**: avatars, banners, icon, social image and badge styles in `assets/` remain © xiaotianya14, all rights reserved — no commercial use, no redistribution, no relicensing. Do not extract them separately when referencing this repository.
 
 **Private materials**: game-mod notes, working records and internal materials are not published and not licensed.
+
+**Third-party notices**: third-party tools, SDKs, trademarks and method references are listed in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md); each remains under its own license.
 
 **Third-party tools**: jadx, apktool, Frida and other tools, SDKs and trademarks remain under their own terms. This project does not license them on behalf of their owners and does not bundle them. Method inspiration from upstream projects is credited in [`NOTICE`](NOTICE).
 

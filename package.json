@@ -20,7 +20,8 @@
     "README.md",
     "README_zh.md",
     "LICENSE",
-    "NOTICE"
+    "NOTICE",
+    "THIRD-PARTY-NOTICES.md"
   ],
   "license": "MIT",
   "repository": {
@@ -84,7 +85,6 @@
     }
   },
   "peerDependencies": {
-    "@deepseek-ai/dsh-skill": ">=0.2.1-rc.2 <0.3.0-0",
     "@deepseek-ai/cordis": "~4.1.0"
   }
 }

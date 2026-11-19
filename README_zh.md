@@ -16,6 +16,20 @@
   <a href="LICENSE"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/license.svg" alt="license"></a>
   <img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/android.svg" alt="android">
   <a href="https://github.com/xiaotianya14/apk-reverse-skill/actions"><img src="https://cdn.jsdelivr.net/gh/xiaotianya14/apk-reverse-skill@main/assets/badges/ci.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/dsh-skill-apk-reverse"><img src="https://img.shields.io/npm/v/dsh-skill-apk-reverse.svg" alt="npm"></a>
+  <a href="https://dshfind.com/zh/plugins/xiaotianya14/apk-reverse-skill?ref=badge"><img src="https://dshfind.com/api/badge/xiaotianya14/apk-reverse-skill?lang=zh" alt="dshfind"></a>
+  <a href="https://www.dsh.so/artifact/apk-reverse-skill/?ref=badge"><img src="https://cdn.dsh.so/badge/apk-reverse-skill.svg" alt="dsh.so security"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/xiaotianya14/apk-reverse-skill"><img src="https://img.shields.io/badge/GitHub-repo-181717?logo=github" alt="GitHub"></a>
+  <a href="https://awesome-dsh-plugin.com/p/xiaotianya14/apk-reverse-skill/"><img src="https://img.shields.io/badge/awesome--dsh--plugin-listed-8257D0" alt="awesome-dsh-plugin"></a>
+  <a href="https://go.dshtui.com/p/dsh-skill-apk-reverse"><img src="https://img.shields.io/badge/dsh--go--market-0.8.0-2ea44f" alt="dsh-go-market"></a>
+  <a href="https://dshmarket.com/"><img src="https://img.shields.io/badge/dsh--market-listed-ff6b35" alt="dsh-market"></a>
+</p>
+
+<p align="center">
+  <a href="https://dshfind.com/zh/plugins/xiaotianya14/apk-reverse-skill?ref=badge"><img src="https://dshfind.com/api/card/xiaotianya14/apk-reverse-skill?lang=zh" alt="dshfind showcase card" width="440"></a>
 </p>
 
 <p align="center">
@@ -80,7 +94,9 @@ APK
 
 | 版本 | 脚本 | 专题文档 | CI | 许可 |
 |---:|---:|---:|---|---|
-| v0.8.0 | 32 + 12 Frida | 24 | GitHub Actions | MIT |
+| v0.8.0 | 32 工具 + 9 发布/检查 + 12 Frida | 30 | GitHub Actions + ShellCheck | 代码 MIT / 素材保留 |
+
+> 32 = 面向用户的工具脚本；仓库共 **41** 个顶层脚本（含 9 个发布/检查辅助）。12 = Frida JS 文件数。
 
 <p align="center">
   ⭐ <a href="https://github.com/xiaotianya14/apk-reverse-skill/stargazers">Star this repo</a> ·
@@ -172,6 +188,8 @@ bash $SK/scripts/build_sign.sh ./work out.apk        # 重打包 + 签名
 
 ## 使用
 
+- **修改类需求**（去广告 / 解锁权益 / 改功能 / 改限制）会先做**只读可行性预检**，先出一页报告回答
+  **广告能不能 / 权益能不能 / 能否满足要求**，再决定是否补丁；没有预检报告不进补丁阶段。
 - 流程规则与补丁模式都在 [`SKILL.md`](SKILL.md)，每一步的细节在 [`references/`](references/)。
 - 全部命令在 proot Ubuntu（ARM64）实测可用，普通 Linux 也能跑。
 - 打发行包：`bash scripts/make_release.sh --name apk-reverse --public` → zip（+ 本地 `.sha256`；发布附件只传 `SHA256SUMS`），并解压复检。
@@ -214,6 +232,8 @@ apk-reverse/
 - [`references/security-audit.md`](references/security-audit.md) — 导出组件、WebView、密钥
 - [`docs/STAGES.md`](docs/STAGES.md) — 六阶段总控：每阶段入口 / 产物 / 过门条件
 - [`docs/REPORT-TEMPLATE.md`](docs/REPORT-TEMPLATE.md) — 分析报告模板（结论先行 + 证据链）
+- [`docs/FEASIBILITY-REPORT.md`](docs/FEASIBILITY-REPORT.md) — 可行性预检模板（广告 / 权益 / 能否满足目标）
+- [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md) — 第三方许可与署名（从 NOTICE 拆出）
 - [`docs/MCP-INTEGRATION.md`](docs/MCP-INTEGRATION.md) — JADX / Ghidra / IDA / Burp MCP 接入说明
 - [`scripts/frida/README.md`](scripts/frida/README.md) — Frida 脚本库（SSL unpinning / 反调试 / 退出拦截 / root 伪装 / Frida 隐藏 / 返回值替换）
 - [`tests/routing_cases.json`](tests/routing_cases.json) — 路由回归用例（CI 用 `scripts/check_routing.py` 校验）
@@ -296,7 +316,7 @@ bash scripts/verify_release.sh apk-reverse.zip SHA256SUMS
 
 **私有材料不公开**：游戏修改资料、过程记录、内部材料等私有包不公开、不授权。
 
-**第三方工具**：第三方工具、SDK、商标（jadx、apktool、Frida 等）按各自条款，本项目不代其授权，也不随包分发；方法参考的上游项目已在 [`NOTICE`](NOTICE) 署名。
+**第三方工具**：第三方工具、SDK、商标（jadx、apktool、Frida 等）按各自条款，本项目不代其授权，也不随包分发；方法参考与许可见 [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)，项目整体声明见 [`NOTICE`](NOTICE)。
 
 **使用范围与免责**：本项目仅用于学习研究，以及**自己拥有或已获授权**应用的逆向分析；使用者自行承担数据丢失、设备与法律风险；不得用于攻击他人设备、未授权修改他人应用或违反平台条款。不提供任何担保，作者不对使用后果负责。
 

@@ -145,6 +145,30 @@
       "expect": [
         "docs/APP-INTEGRATION.md"
       ]
+    },
+    {
+      "task": "用户要去广告，先判断能不能做",
+      "route": "SKILL.md#0.5 可行性预检 -> docs/FEASIBILITY-REPORT.md -> scripts/analyze_ads.py",
+      "expect": [
+        "docs/FEASIBILITY-REPORT.md",
+        "scripts/analyze_ads.py"
+      ]
+    },
+    {
+      "task": "用户要解锁VIP/权益，先判断是否服务端权威",
+      "route": "SKILL.md#0.5 可行性预检 -> docs/FEASIBILITY-REPORT.md -> scripts/scan_premium.py",
+      "expect": [
+        "docs/FEASIBILITY-REPORT.md",
+        "scripts/scan_premium.py"
+      ]
+    },
+    {
+      "task": "用户要求明显不可行，先出D级报告再停止",
+      "route": "SKILL.md#0.5 可行性预检 -> docs/FEASIBILITY-REPORT.md + references/protection-map.md",
+      "expect": [
+        "docs/FEASIBILITY-REPORT.md",
+        "references/protection-map.md"
+      ]
     }
   ]
 }
